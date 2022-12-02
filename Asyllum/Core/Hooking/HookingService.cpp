@@ -1,0 +1,34 @@
+//
+// Created by XaDanX on 12/1/2022.
+//
+
+#include "HookingService.h"
+#include "DirectX.h"
+#include "../../kiero/kiero.h"
+#include "Helpers.h"
+
+
+bool HookingService::Initialize() {
+    bool attached = false;
+    do
+    {
+        if (kiero::init(kiero::RenderType::D3D9) == kiero::Status::Success)
+        {
+            kiero::bind(16, (void**)&oReset, DirectX::hkReset);
+            kiero::bind(42, (void**)&oEndScene, DirectX::hkEndScene);
+            do {
+                this->window = HookingHelper::GetProcessWindow();
+            } while (window == NULL);
+            oWndProc = (WNDPROC)SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR)DirectX::WndProc);
+            attached = true;
+        }
+    } while (!attached);
+    return TRUE;
+}
+
+bool HookingService::UnHook() {
+    this->isHooked = false;
+    kiero::unbind(16);
+    return true;
+}
+
