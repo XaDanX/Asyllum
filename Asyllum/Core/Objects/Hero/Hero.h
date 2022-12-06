@@ -7,10 +7,19 @@
 
 
 #include "../ObjectBase.h"
+#include "AiManager/AiManager.h"
+#include "SpellBook/SpellSlot.h"
 
 class Hero : public ObjectBase {
+private:
+    UnitInfo* unitInfo;
 public:
     Vector2 GetHealthBarPosition();
+    UnitInfo* GetUnitInfo();
+    AiManager* GetAiManager();
+
+    SpellSlot* GetSpellSlotById(int id);
+
 };
 
 

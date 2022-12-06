@@ -8,10 +8,14 @@
 
 #include <vector>
 #include "../../Objects/Hero/Hero.h"
+#include "../../Objects/Minion/Minion.h"
+#include "../../Objects/Turret/Turret.h"
 
 class ObjectManager {
 public:
     std::vector<Hero*> GetHeroList();
+    std::vector<Minion*> GetMinionList();
+    std::vector<Turret*> GetTurretList();
     Hero* GetLocalPlayer();
 };
 

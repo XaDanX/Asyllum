@@ -13,21 +13,30 @@
 #include "Objects/Hero/Hero.h"
 #include "Helpers/StringUtils.h"
 
+namespace {
+    std::string deployablePath(XorStr("C:\\Deployable").c_str());
+}
+
 bool Asyllum::Initialize() { // load resources etc
+    while (locator->GetEngine()->GameTime() < 10.0) {
+        Sleep(1000);
+    }
+
+    locator->GetGameData()->Load(deployablePath);
+    locator->GetHookingService()->Initialize();
+    locator->GetModuleManager()->Initialize();
     return true;
 }
 
 void Asyllum::OnGui() {
-
     locator->GetModuleManager()->UpdateModulesGui();
+    auto localQ = locator->GetObjectManager()->GetLocalPlayer()->GetSpellSlotById(1);
 
-    auto localPlayer = *reinterpret_cast<Hero**>(RVA(0x3143DA0));
-    ImGui::Begin(XorStr("DEVV").c_str());
+
+    ImGui::Begin(XorStr("DEV").c_str());
     ImGui::Text(XorStr("BaseAddress: %#08x").c_str(), Globals::baseAddress);
-    ImGui::Text(XorStr("Health: %f").c_str(), localPlayer->health);
-    ImGui::Text(XorStr("Name: %s").c_str(), localPlayer->name);
-    ImGui::Text(XorStr("Units: %i").c_str(), locator->GetGameData()->Units.size());
-
+    ImGui::Text(XorStr("CD: %f").c_str(), localQ->readyTime);
+    ImGui::Text(XorStr("NAM: %s").c_str(), (const char*)localQ->spellInfo->name);
     ImGui::End();
 }
 
@@ -35,14 +44,9 @@ void Asyllum::OnTick() {
     locator->GetEngine()->Update();
     locator->GetModuleManager()->UpdateModules();
 
-    for (auto hero : locator->GetObjectManager()->GetHeroList()) {
-        auto pos = locator->GetEngine()->WorldToScreen(hero->position);
-        ImGui::SetNextWindowPos(ImVec2(pos.x - 20, pos.y));
-        ImGui::SetNextWindowBgAlpha(0.7f);
-        ImGui::Begin(hero->name, 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove );
-        ImGui::Text(XorStr("Name: %s").c_str(), hero->name);
-        ImGui::End();
-    }
+    auto hero = locator->GetObjectManager()->GetLocalPlayer();
+    auto pos = hero->GetHealthBarPosition();
+    ImGui::GetOverlayDrawList()->AddCircle(ImVec2(pos.x, pos.y), 20, ImColor(255, 0, 0, 255), 40, 1);
 }
 
 

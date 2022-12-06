@@ -1,44 +1,71 @@
 //
-// Created by XaDanX on 12/1/2022.
+// Created by XaDanX on 12/1/2022};
 //
 
 #ifndef ASYLLUM_OFFSETS_H
 #define ASYLLUM_OFFSETS_H
+#include<iostream>
+#include <cstdint>
 namespace Offsets {
 
-    enum class Game : unsigned  int {
-        HudInstance = 0x18a6fa4,
-        ViewProjMatrices = 0x31696A0,
-        LocalPlayer = 0x3143DA0,
-        GameTime = 0x313D244,
-        ObjectManager = 0x18A6ED8,
-        Renderer = 0x316EE68
-    };
+    namespace Functions {
 
-    enum class Templates : unsigned int {
-        HeroTemplate = 0x18A6F70
-    };
+    }
 
-    enum class Renderer : unsigned int {
-        Width = 0x8,
-        Height = 0xC
-    };
+    namespace SpellBook {
+        constexpr std::uint32_t Level {0x1C};
+        constexpr std::uint32_t ReadyTime {0x24};
+        constexpr std::uint32_t SpellInfo {0x120};
+    }
 
-    enum class GameObject : unsigned int {
-        Index = 0x8,
-        Team = 0x34,
-        NetworkId = 0xB4,
-        Position = 0x1DC,
-        Visibility = 0x274,
-        SpawnCount = 0x288,
-        Mana = 0x29C,
-        MaxMana = 0x2AC,
-        Dead = 0x021C,
-        Health = 0xE74,
-        MaxHealth = 0xE84,
-        Name = 0x2DAC,
-        AttackRange = 0x139C,
-        Targetable = 0xD04,
-    };
+    namespace Game {
+        constexpr std::uint32_t HudInstance {0x18a6fa4};
+        constexpr std::uint32_t ViewProjMatrices {0x31696A0};
+        constexpr std::uint32_t LocalPlayer{0x3143DA0};
+        constexpr std::uint32_t GameTime {0x313D244};
+        constexpr std::uint32_t ObjectManager {0x18A6ED8};
+        constexpr std::uint32_t Renderer {0x316EE68};
+    }
+
+    namespace Templates {
+        constexpr std::uint32_t HeroTemplate {0x18A6F70};
+        constexpr std::uint32_t MinionTemplate {0x24F45E0};
+        constexpr std::uint32_t TurretTemplate {0x313BA44};
+    }
+
+    namespace Renderer {
+        constexpr std::uint32_t Width {0x8};
+        constexpr std::uint32_t Height {0xC};
+    }
+
+    namespace GameObject {
+        constexpr std::uint32_t Index {0x8};
+        constexpr std::uint32_t Team {0x34};
+        constexpr std::uint32_t NetworkId {0xB4};
+        constexpr std::uint32_t Position {0x1DC};
+        constexpr std::uint32_t Visibility {0x274};
+        constexpr std::uint32_t SpawnCount {0x288};
+        constexpr std::uint32_t Mana {0x29C};
+        constexpr std::uint32_t MaxMana {0x2AC};
+        constexpr std::uint32_t Dead {0x021C};
+        constexpr std::uint32_t Health {0xE74};
+        constexpr std::uint32_t MaxHealth {0xE84};
+        constexpr std::uint32_t Name {0x2DAC};
+        constexpr std::uint32_t AttackRange {0x139C};
+        constexpr std::uint32_t Targetable {0xD04};
+        constexpr std::uint32_t AiManager {0x2E84};
+        constexpr std::uint32_t SpellBook {0x29C0};
+    }
+
+    namespace AiManager {
+        constexpr std::uint32_t ServerPosition {0x2EC};
+        constexpr std::uint32_t NavigationArray {0x1E4};
+        constexpr std::uint32_t NavigationArrayLength {NavigationArray + 4};
+        constexpr std::uint32_t CurrentSegment {0x1C4};
+
+
+
+
+    }
 }
 #endif //ASYLLUM_OFFSETS_H

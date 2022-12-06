@@ -149,6 +149,9 @@ long __stdcall DirectX::hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS
     ImGui_ImplDX9_InvalidateDeviceObjects();
     long result = locator->GetHookingService()->GetOriginalReset()(pDevice, pPresentationParameters);
     ImGui_ImplDX9_CreateDeviceObjects();
-
+    if (!locator->GetHookingService()->isHooked) {
+        locator->GetHookingService()->GetOriginalReset()(pDevice, pPresentationParameters);
+        return 0;
+    }
     return result;
 }

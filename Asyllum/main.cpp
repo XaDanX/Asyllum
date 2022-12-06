@@ -7,16 +7,10 @@
 #include <process.h>
 HMODULE thread;
 
-namespace {
-    std::string deployablePath(XorStr("C:\\Deployable").c_str());
-}
 
 __declspec(safebuffers) int __stdcall Main(LPVOID lpReserved) {
     Globals::baseAddress = reinterpret_cast<int>(GetModuleHandle(NULL));
-    locator->GetGameData()->Load(deployablePath);
-    locator->GetHookingService()->Initialize();
     locator->GetAsyllumInstance()->Initialize();
-    locator->GetModuleManager()->Initialize();
 
     while (locator->GetHookingService()->isHooked) {
         locator->GetAsyllumInstance()->OnThreadTick();

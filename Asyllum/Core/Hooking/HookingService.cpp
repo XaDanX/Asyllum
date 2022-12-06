@@ -6,6 +6,7 @@
 #include "DirectX.h"
 #include "../../kiero/kiero.h"
 #include "Helpers.h"
+#include "../../kiero/minhook/include/MinHook.h"
 
 
 bool HookingService::Initialize() {
@@ -23,12 +24,12 @@ bool HookingService::Initialize() {
             attached = true;
         }
     } while (!attached);
+
     return TRUE;
 }
 
 bool HookingService::UnHook() {
     this->isHooked = false;
-    kiero::unbind(16);
     return true;
 }
 
