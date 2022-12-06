@@ -46,3 +46,10 @@ ModuleManager *Locator::GetModuleManager() {
     }
     return moduleManager.get();
 }
+
+Console *Locator::GetConsole() {
+    if (!console) {
+        console = std::make_unique<Console>();
+    }
+    return console.get();
+}

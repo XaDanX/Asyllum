@@ -13,6 +13,7 @@
 #include "../Managers/ObjectManager/ObjectManager.h"
 #include "../Data/GameData.h"
 #include "../Managers/ModuleManager/ModuleManager.h"
+#include "../Renderer/Console/Console.h"
 
 
 class Locator {
@@ -23,6 +24,7 @@ public:
     ObjectManager* GetObjectManager();
     GameData* GetGameData();
     ModuleManager* GetModuleManager();
+    Console* GetConsole();
 private:
     std::unique_ptr<HookingService> hookingService;
     std::unique_ptr<Asyllum> asyllum;
@@ -30,6 +32,7 @@ private:
     std::unique_ptr<ObjectManager> objectManager;
     std::unique_ptr<GameData> gameData;
     std::unique_ptr<ModuleManager> moduleManager;
+    std::unique_ptr<Console> console;
 };
 inline extern std::unique_ptr<Locator> locator = std::make_unique<Locator>();
 

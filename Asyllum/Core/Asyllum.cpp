@@ -8,10 +8,8 @@
 #include "../imgui/imgui.h"
 #include "../Protection/XorStr.h"
 #include "Objects/ObjectBase.h"
-#include "../Math/Math.h"
 #include "Locator/Locator.h"
-#include "Objects/Hero/Hero.h"
-#include "Helpers/StringUtils.h"
+
 
 namespace {
     std::string deployablePath(XorStr("C:\\Deployable").c_str());
@@ -21,10 +19,10 @@ bool Asyllum::Initialize() { // load resources etc
     while (locator->GetEngine()->GameTime() < 10.0) {
         Sleep(1000);
     }
-
     locator->GetGameData()->Load(deployablePath);
     locator->GetHookingService()->Initialize();
     locator->GetModuleManager()->Initialize();
+    locator->GetConsole()->Print(XorStr("Initialized!").c_str());
     return true;
 }
 
@@ -38,6 +36,8 @@ void Asyllum::OnGui() {
     ImGui::Text(XorStr("CD: %f").c_str(), localQ->readyTime);
     ImGui::Text(XorStr("NAM: %s").c_str(), localQ->GetName().c_str());
     ImGui::End();
+    locator->GetConsole()->Render();
+
 }
 
 void Asyllum::OnTick() {

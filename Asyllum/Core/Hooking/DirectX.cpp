@@ -93,51 +93,56 @@ long DirectX::hkEndScene(LPDIRECT3DDEVICE9 pDevice) {
         ImGui_ImplDX9_Init(pDevice);
         init = true;
     }
+    try {
+        if (GetAsyncKeyState(VK_INSERT) & 1) {
+            locator->GetHookingService()->isMenuOpen = !locator->GetHookingService()->isMenuOpen;
+        }
 
-    if (GetAsyncKeyState(VK_INSERT) & 1) {
-        locator->GetHookingService()->isMenuOpen = !locator->GetHookingService()->isMenuOpen;
+        ImGui_ImplDX9_NewFrame();
+        ImGui_ImplWin32_NewFrame();
+        ImGui::NewFrame();
+
+        locator->GetAsyllumInstance()->OnTick();
+        if (locator->GetHookingService()->isMenuOpen) {
+            locator->GetAsyllumInstance()->OnGui();
+        }
+
+
+        std::chrono::duration<float, std::milli> updateTime = std::chrono::high_resolution_clock::now() - timeBegin;
+
+        ImGui::Begin(XorStr("DEBUG INFO").c_str(), 0,
+                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
+                     ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoTitleBar);
+        ImGui::Text(XorStr("Update: %f ms").c_str(), static_cast<float>(updateTime.count()));
+
+        if (ImGui::InvisibleButton(XorStr("UNLOAD").c_str(), ImVec2(100, 50))) {
+            locator->GetHookingService()->UnHook();
+        }
+        ImGui::End();
+
+        ImGui::EndFrame();
+        ImGui::Render();
+        ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+
+        if (!locator->GetHookingService()->isHooked) {
+            kiero::shutdown();
+            (WNDPROC) SetWindowLongPtr(locator->GetHookingService()->GetWindow(), GWLP_WNDPROC,
+                                       (LONG_PTR) (locator->GetHookingService()->GetOriginalWndProc()));
+            locator->GetHookingService()->GetOriginalEndScene()(pDevice);
+            return 0;
+
+        }
+
+        return locator->GetHookingService()->GetOriginalEndScene()(pDevice);
+    } catch(...) {
+        return locator->GetHookingService()->GetOriginalEndScene()(pDevice);
     }
-
-    ImGui_ImplDX9_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
-
-    locator->GetAsyllumInstance()->OnTick();
-    if (locator->GetHookingService()->isMenuOpen) {
-        locator->GetAsyllumInstance()->OnGui();
-    }
-
-
-    std::chrono::duration<float, std::milli> updateTime = std::chrono::high_resolution_clock::now() - timeBegin;
-
-    ImGui::Begin(XorStr("DEBUG INFO").c_str(), 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoTitleBar);
-    ImGui::Text(XorStr("Update: %f ms").c_str(), static_cast<float>(updateTime.count()));
-
-    if (ImGui::InvisibleButton(XorStr("UNLOAD").c_str(), ImVec2(100, 50))) {
-        locator->GetHookingService()->UnHook();
-    }
-    ImGui::End();
-
-    ImGui::EndFrame();
-    ImGui::Render();
-    ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
-
-    if (!locator->GetHookingService()->isHooked) {
-        kiero::shutdown();
-        (WNDPROC)SetWindowLongPtr(locator->GetHookingService()->GetWindow(), GWLP_WNDPROC, (LONG_PTR)(locator->GetHookingService()->GetOriginalWndProc()));
-        locator->GetHookingService()->GetOriginalEndScene()(pDevice);
-        return 0;
-
-    }
-
-    return locator->GetHookingService()->GetOriginalEndScene()(pDevice);
 }
 
 LRESULT __stdcall DirectX::WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
     if (locator->GetHookingService()->isMenuOpen) {
         if (true && ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) {}
-    } else {
     }
     ImGui::GetIO().WantCaptureMouse = locator->GetHookingService()->isMenuOpen;
 
