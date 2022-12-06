@@ -7,6 +7,7 @@
 #include <string>
 #include <algorithm>
 #include <random>
+#include "Windows.h"
 
 inline namespace StringUtils {
     inline bool IsASCII(const char *buff, int maxSize) {
@@ -47,6 +48,14 @@ inline namespace StringUtils {
             s += chrs[pick(rg)];
 
         return s;
+    }
+
+    inline std::string GetString(int addr) {
+        if (*(int *) (addr + 0x10) > 15) {
+            return std::string((char *) (*(DWORD *) addr));
+        } else {
+            return std::string((char *) addr);
+        }
     }
 }
 #endif //ASYLLUM_STRINGUTILS_H

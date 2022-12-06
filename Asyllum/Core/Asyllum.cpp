@@ -36,7 +36,7 @@ void Asyllum::OnGui() {
     ImGui::Begin(XorStr("DEV").c_str());
     ImGui::Text(XorStr("BaseAddress: %#08x").c_str(), Globals::baseAddress);
     ImGui::Text(XorStr("CD: %f").c_str(), localQ->readyTime);
-    ImGui::Text(XorStr("NAM: %s").c_str(), (const char*)localQ->spellInfo->name);
+    ImGui::Text(XorStr("NAM: %s").c_str(), localQ->GetName().c_str());
     ImGui::End();
 }
 

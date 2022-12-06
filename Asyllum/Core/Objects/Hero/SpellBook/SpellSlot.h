@@ -10,27 +10,19 @@
 #include "../../../../Math/Vector.h"
 #include "Windows.h"
 #include "../../../Types/Definitions.h"
-
-class SpellSlotSpellInfo {
-public:
-    union {
-        DEFINE_MEMBER_N(LolString, name, 0x18);
-    };
-};
-
+#include "../../../Helpers/StringUtils.h"
 
 class SpellSlot {
 public:
     union {
         DEFINE_MEMBER_N(int, level, Offsets::SpellBook::Level);
         DEFINE_MEMBER_N(float, readyTime, Offsets::SpellBook::ReadyTime);
-        DEFINE_MEMBER_N(SpellSlotSpellInfo*, spellInfo, Offsets::SpellBook::SpellInfo);
     };
 
-    LolString GetName() {
-        auto nameAddress = *reinterpret_cast<int*>(reinterpret_cast<DWORD>(this) + Offsets::SpellBook::SpellInfo);
-        auto name = *reinterpret_cast<LolString*>(nameAddress + 0x18);
-        return name;
+    std::string GetName() {
+       int addr = *reinterpret_cast<int*>(reinterpret_cast<DWORD>(this) + Offsets::SpellBook::SpellInfo) + 0x18;
+       return StringUtils::GetString(addr);
+
     }
 };
 
