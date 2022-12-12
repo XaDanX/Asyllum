@@ -20,6 +20,8 @@ private:
     Reset oReset;
 
     HWND window = NULL;
+    LPDIRECT3DDEVICE9 device = NULL;
+
 public:
     bool isMenuOpen = true;
     bool isHooked = true;
@@ -40,6 +42,13 @@ public:
 
     HWND GetWindow() {
         return this->window;
+    }
+
+    LPDIRECT3DDEVICE9 GetDevice() {
+        return this->device;
+    }
+    void SetDevice(LPDIRECT3DDEVICE9 dev) {
+        this->device = dev;
     }
 
 

@@ -53,3 +53,17 @@ Console *Locator::GetConsole() {
     }
     return console.get();
 }
+
+TextureManager *Locator::GetTextureManager() {
+    if (!textureManager) {
+        textureManager = std::make_unique<TextureManager>();
+    }
+    return textureManager.get();
+}
+
+Renderer *Locator::GetRenderer() {
+    if (!renderer) {
+        renderer = std::make_unique<Renderer>();
+    }
+    return renderer.get();
+}

@@ -6,8 +6,14 @@
 #define ASYLLUM_RENDERER_H
 
 
-class Renderer {
+#include "../../imgui/imgui.h"
+#include "../../Math/Vector.h"
 
+class Renderer {
+private:
+    ImDrawList* drawList = ImGui::GetBackgroundDrawList();
+public:
+    void Text(const Vector2& pos, const char* text, const ImVec4& color);
 };
 
 

@@ -6,6 +6,7 @@
 #include "../../Locator/Locator.h"
 #include "../../../Protection/XorStr.h"
 #include "../../../../Modules/ObjectExplorer/ObjectExplorer.h"
+#include "../../../../Modules/SpellTracker/SpellTracker.h"
 
 void ModuleManager::RegisterModule(Module* module) {
 
@@ -26,7 +27,7 @@ void ModuleManager::RegisterModules() {
     /*
         Append all modules here
     */
-    //this->RegisterModule(new SpellTracker());
+    this->RegisterModule(new SpellTracker());
     this->RegisterModule(new ObjectExplorer());
 }
 

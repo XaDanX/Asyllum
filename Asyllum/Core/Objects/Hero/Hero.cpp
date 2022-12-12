@@ -5,25 +5,34 @@
 #include "Hero.h"
 #include "../../Locator/Locator.h"
 #include "../../Helpers/StringUtils.h"
+#include "../../../Utils/Utils.h"
 
 
 Vector2 Hero::GetHealthBarPosition() {
 
     Vector3 point = position.clone();
-    point.y += GetUnitInfo()->healthBarHeight;
+
+    auto unit = GetUnitInfo();
+    auto height = 100.f;
+    if (Utils::IsValid(unit)) {
+        height = unit->healthBarHeight;
+    }
+
+    point.y += height;
 
     Vector2 out = locator->GetEngine()->WorldToScreen(point);
-    out.y -= ((float)locator->GetEngine()->WindowHeight() * 0.00083333335f * GetUnitInfo()->healthBarHeight);
+    out.y -= ((float)locator->GetEngine()->WindowHeight() * 0.00083333335f * height);
     out.x -= 70.0f;
     return out;
 
 }
 
 UnitInfo *Hero::GetUnitInfo() {
-    if (!unitInfo) {
-        auto fixedName = StringUtils::ToLower(name);
-        unitInfo = locator->GetGameData()->GetUnitInfoByName(fixedName);
-    }
+    auto fixedName = StringUtils::ToLower(name);
+    unitInfo = locator->GetGameData()->GetUnitInfoByName(fixedName);
+    if (!Utils::IsValid(unitInfo))
+        unitInfo = nullptr;
+
     return unitInfo;
 }
 

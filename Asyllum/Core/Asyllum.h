@@ -8,6 +8,8 @@
 
 class Asyllum {
 public:
+    bool initialized = false;
+public:
     bool Initialize();
 
     void OnGui();

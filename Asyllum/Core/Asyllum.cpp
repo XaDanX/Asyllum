@@ -1,5 +1,5 @@
 //
-// Created by XaDanX on 12/1/2022.
+// Created by XaDanX on 12/1/2422.
 //
 
 #include "Asyllum.h"
@@ -9,33 +9,27 @@
 #include "../Protection/XorStr.h"
 #include "Objects/ObjectBase.h"
 #include "Locator/Locator.h"
-
+#include <filesystem>
 
 namespace {
     std::string deployablePath(XorStr("C:\\Deployable").c_str());
 }
 
-bool Asyllum::Initialize() { // load resources etc
+bool Asyllum::Initialize() {
     while (locator->GetEngine()->GameTime() < 10.0) {
         Sleep(1000);
     }
     locator->GetGameData()->Load(deployablePath);
     locator->GetHookingService()->Initialize();
+
     locator->GetModuleManager()->Initialize();
+
     locator->GetConsole()->Print(XorStr("Initialized!").c_str());
     return true;
 }
 
 void Asyllum::OnGui() {
     locator->GetModuleManager()->UpdateModulesGui();
-    auto localQ = locator->GetObjectManager()->GetLocalPlayer()->GetSpellSlotById(1);
-
-
-    ImGui::Begin(XorStr("DEV").c_str());
-    ImGui::Text(XorStr("BaseAddress: %#08x").c_str(), Globals::baseAddress);
-    ImGui::Text(XorStr("CD: %f").c_str(), localQ->readyTime);
-    ImGui::Text(XorStr("NAM: %s").c_str(), localQ->GetName().c_str());
-    ImGui::End();
     locator->GetConsole()->Render();
 
 }
@@ -44,9 +38,6 @@ void Asyllum::OnTick() {
     locator->GetEngine()->Update();
     locator->GetModuleManager()->UpdateModules();
 
-    auto hero = locator->GetObjectManager()->GetLocalPlayer();
-    auto pos = hero->GetHealthBarPosition();
-    ImGui::GetOverlayDrawList()->AddCircle(ImVec2(pos.x, pos.y), 20, ImColor(255, 0, 0, 255), 40, 1);
 }
 
 

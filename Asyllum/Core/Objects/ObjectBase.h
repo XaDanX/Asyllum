@@ -68,10 +68,30 @@ public:
         return reinterpret_cast<unsigned __int8*>(this) && CompareObjectFlags(static_cast<int>(ObjectTypeFlags::Building));
     }
 
+    bool IsDummy() {
+        return name.str().contains("PracticeTool");
+    }
+
     bool IsAlive() {
         return (*(unsigned __int8 (__thiscall **)(DWORD *))(*reinterpret_cast<DWORD*>(this) + 140))(reinterpret_cast<DWORD*>(this))
                && !(*(unsigned __int8 (__thiscall **)(DWORD *))(reinterpret_cast<DWORD*>(this)[148] + 8))(reinterpret_cast<DWORD*>(this) + 148);
     }
+
+    bool IsLocalPlayer() {
+        return reinterpret_cast<int>(this) == *reinterpret_cast<int*>(Globals::baseAddress + Offsets::Game::LocalPlayer);
+    }
+
+    template <class T>
+    bool IsAllyTo(T obj) {
+        return this->team == obj->team;
+    }
+
+    template <class T>
+    bool IsEnemyTo(T obj) {
+        return this->team != obj->team;
+    }
+
+
 
 
 };

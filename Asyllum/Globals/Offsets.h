@@ -16,21 +16,23 @@ namespace Offsets {
         constexpr std::uint32_t Level {0x1C};
         constexpr std::uint32_t ReadyTime {0x24};
         constexpr std::uint32_t SpellInfo {0x120};
+        constexpr std::uint32_t SpellData {0x40};
+        constexpr std::uint32_t SpellName {0x6C};
     }
 
     namespace Game {
-        constexpr std::uint32_t HudInstance {0x18a6fa4};
-        constexpr std::uint32_t ViewProjMatrices {0x31696A0};
-        constexpr std::uint32_t LocalPlayer{0x3143DA0};
-        constexpr std::uint32_t GameTime {0x313D244};
+        constexpr std::uint32_t HudInstance {0x18ADAE0}; //
+        constexpr std::uint32_t ViewProjMatrices {0x3170CF8 }; //
+        constexpr std::uint32_t LocalPlayer{0x314A404}; //
+        constexpr std::uint32_t GameTime {0x3143C44}; //
         constexpr std::uint32_t ObjectManager {0x18A6ED8};
-        constexpr std::uint32_t Renderer {0x316EE68};
+        constexpr std::uint32_t Renderer {0x31765C0}; //
     }
 
     namespace Templates {
-        constexpr std::uint32_t HeroTemplate {0x18A6F70};
-        constexpr std::uint32_t MinionTemplate {0x24F45E0};
-        constexpr std::uint32_t TurretTemplate {0x313BA44};
+        constexpr std::uint32_t HeroTemplate {0x18ADB74}; //
+        constexpr std::uint32_t MinionTemplate {0x24FB1E4}; //
+        constexpr std::uint32_t TurretTemplate {0x3142824}; //
     }
 
     namespace Renderer {
@@ -48,13 +50,13 @@ namespace Offsets {
         constexpr std::uint32_t Mana {0x29C};
         constexpr std::uint32_t MaxMana {0x2AC};
         constexpr std::uint32_t Dead {0x021C};
-        constexpr std::uint32_t Health {0xE74};
-        constexpr std::uint32_t MaxHealth {0xE84};
-        constexpr std::uint32_t Name {0x2DAC};
-        constexpr std::uint32_t AttackRange {0x139C};
+        constexpr std::uint32_t Health {0xE7C};
+        constexpr std::uint32_t MaxHealth {0xE8C};
+        constexpr std::uint32_t Name {0x2DB4};
+        constexpr std::uint32_t AttackRange {0x13A4};
         constexpr std::uint32_t Targetable {0xD04};
-        constexpr std::uint32_t AiManager {0x2E84};
-        constexpr std::uint32_t SpellBook {0x29C0};
+        constexpr std::uint32_t AiManager {0x2E8C}; //
+        constexpr std::uint32_t SpellBook {0x29C8}; //
     }
 
     namespace AiManager {

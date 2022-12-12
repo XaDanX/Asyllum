@@ -10,7 +10,8 @@ HMODULE thread;
 
 __declspec(safebuffers) int __stdcall Main(LPVOID lpReserved) {
     Globals::baseAddress = reinterpret_cast<int>(GetModuleHandle(NULL));
-    locator->GetAsyllumInstance()->Initialize();
+    bool status = locator->GetAsyllumInstance()->Initialize();
+    locator->GetAsyllumInstance()->initialized = status;
 
     while (locator->GetHookingService()->isHooked) {
         locator->GetAsyllumInstance()->OnThreadTick();

@@ -14,6 +14,8 @@
 #include "../Data/GameData.h"
 #include "../Managers/ModuleManager/ModuleManager.h"
 #include "../Renderer/Console/Console.h"
+#include "../Renderer/TextureManager/TextureManager.h"
+#include "../Renderer/Renderer.h"
 
 
 class Locator {
@@ -25,6 +27,8 @@ public:
     GameData* GetGameData();
     ModuleManager* GetModuleManager();
     Console* GetConsole();
+    TextureManager* GetTextureManager();
+    Renderer* GetRenderer();
 private:
     std::unique_ptr<HookingService> hookingService;
     std::unique_ptr<Asyllum> asyllum;
@@ -33,6 +37,8 @@ private:
     std::unique_ptr<GameData> gameData;
     std::unique_ptr<ModuleManager> moduleManager;
     std::unique_ptr<Console> console;
+    std::unique_ptr<TextureManager> textureManager;
+    std::unique_ptr<Renderer> renderer;
 };
 inline extern std::unique_ptr<Locator> locator = std::make_unique<Locator>();
 
