@@ -9,22 +9,22 @@
 void SpellTracker::OnTick() {
     for (auto& hero : locator->GetObjectManager()->GetHeroList()) {
         if (hero->IsDummy()) continue;
-        if (hero->IsAllyTo<Hero*>(locator->GetObjectManager()->GetLocalPlayer())) continue;
+        //if (hero->IsAllyTo<Hero*>(locator->GetObjectManager()->GetLocalPlayer())) continue;
 
         auto pos = hero->GetHealthBarPosition();
         pos.x += 24;
-        pos.y -= 2.5;
+        pos.y -= 2.0;
         auto q_spell = hero->GetSpellSlotById(0);
         auto w_spell = hero->GetSpellSlotById(1);
         auto e_spell = hero->GetSpellSlotById(2);
         auto r_spell = hero->GetSpellSlotById(3);
         if (Utils::IsValid(q_spell) && Utils::IsValid(w_spell) && Utils::IsValid(e_spell) && Utils::IsValid(r_spell)) {
             DrawSpell(std::cref(q_spell), ImVec2(pos.x, pos.y));
-            pos.x += 24;
+            pos.x += 25;
             DrawSpell(std::cref(w_spell), ImVec2(pos.x, pos.y));
-            pos.x += 24;
+            pos.x += 25;
             DrawSpell(std::cref(e_spell), ImVec2(pos.x, pos.y));
-            pos.x += 24;
+            pos.x += 25;
             DrawSpell(std::cref(r_spell), ImVec2(pos.x, pos.y));
         }
     }
@@ -46,17 +46,14 @@ void SpellTracker::DrawSpell(SpellSlot* spellSlot, ImVec2 pos) {
             return;
         }
         auto info = spellSlot->GetSpellInfo();
-        if (!Utils::IsValid(info)) {
-            locator->GetConsole()->Print(XorStr("SpellInfo | %s").c_str(), spellSlot->GetName().c_str());
-            return;
-        }
+
         std::string iconName = "twitch_q";
         if (info->icon.length() > 3) {
             iconName = info->icon;
         }
-        ImGui::GetBackgroundDrawList()->AddImage(locator->GetTextureManager()->GetTexture(iconName),
+        ImGui::GetBackgroundDrawList()->AddImageRounded(locator->GetTextureManager()->GetTexture(iconName),
         ImVec2(pos.x, pos.y), ImVec2(pos.x + 24, pos.y + 24), ImVec2(0, 0),
-        ImVec2(1, 1), spellSlot->IsReady() ? ImColor(255, 255, 255, 255) : ImColor(50, 50, 20, 255));
+        ImVec2(1, 1), (spellSlot->IsReady() && spellSlot->level > 0) ? ImColor(255, 255, 255, 255) : ImColor(55, 50, 50, 255), 10);
         if (!spellSlot->IsReady()) {
             locator->GetRenderer()->Text(Vector2(pos.x + 12, pos.y + 12),
                                          std::to_string(spellSlot->GetCooldown()).c_str(),

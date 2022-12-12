@@ -7,6 +7,7 @@
 
 
 #include "../../Math/Vector.h"
+#include "../HudInstance/HudInstance.h"
 
 class Engine {
 public:
@@ -14,6 +15,7 @@ public:
     float GameTime() const;
     int WindowWidth() const;
     int WindowHeight() const;
+    HudInstance* GetHudInstance();
     Vector2 WorldToScreen(const Vector3& pos);
 };
 

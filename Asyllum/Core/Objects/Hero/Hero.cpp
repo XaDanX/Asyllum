@@ -20,8 +20,14 @@ Vector2 Hero::GetHealthBarPosition() {
 
     point.y += height;
 
+    auto zoomMultiplier = 2250.0 / 100;
+    auto zoomPercent = (locator->GetEngine()->GetHudInstance()->zoomInstance->visibleZoom / zoomMultiplier) / 100;
+
     Vector2 out = locator->GetEngine()->WorldToScreen(point);
-    out.y -= ((float)locator->GetEngine()->WindowHeight() * 0.00083333335f * height);
+
+    auto delta = (float)locator->GetEngine()->WindowHeight() * 0.00083333335f * (height * this->scale);
+    delta = (float)delta / zoomPercent;
+    out.y -= delta;
     out.x -= 70.0f;
     return out;
 
@@ -30,9 +36,6 @@ Vector2 Hero::GetHealthBarPosition() {
 UnitInfo *Hero::GetUnitInfo() {
     auto fixedName = StringUtils::ToLower(name);
     unitInfo = locator->GetGameData()->GetUnitInfoByName(fixedName);
-    if (!Utils::IsValid(unitInfo))
-        unitInfo = nullptr;
-
     return unitInfo;
 }
 

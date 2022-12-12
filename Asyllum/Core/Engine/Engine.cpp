@@ -36,17 +36,21 @@ Vector2 Engine::WorldToScreen(const Vector3 &pos) {
 }
 
 int Engine::WindowHeight() const {
-    auto renderer = *reinterpret_cast<int*>(RVA((unsigned int)Offsets::Game::Renderer));
-    return *reinterpret_cast<int*>(renderer + (unsigned int)Offsets::Renderer::Height);
+    auto renderer = *reinterpret_cast<int*>(RVA(Offsets::Game::Renderer));
+    return *reinterpret_cast<int*>(renderer + Offsets::Renderer::Height);
 }
 
 int Engine::WindowWidth() const {
-    auto renderer = *reinterpret_cast<int*>(RVA((unsigned int)Offsets::Game::Renderer));
-    return *reinterpret_cast<int*>(renderer + (unsigned int)Offsets::Renderer::Width);
+    auto renderer = *reinterpret_cast<int*>(RVA(Offsets::Game::Renderer));
+    return *reinterpret_cast<int*>(renderer + Offsets::Renderer::Width);
 }
 
 void Engine::Update() {
-    memcpy(&Globals::viewMatrix, (void*)RVA((unsigned int)Offsets::Game::ViewProjMatrices), 16 * sizeof(float));
-    memcpy(&Globals::projectionMatrix, (void*)RVA((unsigned int)Offsets::Game::ViewProjMatrices + (16 * sizeof(float))), 16 * sizeof(float));
+    memcpy(&Globals::viewMatrix, (void*)RVA(Offsets::Game::ViewProjMatrices), 16 * sizeof(float));
+    memcpy(&Globals::projectionMatrix, (void*)RVA(Offsets::Game::ViewProjMatrices + (16 * sizeof(float))), 16 * sizeof(float));
     MultiplySquareMatrices(Globals::viewProjectionMatrix, Globals::viewMatrix, Globals::projectionMatrix);
+}
+
+HudInstance* Engine::GetHudInstance() {
+    return *reinterpret_cast<HudInstance**>(RVA(Offsets::Game::HudInstance));
 }

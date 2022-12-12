@@ -28,10 +28,11 @@ bool Asyllum::Initialize() {
     return true;
 }
 
+
+
 void Asyllum::OnGui() {
     locator->GetModuleManager()->UpdateModulesGui();
     locator->GetConsole()->Render();
-
 }
 
 void Asyllum::OnTick() {

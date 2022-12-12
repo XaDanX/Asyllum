@@ -29,6 +29,16 @@ namespace Offsets {
         constexpr std::uint32_t Renderer {0x31765C0}; //
     }
 
+    namespace HudInstance {
+        constexpr std::uint32_t ZoomInstance {0xC};
+    }
+
+    namespace ZoomInstance {
+        constexpr std::uint32_t TempZoom {0x260};
+        constexpr std::uint32_t VisibleZoom {0x264};
+        constexpr std::uint32_t InternalZoom {0x268};
+    }
+
     namespace Templates {
         constexpr std::uint32_t HeroTemplate {0x18ADB74}; //
         constexpr std::uint32_t MinionTemplate {0x24FB1E4}; //

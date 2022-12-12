@@ -44,6 +44,7 @@ public:
         DEFINE_MEMBER_N(float, maxHealth, (unsigned int)Offsets::GameObject::MaxHealth);
         DEFINE_MEMBER_N(LolString, name, (unsigned int)Offsets::GameObject::Name);
         DEFINE_MEMBER_N(float, attackRange, (unsigned int)Offsets::GameObject::AttackRange);
+        DEFINE_MEMBER_N(float, scale, (unsigned int)0x1838);
         DEFINE_MEMBER_N(bool, targetable, (unsigned int)Offsets::GameObject::Targetable);
     };
 
