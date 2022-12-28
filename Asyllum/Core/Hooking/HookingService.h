@@ -19,6 +19,9 @@ private:
     typedef long(__stdcall* Reset)(LPDIRECT3DDEVICE9, D3DPRESENT_PARAMETERS*);
     Reset oReset;
 
+    typedef long(__stdcall* Present)(IDirect3DDevice9Ex*, const RECT*, const RECT*, HWND, const RGNDATA*);
+    Present oPresent;
+
     HWND window = NULL;
     LPDIRECT3DDEVICE9 device = NULL;
 
@@ -27,6 +30,10 @@ public:
     bool isHooked = true;
     bool Initialize();
     bool UnHook();
+
+    Present GetOriginalPresent() {
+        return this->oPresent;
+    }
 
     EndScene GetOriginalEndScene() {
         return this->oEndScene;

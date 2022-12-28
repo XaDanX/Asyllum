@@ -13,6 +13,9 @@
 #include "../Locator/Locator.h"
 
 
+std::mutex dxLock;
+
+
 extern bool init = false;
 
 
@@ -20,83 +23,82 @@ long DirectX::hkEndScene(LPDIRECT3DDEVICE9 pDevice) {
     locator->GetHookingService()->SetDevice(pDevice);
     auto timeBegin = std::chrono::high_resolution_clock::now();
     if (!init) {
+        locator->GetTextureManager()->LoadDeployables();
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
         io.Fonts->AddFontFromFileTTF(XorStr("C:\\Deployable\\Font.ttf").c_str(), 16.0f);
+
         ImGuiStyle* style = &ImGui::GetStyle();
-        ImVec4* colors = style->Colors;
-        colors[ImGuiCol_Text]                   = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
-        colors[ImGuiCol_TextDisabled]           = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
-        colors[ImGuiCol_WindowBg]               = ImVec4(0.08f, 0.08f, 0.08f, 0.88f);
-        colors[ImGuiCol_ChildBg]                = ImVec4(0.07f, 0.07f, 0.07f, 0.94f);
-        colors[ImGuiCol_PopupBg]                = ImVec4(0.09f, 0.09f, 0.09f, 0.88f);
-        colors[ImGuiCol_Border]                 = ImVec4(0.72f, 0.72f, 0.72f, 0.50f);
-        colors[ImGuiCol_BorderShadow]           = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-        colors[ImGuiCol_FrameBg]                = ImVec4(0.03f, 0.03f, 0.03f, 0.54f);
-        colors[ImGuiCol_FrameBgHovered]         = ImVec4(0.16f, 0.16f, 0.16f, 0.40f);
-        colors[ImGuiCol_FrameBgActive]          = ImVec4(0.33f, 0.34f, 0.34f, 0.67f);
-        colors[ImGuiCol_TitleBg]                = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
-        colors[ImGuiCol_TitleBgActive]          = ImVec4(0.23f, 0.23f, 0.23f, 1.00f);
-        colors[ImGuiCol_TitleBgCollapsed]       = ImVec4(0.00f, 0.00f, 0.00f, 0.51f);
-        colors[ImGuiCol_MenuBarBg]              = ImVec4(0.14f, 0.14f, 0.14f, 1.00f);
-        colors[ImGuiCol_ScrollbarBg]            = ImVec4(0.02f, 0.02f, 0.02f, 0.53f);
-        colors[ImGuiCol_ScrollbarGrab]          = ImVec4(0.31f, 0.31f, 0.31f, 1.00f);
-        colors[ImGuiCol_ScrollbarGrabHovered]   = ImVec4(0.41f, 0.41f, 0.41f, 1.00f);
-        colors[ImGuiCol_ScrollbarGrabActive]    = ImVec4(0.51f, 0.51f, 0.51f, 1.00f);
-        colors[ImGuiCol_CheckMark]              = ImVec4(0.26f, 1.00f, 0.00f, 1.00f);
-        colors[ImGuiCol_SliderGrab]             = ImVec4(0.23f, 0.23f, 0.23f, 1.00f);
-        colors[ImGuiCol_SliderGrabActive]       = ImVec4(0.24f, 0.24f, 0.24f, 1.00f);
-        colors[ImGuiCol_Button]                 = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
-        colors[ImGuiCol_ButtonHovered]          = ImVec4(0.24f, 0.24f, 0.24f, 1.00f);
-        colors[ImGuiCol_ButtonActive]           = ImVec4(0.40f, 0.40f, 0.40f, 1.00f);
-        colors[ImGuiCol_Header]                 = ImVec4(0.53f, 0.53f, 0.53f, 0.31f);
-        colors[ImGuiCol_HeaderHovered]          = ImVec4(0.81f, 0.81f, 0.81f, 0.31f);
-        colors[ImGuiCol_HeaderActive]           = ImVec4(0.27f, 0.27f, 0.27f, 1.00f);
-        colors[ImGuiCol_Separator]              = ImVec4(0.43f, 0.43f, 0.50f, 0.50f);
-        colors[ImGuiCol_SeparatorHovered]       = ImVec4(0.10f, 0.40f, 0.75f, 0.78f);
-        colors[ImGuiCol_SeparatorActive]        = ImVec4(0.10f, 0.40f, 0.75f, 1.00f);
-        colors[ImGuiCol_ResizeGrip]             = ImVec4(0.26f, 0.59f, 0.98f, 0.20f);
-        colors[ImGuiCol_ResizeGripHovered]      = ImVec4(0.26f, 0.59f, 0.98f, 0.67f);
-        colors[ImGuiCol_ResizeGripActive]       = ImVec4(0.26f, 0.59f, 0.98f, 0.95f);
-        colors[ImGuiCol_Tab]                    = ImVec4(0.00f, 0.00f, 0.00f, 0.86f);
-        colors[ImGuiCol_TabHovered]             = ImVec4(0.34f, 0.34f, 0.34f, 0.80f);
-        colors[ImGuiCol_TabActive]              = ImVec4(0.24f, 0.24f, 0.24f, 1.00f);
-        colors[ImGuiCol_TabUnfocused]           = ImVec4(0.07f, 0.10f, 0.15f, 0.97f);
-        colors[ImGuiCol_TabUnfocusedActive]     = ImVec4(0.14f, 0.26f, 0.42f, 1.00f);
-        colors[ImGuiCol_PlotLines]              = ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
-        colors[ImGuiCol_PlotLinesHovered]       = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
-        colors[ImGuiCol_PlotHistogram]          = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
-        colors[ImGuiCol_PlotHistogramHovered]   = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
-        colors[ImGuiCol_TextSelectedBg]         = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
-        colors[ImGuiCol_DragDropTarget]         = ImVec4(1.00f, 1.00f, 0.00f, 0.90f);
-        colors[ImGuiCol_NavHighlight]           = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
-        colors[ImGuiCol_NavWindowingHighlight]  = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
-        colors[ImGuiCol_NavWindowingDimBg]      = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
-        colors[ImGuiCol_ModalWindowDimBg]       = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
-        style->ScrollbarSize = 20.f;
-        style->GrabMinSize = 20.f;
 
-        style->WindowBorderSize = 1.5f;
-        style->ChildBorderSize = 1.5f;
-        style->PopupBorderSize = 1.5f;
-        style->FrameBorderSize = 1.5f;
-        style->TabBorderSize = 1.5f;
+        style->Colors[ImGuiCol_Text] = ImVec4(0.80f, 0.80f, 0.83f, 1.00f);
+        style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+        style->Colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+        style->Colors[ImGuiCol_PopupBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
+        style->Colors[ImGuiCol_Border] = ImVec4(0.80f, 0.80f, 0.83f, 0.88f);
+        style->Colors[ImGuiCol_BorderShadow] = ImVec4(0.92f, 0.91f, 0.88f, 0.00f);
+        style->Colors[ImGuiCol_FrameBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+        style->Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+        style->Colors[ImGuiCol_FrameBgActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+        style->Colors[ImGuiCol_TitleBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+        style->Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(1.00f, 0.98f, 0.95f, 0.75f);
+        style->Colors[ImGuiCol_TitleBgActive] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
+        style->Colors[ImGuiCol_MenuBarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+        style->Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+        style->Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
+        style->Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+        style->Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+        style->Colors[ImGuiCol_CheckMark] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
+        style->Colors[ImGuiCol_SliderGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
+        style->Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+        style->Colors[ImGuiCol_Button] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+        style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+        style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+        style->Colors[ImGuiCol_Header] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+        style->Colors[ImGuiCol_HeaderHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+        style->Colors[ImGuiCol_HeaderActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+        style->Colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+        style->Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+        style->Colors[ImGuiCol_ResizeGripActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+        style->Colors[ImGuiCol_PlotLines] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
+        style->Colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
+        style->Colors[ImGuiCol_PlotHistogram] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
+        style->Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
+        style->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
+        style->Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(1.00f, 0.98f, 0.95f, 0.73f);
 
-        style->WindowRounding = 4.f;
-        style->ChildRounding = 4.f;
-        style->FrameRounding = 6.f;
-        style->PopupRounding = 6.f;
-        style->ScrollbarRounding = 6.f;
-        style->GrabRounding = 6.f;
-        style->TabRounding = 8.f;
-        locator->GetTextureManager()->LoadDeployables();
+        style->AntiAliasedLines = true;
+        style->AntiAliasedFill = true;
+        style->WindowRounding = 0;
+        style->WindowPadding = ImVec2(8, 10.0f);
+        style->WindowRounding = 2.0f;
+        style->ScrollbarRounding = 3.0f;
+        style->GrabRounding = 2.0f;
+        style->AntiAliasedLines = true;
+        style->AntiAliasedFill = true;
+        style->WindowRounding = 2;
+        style->ChildRounding = 2;
+        style->ScrollbarSize = 16;
+        style->ScrollbarRounding = 3;
+        style->GrabRounding = 2;
+        style->ItemSpacing.x = 10;
+        style->ItemSpacing.y = 4;
+        style->IndentSpacing = 22;
+        style->FramePadding.x = 6;
+        style->FramePadding.y = 4;
+        style->Alpha = 1.0f;
+        style->FrameRounding = 3.0f;
+
+
+        style->WindowRounding = 0;
+        style->WindowPadding = ImVec2(8, 10.0f);
+        style->ItemSpacing = ImVec2(8, 12.0f);
+        style->ItemInnerSpacing = ImVec2(6.0f, 4.0f);
         ImGui_ImplWin32_Init(locator->GetHookingService()->GetWindow());
         ImGui_ImplDX9_Init(pDevice);
         init = true;
     }
 
-    try {
         if (GetAsyncKeyState(VK_INSERT) & 1) {
             locator->GetHookingService()->isMenuOpen = !locator->GetHookingService()->isMenuOpen;
         }
@@ -108,20 +110,25 @@ long DirectX::hkEndScene(LPDIRECT3DDEVICE9 pDevice) {
             locator->GetAsyllumInstance()->OnTick();
             if (locator->GetHookingService()->isMenuOpen) {
                 locator->GetAsyllumInstance()->OnGui();
+
+                ImGui::Begin(XorStr("Panic menu").c_str(), 0,
+                        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
+                        ImGuiWindowFlags_NoScrollWithMouse);
+                if (ImGui::Button(XorStr("Unload").c_str())) {
+                    locator->GetHookingService()->UnHook();
+                }
+                ImGui::End();
+
             }
 
 
             std::chrono::duration<float, std::milli> updateTime = std::chrono::high_resolution_clock::now() - timeBegin;
-
+            /*
             ImGui::Begin(XorStr("DEBUG INFO").c_str(), 0,
                          ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
                          ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoTitleBar);
             ImGui::Text(XorStr("Update: %f ms").c_str(), static_cast<float>(updateTime.count()));
-
-            if (ImGui::InvisibleButton(XorStr("UNLOAD").c_str(), ImVec2(100, 100))) {
-                locator->GetHookingService()->UnHook();
-            }
-            ImGui::End();
+            ImGui::End();*/
         }
         ImGui::EndFrame();
         ImGui::Render();
@@ -135,11 +142,8 @@ long DirectX::hkEndScene(LPDIRECT3DDEVICE9 pDevice) {
             return 0;
 
         }
+        return locator->GetHookingService()->GetOriginalEndScene()(pDevice);
 
-        return locator->GetHookingService()->GetOriginalEndScene()(pDevice);
-    } catch(...) {
-        return locator->GetHookingService()->GetOriginalEndScene()(pDevice);
-    }
 }
 
 LRESULT __stdcall DirectX::WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -154,10 +158,21 @@ long __stdcall DirectX::hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS
 {
     ImGui_ImplDX9_InvalidateDeviceObjects();
     long result = locator->GetHookingService()->GetOriginalReset()(pDevice, pPresentationParameters);
-    ImGui_ImplDX9_CreateDeviceObjects();
+    if (result >= 0) {
+        ImGui_ImplDX9_CreateDeviceObjects();
+    }
     if (!locator->GetHookingService()->isHooked) {
         locator->GetHookingService()->GetOriginalReset()(pDevice, pPresentationParameters);
         return 0;
     }
     return result;
+}
+
+
+
+
+long __stdcall DirectX::hkPresent(IDirect3DDevice9Ex *pDevice, const RECT *pSourceRect, const RECT *pDestRect, HWND hDestWindowOverride,
+                   const RGNDATA *pDirtyRegion) {
+
+    return locator->GetHookingService()->GetOriginalPresent()(pDevice, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
 }

@@ -11,8 +11,6 @@
 #include "SpellBook/SpellSlot.h"
 
 class Hero : public ObjectBase {
-private:
-    UnitInfo* unitInfo;
 public:
     Vector2 GetHealthBarPosition();
     UnitInfo* GetUnitInfo();

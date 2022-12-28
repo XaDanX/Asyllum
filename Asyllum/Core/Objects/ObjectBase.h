@@ -9,6 +9,7 @@
 #include "../../Math/Vector.h"
 #include "../Types/Definitions.h"
 #include "../Data/UnitInfo.h"
+#include "../../Protection/XorStr.h"
 
 enum class ObjectTypeFlags {
     GameObject = (1 << 0),  //0x1
@@ -70,7 +71,7 @@ public:
     }
 
     bool IsDummy() {
-        return name.str().contains("PracticeTool");
+        return name.str().contains(XorStr("PracticeTool").c_str());
     }
 
     bool IsAlive() {
@@ -91,6 +92,9 @@ public:
     bool IsEnemyTo(T obj) {
         return this->team != obj->team;
     }
+
+    bool IsOnScreen(float offsetX=0, float offsetY=0);
+
 
 
 

@@ -35,8 +35,7 @@ Vector2 Hero::GetHealthBarPosition() {
 
 UnitInfo *Hero::GetUnitInfo() {
     auto fixedName = StringUtils::ToLower(name);
-    unitInfo = locator->GetGameData()->GetUnitInfoByName(fixedName);
-    return unitInfo;
+    return locator->GetGameData()->GetUnitInfoByName(fixedName);
 }
 
 AiManager *Hero::GetAiManager() {

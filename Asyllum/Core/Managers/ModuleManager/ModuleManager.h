@@ -15,6 +15,8 @@ private:
     std::vector<std::unique_ptr<Module>> moduleList;
     void RegisterModules();
 
+    int tab = -1;
+
 public:
     void Initialize();
     void UpdateModules();

@@ -60,9 +60,6 @@ bool TextureManager::LoadDeployables() {
             std::string fileName = filePath.stem().string();
 
             LoadTexture(fileName, filePath.string().c_str());
-            if (fileName.contains("irelia")) {
-                locator->GetConsole()->Print("%s | %s", fileName.c_str(), filePath.string().c_str());
-            }
         }
     }
     return true;

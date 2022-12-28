@@ -6,7 +6,7 @@
 #include "../../Locator/Locator.h"
 #include "../../../Protection/XorStr.h"
 #include "../../../../Modules/ObjectExplorer/ObjectExplorer.h"
-#include "../../../../Modules/SpellTracker/SpellTracker.h"
+#include "../../../../Modules/Awareness/Awareness.h"
 
 void ModuleManager::RegisterModule(Module* module) {
 
@@ -27,7 +27,7 @@ void ModuleManager::RegisterModules() {
     /*
         Append all modules here
     */
-    this->RegisterModule(new SpellTracker());
+    this->RegisterModule(new Awareness());
     this->RegisterModule(new ObjectExplorer());
 }
 
@@ -45,9 +45,37 @@ void ModuleManager::UpdateModules() {
 }
 
 void ModuleManager::UpdateModulesGui() {
-    for (auto& currentModule : this->moduleList) {
-        currentModule->OnGui();
+    ImGui::SetNextWindowSize({800, 900});
+    ImGui::Begin(XorStr("Asyllum").c_str());
+    ImGui::Columns(2, nullptr, false);
+    ImGui::SetColumnOffset(1, 150);
+
+    ImGui::BeginChild(XorStr("left").c_str());
+    for (int i = 0; i < this->moduleList.size(); i++) {
+        auto& module = this->moduleList.at(i);
+        if (ImGui::Button(module->GetName().c_str(), ImVec2(130, 60))) {
+            this->tab = i;
+        }
     }
+    ImGui::EndChild();
+
+    ImGui::NextColumn();
+    ImGui::BeginChild(XorStr("right").c_str(), ImVec2(0,0), true);
+    for (int i = 0; i < this->moduleList.size(); i++) {
+        auto& module = this->moduleList.at(i);
+        if (i == this->tab) {
+            module->OnGui();
+        }
+    }
+
+    if (this->tab == -1) {
+        ImGui::Text(XorStr("dev version.").c_str());
+    }
+
+
+    ImGui::EndChild();
+
+    ImGui::End();
 }
 
 void ModuleManager::OnExit() {

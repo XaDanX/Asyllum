@@ -16,7 +16,7 @@ namespace ObjectExplorerOptions {
 void ObjectExplorer::OnTick() {
     if (!ObjectExplorerOptions::drawObjects && !ObjectExplorerOptions::linesToObjects) return;
     auto localPlayerPos = locator->GetEngine()->WorldToScreen(locator->GetObjectManager()->GetLocalPlayer()->position);
-    for (auto& hero : locator->GetObjectManager()->GetHeroList()) {
+    for (auto hero : locator->GetObjectManager()->GetHeroList()) {
         auto pos = locator->GetEngine()->WorldToScreen(hero->position);
         auto drawList = ImGui::GetBackgroundDrawList();
         if (ObjectExplorerOptions::drawObjects) {
@@ -31,7 +31,7 @@ void ObjectExplorer::OnTick() {
             }
         }
     }
-    for (auto& minion : locator->GetObjectManager()->GetMinionList()) {
+    for (auto minion : locator->GetObjectManager()->GetMinionList()) {
         auto pos = locator->GetEngine()->WorldToScreen(minion->position);
         auto drawList = ImGui::GetBackgroundDrawList();
         if (ObjectExplorerOptions::drawObjects) {
@@ -46,7 +46,7 @@ void ObjectExplorer::OnTick() {
             }
         }
     }
-    for (auto& turret : locator->GetObjectManager()->GetTurretList()) {
+    for (auto turret : locator->GetObjectManager()->GetTurretList()) {
         auto pos = locator->GetEngine()->WorldToScreen(turret->position);
         auto drawList = ImGui::GetBackgroundDrawList();
         if (ObjectExplorerOptions::drawObjects) {
@@ -68,46 +68,64 @@ void ObjectExplorer::OnLoad() {
 }
 
 void ObjectExplorer::OnGui() {
-    ImGui::Begin(XorStr("ObjectExplorer").c_str());
+    //ImGui::Begin(XorStr("ObjectExplorer").c_str());
     ImGui::Checkbox(XorStr("Draw Objects").c_str(), &ObjectExplorerOptions::drawObjects);
     ImGui::Checkbox(XorStr("Draw Lines To Objects").c_str(), &ObjectExplorerOptions::linesToObjects);
     ImGui::Separator();
     ImGui::Text(XorStr("Hero count: %i").c_str(), locator->GetObjectManager()->GetHeroList().size());
     ImGui::Text(XorStr("Minion count: %i").c_str(), locator->GetObjectManager()->GetMinionList().size());
     ImGui::Text(XorStr("Turret count: %i").c_str(), locator->GetObjectManager()->GetTurretList().size());
-    for (auto& hero : locator->GetObjectManager()->GetHeroList()) {
-        if (ImGui::TreeNode(&hero->networkId, XorStr("%s (%#010x)").c_str(), hero->name.c_str(), hero->networkId)) {
 
-            ImGui::SliderFloat(XorStr("Health").c_str(), &hero->health, 0, hero->maxHealth);
-            ImGui::SliderFloat(XorStr("Mana").c_str(), &hero->mana, 0, hero->maxMana);
-            ImGui::Text(XorStr("Position: %f:%f:%f").c_str(), hero->position.x, hero->position.y, hero->position.y);
+    ImGui::BeginTabBar(XorStr("ObjectManagerTab").c_str());
 
-            ImGui::TreePop();
+    if (ImGui::BeginTabItem(XorStr("Hero").c_str())) {
+        for (auto hero: locator->GetObjectManager()->GetHeroList()) {
+            if (ImGui::TreeNode(&hero->networkId, XorStr("%s (%#010x)").c_str(), hero->name.c_str(), hero->networkId)) {
+
+                ImGui::SliderFloat(XorStr("Health").c_str(), &hero->health, 0, hero->maxHealth);
+                ImGui::SliderFloat(XorStr("Mana").c_str(), &hero->mana, 0, hero->maxMana);
+                ImGui::Text(XorStr("Position: %f:%f:%f").c_str(), hero->position.x, hero->position.y, hero->position.y);
+
+                ImGui::TreePop();
+            }
         }
+        ImGui::EndTabItem();
     }
 
-    for (auto& minion : locator->GetObjectManager()->GetMinionList()) {
-        if (ImGui::TreeNode(&minion->networkId, XorStr("%s (%#010x)").c_str(), minion->name.c_str(), minion->networkId)) {
+    if (ImGui::BeginTabItem(XorStr("Minion").c_str())) {
+        for (auto minion: locator->GetObjectManager()->GetMinionList()) {
+            if (ImGui::TreeNode(&minion->networkId, XorStr("%s (%#010x)").c_str(), minion->name.c_str(),
+                                minion->networkId)) {
 
-            ImGui::SliderFloat(XorStr("Health").c_str(), &minion->health, 0, minion->maxHealth);
-            ImGui::SliderFloat(XorStr("Mana").c_str(), &minion->mana, 0, minion->maxMana);
-            ImGui::Text(XorStr("Position: %f:%f:%f").c_str(), minion->position.x, minion->position.y, minion->position.y);
+                ImGui::SliderFloat(XorStr("Health").c_str(), &minion->health, 0, minion->maxHealth);
+                ImGui::SliderFloat(XorStr("Mana").c_str(), &minion->mana, 0, minion->maxMana);
+                ImGui::Text(XorStr("Position: %f:%f:%f").c_str(), minion->position.x, minion->position.y,
+                            minion->position.y);
 
-            ImGui::TreePop();
+                ImGui::TreePop();
+            }
         }
+        ImGui::EndTabItem();
     }
 
-    for (auto& turret : locator->GetObjectManager()->GetTurretList()) {
-        if (ImGui::TreeNode(&turret->networkId, XorStr("%s (%#010x)").c_str(), turret->name.c_str(), turret->networkId)) {
+    if (ImGui::BeginTabItem(XorStr("Turret").c_str())) {
+        for (auto turret: locator->GetObjectManager()->GetTurretList()) {
+            if (ImGui::TreeNode(&turret->networkId, XorStr("%s (%#010x)").c_str(), turret->name.c_str(),
+                                turret->networkId)) {
 
-            ImGui::SliderFloat(XorStr("Health").c_str(), &turret->health, 0, turret->maxHealth);
-            ImGui::SliderFloat(XorStr("Mana").c_str(), &turret->mana, 0, turret->maxMana);
-            ImGui::Text(XorStr("Position: %f:%f:%f").c_str(), turret->position.x, turret->position.y, turret->position.y);
+                ImGui::SliderFloat(XorStr("Health").c_str(), &turret->health, 0, turret->maxHealth);
+                ImGui::SliderFloat(XorStr("Mana").c_str(), &turret->mana, 0, turret->maxMana);
+                ImGui::Text(XorStr("Position: %f:%f:%f").c_str(), turret->position.x, turret->position.y,
+                            turret->position.y);
 
-            ImGui::TreePop();
+                ImGui::TreePop();
+            }
         }
+        ImGui::EndTabItem();
     }
 
+    ImGui::EndTabBar();
 
-    ImGui::End();
+
+    //ImGui::End();
 }

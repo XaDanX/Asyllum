@@ -9,6 +9,7 @@
 #include "../Protection/XorStr.h"
 #include "Objects/ObjectBase.h"
 #include "Locator/Locator.h"
+#include "../Utils/Utils.h"
 #include <filesystem>
 
 namespace {
@@ -24,6 +25,8 @@ bool Asyllum::Initialize() {
 
     locator->GetModuleManager()->Initialize();
 
+    Sleep(500);
+
     locator->GetConsole()->Print(XorStr("Initialized!").c_str());
     return true;
 }
@@ -33,6 +36,7 @@ bool Asyllum::Initialize() {
 void Asyllum::OnGui() {
     locator->GetModuleManager()->UpdateModulesGui();
     locator->GetConsole()->Render();
+
 }
 
 void Asyllum::OnTick() {

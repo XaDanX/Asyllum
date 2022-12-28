@@ -52,3 +52,9 @@ bool ObjectBase::CompareObjectFlags(int a2) {
     return (v12 & a2) != 0;
 
 }
+
+
+bool ObjectBase::IsOnScreen(float offsetX, float offsetY) {
+    auto point = locator->GetEngine()->WorldToScreen(this->position);
+    return point.x > -offsetX && point.x < (locator->GetEngine()->WindowWidth() + offsetX) && point.y > -offsetY && point.y < (locator->GetEngine()->WindowHeight() + offsetY);
+}

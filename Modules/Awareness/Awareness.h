@@ -2,8 +2,8 @@
 // Created by XaDanX on 12/10/2022.
 //
 
-#ifndef ASYLLUM_SPELLTRACKER_H
-#define ASYLLUM_SPELLTRACKER_H
+#ifndef ASYLLUM_AWARENESS_H
+#define ASYLLUM_AWARENESS_H
 
 
 #include "../../Asyllum/Core/Managers/ModuleManager/Module.h"
@@ -11,9 +11,7 @@
 #include "../../Asyllum/imgui/imgui.h"
 #include "../../Asyllum/Core/Objects/Hero/SpellBook/SpellSlot.h"
 
-class SpellTracker : public Module {
-private:
-    void DrawSpell(SpellSlot* spellSlot, ImVec2 pos);
+class Awareness : public Module {
 public:
     void OnTick();
 
@@ -23,8 +21,8 @@ public:
 
     std::string ModuleType() {return XorStr("utility"); };
 
-    std::string GetName() {return XorStr("SpellTracker");};
+    std::string GetName() {return XorStr("Awareness");};
 };
 
 
-#endif //ASYLLUM_SPELLTRACKER_H
+#endif //ASYLLUM_AWARENESS_H
