@@ -9,14 +9,20 @@
 #include "../ObjectBase.h"
 #include "AiManager/AiManager.h"
 #include "SpellBook/SpellSlot.h"
+#include "BuffManager/BuffManager.h"
 
-class Hero : public ObjectBase {
+class Hero : public ObjectBase { // TODO: Active spell / IsCasting flag
 public:
     Vector2 GetHealthBarPosition();
     UnitInfo* GetUnitInfo();
     AiManager* GetAiManager();
+    BuffManager* GetBuffManager();
 
     SpellSlot* GetSpellSlotById(int id);
+
+    float GetTotalAttackSpeed();
+
+    bool IsLethalTempoActive();
 
 };
 

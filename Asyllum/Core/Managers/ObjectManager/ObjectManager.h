@@ -17,6 +17,7 @@ public:
     std::vector<Minion*> GetMinionList();
     std::vector<Turret*> GetTurretList();
     Hero* GetLocalPlayer();
+    //TODO: Missile list
 };
 
 

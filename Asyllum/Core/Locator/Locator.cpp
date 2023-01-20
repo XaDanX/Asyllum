@@ -67,3 +67,10 @@ Renderer *Locator::GetRenderer() {
     }
     return renderer.get();
 }
+
+Controller *Locator::GetController() {
+    if (!controller) {
+        controller = std::make_unique<Controller>();
+    }
+    return controller.get();
+}

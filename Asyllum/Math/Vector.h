@@ -18,7 +18,7 @@ struct Vector2 {
     float y{};
 
     [[nodiscard]] float length() const {
-        return static_cast<float>(sqrt(x*x + y * y));
+        return static_cast<float>(sqrt((x*x) + (y * y)));
     }
 
     [[nodiscard]] float distance(const Vector2& o) const {

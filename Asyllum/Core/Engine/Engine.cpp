@@ -6,6 +6,8 @@
 #include "../../Globals/Offsets.h"
 #include "../../Globals/Globals.h"
 #include "../../Math/Math.h"
+#include "../../Protection/LazyImporter.h"
+#include <sysinfoapi.h>
 
 float Engine::GameTime() const {
     return *reinterpret_cast<float*>(RVA((unsigned int)Offsets::Game::GameTime));
@@ -53,4 +55,38 @@ void Engine::Update() {
 
 HudInstance* Engine::GetHudInstance() {
     return *reinterpret_cast<HudInstance**>(RVA(Offsets::Game::HudInstance));
+}
+
+float Engine::GetProcessorTime() {
+    return static_cast<float>(LI_FN(GetTickCount).get()());
+}
+
+DWORD __cdecl Engine::CollisionFlag(float a1, float a2, float a3) {
+    auto collisionFlag = *reinterpret_cast<DWORD*>(RVA(Offsets::Functions::IsNotWall));
+
+    auto world = *reinterpret_cast<DWORD*>(collisionFlag + 0x4);
+    auto fOffsetX = *reinterpret_cast<float*>(world + 0x64);
+    auto fOffsetZ = *reinterpret_cast<float*>(world + 0x6C);
+    auto fCellScale = *reinterpret_cast<float*>(world + 0x5AC);
+
+    int x = (int)(((a1 - fOffsetX) * fCellScale));
+    int y = (int)(((a3 - fOffsetZ) * fCellScale));
+
+    auto target = *reinterpret_cast<unsigned int*>(world + 0x80);
+    unsigned int target2 = target + 0x8 * (*reinterpret_cast<unsigned int*>(world + 0x5A0) * y + x);
+    auto target3 = *reinterpret_cast<unsigned int*>(target2);
+    unsigned short flag;
+
+    if (target3 != 0) {
+        flag = *reinterpret_cast<unsigned short*>(target3 + 0x6);
+    }
+    else {
+        flag = *reinterpret_cast<unsigned short*>(target2 + 0x4);
+    }
+
+    return flag;
+}
+
+bool Engine::IsNotWall(Vector3 pos) {
+    return !(CollisionFlag(pos.x, pos.y, pos.z) & 2);
 }

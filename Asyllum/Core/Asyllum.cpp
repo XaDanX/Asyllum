@@ -25,7 +25,18 @@ bool Asyllum::Initialize() {
 
     locator->GetModuleManager()->Initialize();
 
-    Sleep(500);
+    for (auto hero : locator->GetObjectManager()->GetHeroList()) {
+        auto info = hero->GetUnitInfo();
+        if (!Utils::IsValid(info)) {
+            locator->GetConsole()->Print(XorStr("Couldn't find unit data for: %s").c_str(), hero->name.c_str());
+        }
+        for (int index=0; index < 4; index++) {
+            auto spell = hero->GetSpellSlotById(index)->GetSpellInfo();
+            if (!Utils::IsValid(spell)) {
+                locator->GetConsole()->Print(XorStr("Couldn`t find spell data for: %s | with id: %i").c_str(), hero->name.c_str(), index);
+            }
+        }
+    }
 
     locator->GetConsole()->Print(XorStr("Initialized!").c_str());
     return true;
@@ -42,6 +53,7 @@ void Asyllum::OnGui() {
 void Asyllum::OnTick() {
     locator->GetEngine()->Update();
     locator->GetModuleManager()->UpdateModules();
+    locator->GetController()->Update();
 
 }
 

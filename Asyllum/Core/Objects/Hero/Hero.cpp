@@ -4,7 +4,7 @@
 
 #include "Hero.h"
 #include "../../Locator/Locator.h"
-#include "../../Helpers/StringUtils.h"
+
 #include "../../../Utils/Utils.h"
 
 
@@ -25,8 +25,8 @@ Vector2 Hero::GetHealthBarPosition() {
 
     Vector2 out = locator->GetEngine()->WorldToScreen(point);
 
-    auto delta = (float)locator->GetEngine()->WindowHeight() * 0.00083333335f * (height * this->scale);
-    delta = (float)delta / zoomPercent;
+    float delta = (float)locator->GetEngine()->WindowHeight() * 0.00083333335f * (height * this->scale);
+    delta = static_cast<float>(delta) / static_cast<float>(zoomPercent);
     out.y -= delta;
     out.x -= 70.0f;
     return out;
@@ -49,4 +49,31 @@ AiManager *Hero::GetAiManager() {
 
 SpellSlot *Hero::GetSpellSlotById(int id) {
     return reinterpret_cast<SpellSlot*>(*reinterpret_cast<int*>((DWORD)this + Offsets::GameObject::SpellBook + (0x4 * id)));
+}
+
+BuffManager *Hero::GetBuffManager() {
+    return reinterpret_cast<BuffManager*>((DWORD)this + Offsets::GameObject::BuffManager);
+}
+
+
+float Hero::GetTotalAttackSpeed() {
+    auto unitInfo = this->GetUnitInfo();
+    float attackSpeed = static_cast<float>((static_cast<float>(this->attackSpeedMultiplier) - 1.0) * unitInfo->attackSpeedRatio + unitInfo->baseAttackSpeed);
+    if (attackSpeed <= 2.5) {
+        return attackSpeed;
+    }
+    if (IsLethalTempoActive()) {
+        return attackSpeed;
+    }
+    return 2.5;
+}
+
+bool Hero::IsLethalTempoActive() {
+    for (auto buff : this->GetBuffManager()->GetBuffList()) {
+        std::string buffName(buff->scriptBaseBuff->name);
+        if (buffName.contains(XorStr("assets/perks/styles/precision/lethaltempo/lethaltempo.lua").c_str())) continue;
+        if (buff->stacks != 6) continue;
+        return true;
+    }
+    return false;
 }

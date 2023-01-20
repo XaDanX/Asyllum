@@ -7,6 +7,7 @@
 #include "../../../Protection/XorStr.h"
 #include "../../../../Modules/ObjectExplorer/ObjectExplorer.h"
 #include "../../../../Modules/Awareness/Awareness.h"
+#include "../../../../Modules/OrbWalker/OrbWalker.h"
 
 void ModuleManager::RegisterModule(Module* module) {
 
@@ -29,6 +30,7 @@ void ModuleManager::RegisterModules() {
     */
     this->RegisterModule(new Awareness());
     this->RegisterModule(new ObjectExplorer());
+    this->RegisterModule(new OrbWalker());
 }
 
 void ModuleManager::Initialize() {
@@ -51,7 +53,7 @@ void ModuleManager::UpdateModulesGui() {
     ImGui::SetColumnOffset(1, 150);
 
     ImGui::BeginChild(XorStr("left").c_str());
-    for (int i = 0; i < this->moduleList.size(); i++) {
+    for (int i = 0; i < static_cast<int>(this->moduleList.size()); i++) {
         auto& module = this->moduleList.at(i);
         if (ImGui::Button(module->GetName().c_str(), ImVec2(130, 60))) {
             this->tab = i;
@@ -61,7 +63,7 @@ void ModuleManager::UpdateModulesGui() {
 
     ImGui::NextColumn();
     ImGui::BeginChild(XorStr("right").c_str(), ImVec2(0,0), true);
-    for (int i = 0; i < this->moduleList.size(); i++) {
+    for (int i = 0; i < static_cast<int>(this->moduleList.size()); i++) {
         auto& module = this->moduleList.at(i);
         if (i == this->tab) {
             module->OnGui();

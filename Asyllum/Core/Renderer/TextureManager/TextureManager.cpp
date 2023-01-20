@@ -41,13 +41,20 @@ bool TextureManager::LoadTexture(std::string name, const char *filename) {
     return true;
 }
 
-IDirect3DTexture9* TextureManager::GetTexture(std::string name) {
-    auto it = this->textures[name];
-    if (it) {
-        return it;
-    } else {
-        return this->textures[XorStr("twitch_q")];
+IDirect3DTexture9* TextureManager::GetTexture(std::string substr) {
+    /*
+    for (const auto& [name, texture] : textures) {
+        if (name.find(substr) != std::string::npos) {
+            return texture;
+        }
     }
+    return nullptr;*/
+
+    auto it = textures.find(substr);
+    if (it != textures.end()) {
+        return it->second;
+    }
+    return nullptr;
 
 }
 
@@ -58,7 +65,6 @@ bool TextureManager::LoadDeployables() {
 
         if (filePath.extension() == XorStr(".png").c_str()) {
             std::string fileName = filePath.stem().string();
-
             LoadTexture(fileName, filePath.string().c_str());
         }
     }

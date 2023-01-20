@@ -6,6 +6,7 @@
 #define ASYLLUM_HUDINSTANCE_H
 #include "../../Globals/Globals.h"
 #include "../../Globals/Offsets.h"
+#include "../../Math/Vector.h"
 
 class ZoomInstance {
 public:
@@ -20,7 +21,13 @@ class HudInstance {
 public:
     union {
         DEFINE_MEMBER_N(ZoomInstance*, zoomInstance, Offsets::HudInstance::ZoomInstance);
+        DEFINE_MEMBER_N(Vector3, cursorWorldPos, Offsets::HudInstance::CursorWorldPos);
+        DEFINE_MEMBER_N(int, focus, Offsets::HudInstance::Focus);
     };
+
+    bool IsFocused() {
+        return focus == 0x1;
+    }
 };
 
 

@@ -45,8 +45,10 @@ public:
         DEFINE_MEMBER_N(float, maxHealth, (unsigned int)Offsets::GameObject::MaxHealth);
         DEFINE_MEMBER_N(LolString, name, (unsigned int)Offsets::GameObject::Name);
         DEFINE_MEMBER_N(float, attackRange, (unsigned int)Offsets::GameObject::AttackRange);
-        DEFINE_MEMBER_N(float, scale, (unsigned int)0x1838);
+        DEFINE_MEMBER_N(float, scale, (unsigned int)Offsets::GameObject::Scale);
         DEFINE_MEMBER_N(bool, targetable, (unsigned int)Offsets::GameObject::Targetable);
+        DEFINE_MEMBER_N(float, attackSpeedMultiplier, Offsets::GameObject::AttackSpeedMultiplier);
+        DEFINE_MEMBER_N(LolString, playerName, (unsigned int)Offsets::GameObject::PlayerName);
     };
 
 private:
@@ -83,6 +85,11 @@ public:
         return reinterpret_cast<int>(this) == *reinterpret_cast<int*>(Globals::baseAddress + Offsets::Game::LocalPlayer);
     }
 
+    bool IsWard() {
+        return this->maxHealth < 6 && this->maxMana < 150 && (this->name.str().contains(XorStr("BlueTrinket").c_str())
+        || this->name.str().contains(XorStr("YellowTrinket").c_str()) || this->name.str().contains(XorStr("JammerDevice").c_str()));
+    }
+
     template <class T>
     bool IsAllyTo(T obj) {
         return this->team == obj->team;
@@ -91,6 +98,11 @@ public:
     template <class T>
     bool IsEnemyTo(T obj) {
         return this->team != obj->team;
+    }
+
+    template <class T>
+    float DistanceTo(T obj) {
+        return sqrt(powf((this->position.x - obj->position.x), 2) + powf((this->position.y - obj->position.y), 2) + powf((this->position.z - obj->position.z), 2));
     }
 
     bool IsOnScreen(float offsetX=0, float offsetY=0);

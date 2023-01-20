@@ -7,6 +7,7 @@
 #include "../../kiero/kiero.h"
 #include "Helpers.h"
 #include "../../kiero/minhook/include/MinHook.h"
+#include "FakeMouse.h"
 
 
 bool HookingService::Initialize() {
@@ -17,7 +18,8 @@ bool HookingService::Initialize() {
         {
             kiero::bind(16, (void**)&oReset, DirectX::hkReset);
             kiero::bind(42, (void**)&oEndScene, DirectX::hkEndScene);
-            //kiero::bind(17, (void**)&oPresent, DirectX::hkPresent);
+            FakeMouse::Init();
+            kiero::bind(17, (void**)&oPresent, DirectX::hkPresent);
             do {
                 this->window = HookingHelper::GetProcessWindow();
             } while (window == NULL);

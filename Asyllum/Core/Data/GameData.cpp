@@ -88,12 +88,26 @@ void GameData::LoadSpellData(std::string& path) {
     std::ifstream file(path);
 
     if (!file.is_open()) {
-        //logger->Error(XorStr("Couldn't open file!").c_str());
         return;
     }
 
     json j;
     file >> j;
+
+    SpellInfo* flash = new SpellInfo();
+    flash->name = StringUtils::ToLower(std::string(XorStr("SummonerFlash").c_str()));
+    flash->icon = StringUtils::ToLower(std::string(XorStr("SummonerFlash").c_str()));
+    Spells[flash->name] = flash;
+
+    SpellInfo* ghost = new SpellInfo();
+    ghost->name = StringUtils::ToLower(std::string(XorStr("summonerhaste").c_str()));
+    ghost->icon = StringUtils::ToLower(std::string(XorStr("summonerhaste").c_str()));
+    Spells[ghost->name] = ghost;
+
+    SpellInfo* ignite = new SpellInfo();
+    ignite->name = StringUtils::ToLower(std::string(XorStr("summonerdot").c_str()));
+    ignite->icon = StringUtils::ToLower(std::string(XorStr("summonerignite").c_str()));
+    Spells[ignite->name] = ignite;
 
     for (auto spellObj : j) {
 

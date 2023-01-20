@@ -10,8 +10,18 @@
 #include "../../Asyllum/Protection/XorStr.h"
 #include "../../Asyllum/imgui/imgui.h"
 #include "../../Asyllum/Core/Objects/Hero/SpellBook/SpellSlot.h"
+#include "SpellTracker/SpellTracker.h"
+#include "WardTracker/WardTracker.h"
 
 class Awareness : public Module {
+private:
+    std::unique_ptr<SpellTracker> spellTracker = std::make_unique<SpellTracker>();
+    std::unique_ptr<WardTracker> wardTracker = std::make_unique<WardTracker>();
+
+    bool traceLines = true;
+    bool playerRanges = true;
+    bool enemyRanges = true;
+    bool lastSeen = true;
 public:
     void OnTick();
 

@@ -4,6 +4,8 @@
 #ifndef ASYLLUM_HOOKINGSERVICE_H
 #define ASYLLUM_HOOKINGSERVICE_H
 #include <d3d9.h>
+#include <iostream>
+#include "FakeMouse.h"
 
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

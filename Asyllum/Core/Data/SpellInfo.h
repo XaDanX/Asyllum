@@ -10,20 +10,20 @@
 #include <array>
 class SpellInfo {
 public:
-    std::string name;
-    std::string parent;
-    std::string icon;
-    float castTime;
-    float castRange;
-    float castRadius;
-    float castConeAngle;
-    float castConeDistance;
-    float width;
-    float height;
-    float speed;
-    float travelTime;
-    float delay;
-    bool projectDestination;
+    std::string name = "";
+    std::string parent = "";
+    std::string icon = "";
+    float castTime = 0;
+    float castRange = 0;
+    float castRadius = 0;
+    float castConeAngle = 0;
+    float castConeDistance = 0;
+    float width = 0;
+    float height = 0;
+    float speed = 0;
+    float travelTime = 0;
+    float delay = 0;
+    bool projectDestination = false;
 
 };
 

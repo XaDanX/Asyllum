@@ -14,6 +14,7 @@ private:
     ImDrawList* drawList = ImGui::GetBackgroundDrawList();
 public:
     void Text(const Vector2& pos, const char* text, const ImVec4& color);
+    void DrawCircleAt(const Vector3& worldPos, float radius, bool filled, int numPoints, ImColor color, float thickness);
 };
 
 

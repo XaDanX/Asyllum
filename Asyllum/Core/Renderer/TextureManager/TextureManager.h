@@ -10,6 +10,7 @@
 #include <map>
 #include <string>
 #include <filesystem>
+#include <unordered_map>
 
 namespace fs = std::filesystem;
 namespace {
@@ -18,12 +19,12 @@ namespace {
 
 class TextureManager {
 private:
-    std::map<std::string, IDirect3DTexture9*> textures;
+    std::unordered_map<std::string, IDirect3DTexture9*> textures;
     bool LoadTextureFromFile(const char* filename, PDIRECT3DTEXTURE9* out_texture, int* out_width, int* out_height);
 
 public:
     bool LoadTexture(std::string name, const char *filename);
-    IDirect3DTexture9* GetTexture(std::string  name);
+    IDirect3DTexture9* GetTexture(std::string substr);
 
     bool LoadDeployables();
 

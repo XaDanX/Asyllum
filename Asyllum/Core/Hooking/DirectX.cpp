@@ -123,12 +123,12 @@ long DirectX::hkEndScene(LPDIRECT3DDEVICE9 pDevice) {
 
 
             std::chrono::duration<float, std::milli> updateTime = std::chrono::high_resolution_clock::now() - timeBegin;
-            /*
+
             ImGui::Begin(XorStr("DEBUG INFO").c_str(), 0,
                          ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
                          ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoTitleBar);
             ImGui::Text(XorStr("Update: %f ms").c_str(), static_cast<float>(updateTime.count()));
-            ImGui::End();*/
+            ImGui::End();
         }
         ImGui::EndFrame();
         ImGui::Render();

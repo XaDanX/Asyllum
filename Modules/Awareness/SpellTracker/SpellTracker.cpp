@@ -25,15 +25,19 @@ void SpellTracker::DrawSpell(SpellSlot *spellSlot, ImVec2 pos) {
                                      std::to_string(spellSlot->GetCooldown()).c_str(),
                                      ImVec4(255, 255, 255, 255));
     }
-    pos.y += 28;
-    pos.x += 5;
-    for (int level = 0; level < spellSlot->level; level++) {
-        ImGui::GetBackgroundDrawList()->AddCircleFilled(pos, 2, ImColor(240, 171, 10, 255));
-        pos.x += 4;
+
+    if (this->drawLevel) {
+        pos.y += 28;
+        pos.x += 5;
+        for (int level = 0; level < spellSlot->level; level++) {
+            ImGui::GetBackgroundDrawList()->AddCircleFilled(pos, 2, ImColor(240, 171, 10, 255));
+            pos.x += 4;
+        }
     }
 }
 
 void SpellTracker::DrawSpells(Hero *hero) {
+    if (!this->enabled) return;
     if (hero->IsDummy()) return;
     if (!hero->visibility) return;
     if (!hero->IsAlive()) return;
@@ -41,12 +45,14 @@ void SpellTracker::DrawSpells(Hero *hero) {
     if (!hero->IsOnScreen()) return;
 
     auto pos = hero->GetHealthBarPosition();
+    pos.y += 1;
     pos.x += 24;
-    pos.y -= 2.0;
     auto q_spell = hero->GetSpellSlotById(0);
     auto w_spell = hero->GetSpellSlotById(1);
     auto e_spell = hero->GetSpellSlotById(2);
     auto r_spell = hero->GetSpellSlotById(3);
+    auto d_spell = hero->GetSpellSlotById(4);
+    auto f_spell = hero->GetSpellSlotById(5);
     if (Utils::IsValid(q_spell) && Utils::IsValid(w_spell) && Utils::IsValid(e_spell) && Utils::IsValid(r_spell)) {
         DrawSpell(q_spell, ImVec2(pos.x, pos.y));
         pos.x += 25;
@@ -55,5 +61,16 @@ void SpellTracker::DrawSpells(Hero *hero) {
         DrawSpell(e_spell, ImVec2(pos.x, pos.y));
         pos.x += 25;
         DrawSpell(r_spell, ImVec2(pos.x, pos.y));
+        pos.x += 40;
+        pos.y -= 28;
+        DrawSpell(d_spell, ImVec2(pos.x, pos.y));
+        pos.x += 25;
+        DrawSpell(f_spell, ImVec2(pos.x, pos.y));
     }
+}
+
+void SpellTracker::DrawGui() {
+    ImGui::Checkbox(XorStr("Enabled").c_str(), &this->enabled);
+    ImGui::Checkbox(XorStr("Draw level").c_str(), &this->drawLevel);
+
 }
