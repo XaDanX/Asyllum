@@ -1,16 +1,14 @@
 //
-// Created by XaDanX on 12/30/2022.
+// Created by XaDanX on 1/28/2023.
 //
 
 #ifndef ASYLLUM_ORBWALKER_H
 #define ASYLLUM_ORBWALKER_H
-#include "../../Asyllum/Core/Managers/ModuleManager/Module.h"
-#include "../../Asyllum/Protection/XorStr.h"
 
+
+#include "../../Asyllum/Core/Managers/ModuleManager/Module.h"
 
 class OrbWalker : public Module {
-private:
-    bool enabled = false;
 public:
     void OnTick();
 

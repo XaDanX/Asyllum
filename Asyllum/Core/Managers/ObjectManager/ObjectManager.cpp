@@ -4,6 +4,10 @@
 
 #include "ObjectManager.h"
 #include "Template.h"
+#include "../../../Utils/Utils.h"
+#include "../../Locator/Locator.h"
+#include <queue>
+#include <set>
 
 std::vector<Hero*> ObjectManager::GetHeroList() {
     return Template::ReadTemplate<Hero*>(RVA(Offsets::Templates::HeroTemplate));
@@ -20,3 +24,4 @@ std::vector<Minion *> ObjectManager::GetMinionList() {
 std::vector<Turret *> ObjectManager::GetTurretList() {
     return Template::ReadTemplate<Turret*>(RVA(Offsets::Templates::TurretTemplate));
 }
+

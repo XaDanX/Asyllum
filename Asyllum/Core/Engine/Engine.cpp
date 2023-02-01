@@ -7,6 +7,9 @@
 #include "../../Globals/Globals.h"
 #include "../../Math/Math.h"
 #include "../../Protection/LazyImporter.h"
+#include "../Locator/Locator.h"
+#include "../../Utils/Utils.h"
+#include "../Managers/EventManager/Event.h"
 #include <sysinfoapi.h>
 
 float Engine::GameTime() const {
@@ -51,6 +54,7 @@ void Engine::Update() {
     memcpy(&Globals::viewMatrix, (void*)RVA(Offsets::Game::ViewProjMatrices), 16 * sizeof(float));
     memcpy(&Globals::projectionMatrix, (void*)RVA(Offsets::Game::ViewProjMatrices + (16 * sizeof(float))), 16 * sizeof(float));
     MultiplySquareMatrices(Globals::viewProjectionMatrix, Globals::viewMatrix, Globals::projectionMatrix);
+    ProcessSpells();
 }
 
 HudInstance* Engine::GetHudInstance() {
@@ -89,4 +93,72 @@ DWORD __cdecl Engine::CollisionFlag(float a1, float a2, float a3) {
 
 bool Engine::IsNotWall(Vector3 pos) {
     return !(CollisionFlag(pos.x, pos.y, pos.z) & 2);
+}
+
+void Engine::ProcessSpells() {
+
+    auto localPlayer = locator->GetObjectManager()->GetLocalPlayer();
+
+    for (auto& caster : locator->GetObjectManager()->GetHeroList()) {
+
+        //if (caster->IsLocalPlayer() || caster->IsAllyTo<Hero*>(localPlayer)) continue; // catching only enemy spells.
+
+        auto activeSpellCast = caster->GetSpellCast();
+
+        if (!Utils::IsValid(activeSpellCast)) continue;
+
+        if (activeSpellCast->spellSlot == -1) {
+            Event::OnAutoAttack eventArgs{};
+            eventArgs.caster = caster;
+            eventArgs.destIndex = 0; // TODO:: ADD DESTINATION INDEX
+            locator->GetEventManager()->Publish<Event::OnAutoAttack>(eventArgs);
+            return;
+
+        } else if (activeSpellCast->spellSlot >= 0 && activeSpellCast->spellSlot <= 3) {
+            Spell spell = Spell();
+            spell.spellSlot = activeSpellCast->spellSlot;
+            spell.startPos = activeSpellCast->startPos;
+            spell.name = activeSpellCast->GetName();
+            spell.endPos = activeSpellCast->endPos;
+            spell.startTime = activeSpellCast->startTime;
+            spell.endTime = activeSpellCast->endTime;
+            spell.castTime = activeSpellCast->castTime;
+            spell.caster = caster;
+            spell.destIndex = 0; // TODO:: ADD DESTINATION INDEX
+            spell.spellInfo = nullptr;
+
+            auto spellInfo = locator->GetGameData()->GetSpellInfoByName(spell.name);
+            if (Utils::IsValid(spellInfo)) {
+                spell.spellInfo = spellInfo;
+
+                // project end positionusing the range of the spell
+                if (spellInfo->projectDestination) {
+                    //spell.startPos.y += spellInfo->height;
+
+                    spell.endPos = Vector3(spell.endPos.x - spell.startPos.x, 0, spell.endPos.z - spell.startPos.z);
+                    spell.endPos = spell.endPos.normalize();
+
+                    spell.endPos.x = spell.endPos.x * spellInfo->castRange + spell.startPos.x;
+                    spell.endPos.y = spell.startPos.y;
+                    spell.endPos.z = spell.endPos.z * spellInfo->castRange + spell.startPos.z;
+                }
+            }
+
+            Event::OnSpellCast eventArgs{};
+            eventArgs.caster = caster;
+            eventArgs.spell = spell;
+
+            locator->GetEventManager()->Publish<Event::OnSpellCast>(eventArgs);
+            return;
+
+        } else if (activeSpellCast->spellSlot == 13) {
+            Event::OnRecall eventArgs{};
+            eventArgs.caster = caster;
+            eventArgs.startTime = activeSpellCast->startTime;
+            locator->GetEventManager()->Publish<Event::OnRecall>(eventArgs);
+        }
+
+
+    }
+
 }

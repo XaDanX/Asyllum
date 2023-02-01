@@ -5,6 +5,8 @@
 #ifndef ASYLLUM_FAKEMOUSE_H
 #define ASYLLUM_FAKEMOUSE_H
 #include <Windows.h>
+#include <functional>
+#include "../../Math/Vector.h"
 
 typedef BOOL(WINAPI* GetCursorPosFunc)(LPPOINT lpPoint);
 
@@ -16,8 +18,7 @@ public:
 
     static bool Enabled;
 
-    static int xPos;
-    static int yPos;
+    static std::function<Vector2()> FakePositionGetter;
 
     static void Spoof();
 

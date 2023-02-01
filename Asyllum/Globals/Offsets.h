@@ -56,7 +56,7 @@ namespace Offsets {
     namespace GameObject {
         constexpr std::uint32_t Index {0x8}; //
         constexpr std::uint32_t Team {0x34}; //
-        constexpr std::uint32_t PlayerName {0x54};
+        constexpr std::uint32_t PlayerName {0xB8};
         constexpr std::uint32_t NetworkId {0xB4}; //
         constexpr std::uint32_t Position {0x1DC}; //
         constexpr std::uint32_t Visibility {0x274}; //
@@ -70,11 +70,24 @@ namespace Offsets {
         constexpr std::uint32_t AttackRange {0x13A4};
         constexpr std::uint32_t Targetable {0xD04};
         constexpr std::uint32_t AiManager {0x2E94};
+        constexpr std::uint32_t SpellCast {0x2528};
         constexpr std::uint32_t SpellBook {0x29D0};
         constexpr std::uint32_t BuffManager {0x2340};
         constexpr std::uint32_t AttackSpeedMultiplier {0x1358};
         constexpr std::uint32_t Scale {0x1838};
 
+    }
+
+    namespace SpellCast {
+        constexpr std::uint32_t SpellData {0x8};
+        constexpr std::uint32_t SpellName {0x18};
+        constexpr std::uint32_t SpellSlot {0xC};
+        constexpr std::uint32_t CastTime {0x10};
+        constexpr std::uint32_t StartPos {0x88};
+        constexpr std::uint32_t EndPos {0x94};
+        constexpr std::uint32_t EndPosAlt {0xA0};
+        constexpr std::uint32_t StartTime {0x144};
+        constexpr std::uint32_t EndTime {0x148};
     }
 
     namespace BuffManager {

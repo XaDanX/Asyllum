@@ -1,0 +1,8 @@
+//
+// Created by XaDanX on 1/30/2023.
+//
+
+#ifndef ASYLLUM_EVADABLESPELL_H
+#define ASYLLUM_EVADABLESPELL_H
+
+#endif //ASYLLUM_EVADABLESPELL_H

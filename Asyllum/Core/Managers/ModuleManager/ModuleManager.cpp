@@ -5,8 +5,6 @@
 #include "ModuleManager.h"
 #include "../../Locator/Locator.h"
 #include "../../../Protection/XorStr.h"
-#include "../../../../Modules/ObjectExplorer/ObjectExplorer.h"
-#include "../../../../Modules/Awareness/Awareness.h"
 #include "../../../../Modules/OrbWalker/OrbWalker.h"
 
 void ModuleManager::RegisterModule(Module* module) {
@@ -28,9 +26,8 @@ void ModuleManager::RegisterModules() {
     /*
         Append all modules here
     */
-    this->RegisterModule(new Awareness());
-    this->RegisterModule(new ObjectExplorer());
     this->RegisterModule(new OrbWalker());
+
 }
 
 void ModuleManager::Initialize() {
@@ -43,6 +40,7 @@ void ModuleManager::Initialize() {
 void ModuleManager::UpdateModules() {
     for (auto &currentModule : this->moduleList) {
         currentModule->OnTick();
+        currentModule->input.UpdateIssuedOperations();
     }
 }
 

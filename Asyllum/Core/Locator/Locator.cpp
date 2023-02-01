@@ -68,9 +68,10 @@ Renderer *Locator::GetRenderer() {
     return renderer.get();
 }
 
-Controller *Locator::GetController() {
-    if (!controller) {
-        controller = std::make_unique<Controller>();
+EventManager *Locator::GetEventManager() {
+    if (!eventManager) {
+        eventManager = std::make_unique<EventManager>();
     }
-    return controller.get();
+    return eventManager.get();
 }
+

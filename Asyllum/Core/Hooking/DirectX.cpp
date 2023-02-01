@@ -18,10 +18,8 @@ std::mutex dxLock;
 
 extern bool init = false;
 
-
 long DirectX::hkEndScene(LPDIRECT3DDEVICE9 pDevice) {
     locator->GetHookingService()->SetDevice(pDevice);
-    auto timeBegin = std::chrono::high_resolution_clock::now();
     if (!init) {
         locator->GetTextureManager()->LoadDeployables();
         ImGui::CreateContext();
@@ -33,7 +31,7 @@ long DirectX::hkEndScene(LPDIRECT3DDEVICE9 pDevice) {
 
         style->Colors[ImGuiCol_Text] = ImVec4(0.80f, 0.80f, 0.83f, 1.00f);
         style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
-        style->Colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+        style->Colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.05f, 0.07f, 0.8f);
         style->Colors[ImGuiCol_PopupBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
         style->Colors[ImGuiCol_Border] = ImVec4(0.80f, 0.80f, 0.83f, 0.88f);
         style->Colors[ImGuiCol_BorderShadow] = ImVec4(0.92f, 0.91f, 0.88f, 0.00f);
@@ -66,6 +64,7 @@ long DirectX::hkEndScene(LPDIRECT3DDEVICE9 pDevice) {
         style->Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
         style->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
         style->Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(1.00f, 0.98f, 0.95f, 0.73f);
+        style->Colors[ImGuiCol_Border] = ImColor(135, 21, 161, 255);
 
         style->AntiAliasedLines = true;
         style->AntiAliasedFill = true;
@@ -122,13 +121,6 @@ long DirectX::hkEndScene(LPDIRECT3DDEVICE9 pDevice) {
             }
 
 
-            std::chrono::duration<float, std::milli> updateTime = std::chrono::high_resolution_clock::now() - timeBegin;
-
-            ImGui::Begin(XorStr("DEBUG INFO").c_str(), 0,
-                         ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
-                         ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoTitleBar);
-            ImGui::Text(XorStr("Update: %f ms").c_str(), static_cast<float>(updateTime.count()));
-            ImGui::End();
         }
         ImGui::EndFrame();
         ImGui::Render();

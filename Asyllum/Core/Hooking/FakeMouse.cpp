@@ -8,8 +8,7 @@
 
 bool FakeMouse::Enabled = false;
 GetCursorPosFunc FakeMouse::TrueGetCursorPos = GetCursorPos;
-int FakeMouse::xPos = 0;
-int FakeMouse::yPos = 0;
+std::function<Vector2()>  FakeMouse::FakePositionGetter;
 
 void FakeMouse::Init() {
 
@@ -34,16 +33,10 @@ BOOL __stdcall FakeMouse::HookedGetCursorPos(LPPOINT lpPoint) {
 }
 
 BOOL __stdcall FakeMouse::SpoofedGetCursorPos(LPPOINT lpPoint) {
-    lpPoint->x = xPos;
-    lpPoint->y = yPos;
+    Vector2 v = FakeMouse::FakePositionGetter();
+    lpPoint->x = (LONG)v.x;
+    lpPoint->y = (LONG)v.y;
     return TRUE;
-}
-
-void FakeMouse::SetSpoofedCursorPos(int x, int y) {
-    xPos = x;
-    yPos = y;
-    FakeMouse::xPos = x;
-    FakeMouse::yPos = y;
 }
 
 void FakeMouse::UnSpoof()  {

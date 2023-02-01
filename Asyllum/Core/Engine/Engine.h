@@ -24,6 +24,8 @@ public:
     DWORD __cdecl CollisionFlag(float a1, float a2, float a3);
     bool IsNotWall(Vector3 pos);
 
+    void ProcessSpells();
+
 };
 
 

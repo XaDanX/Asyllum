@@ -10,6 +10,7 @@
 #include "AiManager/AiManager.h"
 #include "SpellBook/SpellSlot.h"
 #include "BuffManager/BuffManager.h"
+#include "SpellCast/SpellCast.h"
 
 class Hero : public ObjectBase { // TODO: Active spell / IsCasting flag
 public:
@@ -19,6 +20,8 @@ public:
     BuffManager* GetBuffManager();
 
     SpellSlot* GetSpellSlotById(int id);
+
+    SpellCast* GetSpellCast();
 
     float GetTotalAttackSpeed();
 

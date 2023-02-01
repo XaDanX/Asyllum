@@ -77,3 +77,10 @@ bool Hero::IsLethalTempoActive() {
     }
     return false;
 }
+
+SpellCast *Hero::GetSpellCast() {
+    if (!Utils::IsValid((void*)*reinterpret_cast<int*>((DWORD)this + Offsets::GameObject::SpellCast))) {
+        return nullptr;
+    }
+    return reinterpret_cast<SpellCast*>(*reinterpret_cast<int*>((DWORD)this + Offsets::GameObject::SpellCast));
+}

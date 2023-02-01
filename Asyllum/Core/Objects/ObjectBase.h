@@ -32,7 +32,7 @@ enum class ObjectTypeFlags {
 class ObjectBase {
 public:
     union {
-        DEFINE_MEMBER_N(short, index, (unsigned int)Offsets::GameObject::Index);
+        DEFINE_MEMBER_N(BYTE, index, (unsigned int)Offsets::GameObject::Index);
         DEFINE_MEMBER_N(short, team, (unsigned int)Offsets::GameObject::Team);
         DEFINE_MEMBER_N(int, networkId, (unsigned int)Offsets::GameObject::NetworkId);
         DEFINE_MEMBER_N(Vector3, position, (unsigned int)Offsets::GameObject::Position);

@@ -6,8 +6,11 @@
 #define ASYLLUM_MODULE_H
 
 #include <string>
+#include "../../Controller/Controller.h"
 
 class Module {
+public:
+    InputController input;
 public:
     virtual void OnTick() = 0;
 
