@@ -1,7 +1,3 @@
-//
-// Created by XaDanX on 12/1/2022.
-//
-
 #ifndef ASYLLUM_DIRECTX_H
 #define ASYLLUM_DIRECTX_H
 #include <d3d9.h>

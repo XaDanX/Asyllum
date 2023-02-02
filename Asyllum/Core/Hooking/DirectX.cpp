@@ -1,7 +1,3 @@
-//
-// Created by XaDanX on 12/1/2022.
-//
-
 #include <thread>
 #include "DirectX.h"
 #include "../../imgui/imgui.h"
@@ -12,8 +8,6 @@
 #include "../../Protection/XorStr.h"
 #include "../Locator/Locator.h"
 
-
-std::mutex dxLock;
 
 
 extern bool init = false;
@@ -98,43 +92,98 @@ long DirectX::hkEndScene(LPDIRECT3DDEVICE9 pDevice) {
         init = true;
     }
 
-        if (GetAsyncKeyState(VK_INSERT) & 1) {
-            locator->GetHookingService()->isMenuOpen = !locator->GetHookingService()->isMenuOpen;
-        }
-
-        ImGui_ImplDX9_NewFrame();
-        ImGui_ImplWin32_NewFrame();
-        ImGui::NewFrame();
-        if (locator->GetAsyllumInstance()->initialized) {
-            locator->GetAsyllumInstance()->OnTick();
-            if (locator->GetHookingService()->isMenuOpen) {
-                locator->GetAsyllumInstance()->OnGui();
-
-                ImGui::Begin(XorStr("Panic menu").c_str(), 0,
-                        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
-                        ImGuiWindowFlags_NoScrollWithMouse);
-                if (ImGui::Button(XorStr("Unload").c_str())) {
-                    locator->GetHookingService()->UnHook();
-                }
-                ImGui::End();
-
-            }
-
-
-        }
-        ImGui::EndFrame();
-        ImGui::Render();
-        ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
-
-        if (!locator->GetHookingService()->isHooked) {
-            kiero::shutdown();
-            (WNDPROC) SetWindowLongPtr(locator->GetHookingService()->GetWindow(), GWLP_WNDPROC,
-                                       (LONG_PTR) (locator->GetHookingService()->GetOriginalWndProc()));
-            locator->GetHookingService()->GetOriginalEndScene()(pDevice);
-            return 0;
-
-        }
+    IDirect3DStateBlock9* dxStateBlock = NULL;
+    if (locator->GetHookingService()->GetDevice()->CreateStateBlock(D3DSBT_ALL, &dxStateBlock) < 0) {
         return locator->GetHookingService()->GetOriginalEndScene()(pDevice);
+    }
+
+    D3DMATRIX last_world, last_view, last_projection;
+    locator->GetHookingService()->GetDevice()->GetTransform(D3DTS_WORLD, &last_world);
+    locator->GetHookingService()->GetDevice()->GetTransform(D3DTS_VIEW, &last_view);
+    locator->GetHookingService()->GetDevice()->GetTransform(D3DTS_PROJECTION, &last_projection);
+
+    D3DVIEWPORT9 vp;
+    vp.X = vp.Y = 0;
+    vp.Width = locator->GetEngine()->WindowWidth();
+    vp.Height = locator->GetEngine()->WindowHeight();
+    vp.MinZ = 0.0f;
+    vp.MaxZ = 1.0f;
+    locator->GetHookingService()->GetDevice()->SetViewport(&vp);
+
+    locator->GetHookingService()->GetDevice()->SetPixelShader(NULL);
+    locator->GetHookingService()->GetDevice()->SetVertexShader(NULL);
+    locator->GetHookingService()->GetDevice()->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+    locator->GetHookingService()->GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
+    locator->GetHookingService()->GetDevice()->SetRenderState(D3DRS_ZENABLE, FALSE);
+    locator->GetHookingService()->GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    locator->GetHookingService()->GetDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+    locator->GetHookingService()->GetDevice()->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+    locator->GetHookingService()->GetDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    locator->GetHookingService()->GetDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    locator->GetHookingService()->GetDevice()->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
+    locator->GetHookingService()->GetDevice()->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
+    locator->GetHookingService()->GetDevice()->SetRenderState(D3DRS_FOGENABLE, FALSE);
+    locator->GetHookingService()->GetDevice()->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    locator->GetHookingService()->GetDevice()->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    locator->GetHookingService()->GetDevice()->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+    locator->GetHookingService()->GetDevice()->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+    locator->GetHookingService()->GetDevice()->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    locator->GetHookingService()->GetDevice()->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+    locator->GetHookingService()->GetDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+    locator->GetHookingService()->GetDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+
+    static const D3DMATRIX identityMatrix = { { { 1.0f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,  0.0f, 0.0f, 1.0f, 0.0f,  0.0f, 0.0f, 0.0f, 1.0f } } };
+
+    locator->GetHookingService()->GetDevice()->SetTransform(D3DTS_WORLD, &identityMatrix);
+    locator->GetHookingService()->GetDevice()->SetTransform(D3DTS_VIEW, (D3DMATRIX*)&Globals::viewMatrix[0]);
+    locator->GetHookingService()->GetDevice()->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)&Globals::projectionMatrix[0]);
+
+
+    if (GetAsyncKeyState(VK_INSERT) & 1) {
+        locator->GetHookingService()->isMenuOpen = !locator->GetHookingService()->isMenuOpen;
+    }
+
+    ImGui_ImplDX9_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+    if (locator->GetAsyllumInstance()->initialized) {
+        locator->GetAsyllumInstance()->OnTick();
+        if (locator->GetHookingService()->isMenuOpen) {
+            locator->GetAsyllumInstance()->OnGui();
+
+            ImGui::Begin(XorStr("Panic menu").c_str(), 0,
+                         ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
+                         ImGuiWindowFlags_NoScrollWithMouse);
+            if (ImGui::Button(XorStr("Unload").c_str())) {
+                locator->GetHookingService()->UnHook();
+            }
+            ImGui::End();
+
+        }
+
+
+    }
+    ImGui::EndFrame();
+    ImGui::Render();
+    ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+    locator->GetHookingService()->GetDevice()->SetTransform(D3DTS_WORLD, &last_world);
+    locator->GetHookingService()->GetDevice()->SetTransform(D3DTS_VIEW, &last_view);
+    locator->GetHookingService()->GetDevice()->SetTransform(D3DTS_PROJECTION, &last_projection);
+
+    dxStateBlock->Apply();
+    dxStateBlock->Release();
+
+    if (!locator->GetHookingService()->isHooked) {
+        kiero::shutdown();
+        (WNDPROC) SetWindowLongPtr(locator->GetHookingService()->GetWindow(), GWLP_WNDPROC,
+                                   (LONG_PTR) (locator->GetHookingService()->GetOriginalWndProc()));
+        locator->GetHookingService()->GetOriginalEndScene()(pDevice);
+        return 0;
+
+    }
+
+
+    return locator->GetHookingService()->GetOriginalEndScene()(pDevice);
 
 }
 
@@ -164,7 +213,7 @@ long __stdcall DirectX::hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS
 
 
 long __stdcall DirectX::hkPresent(IDirect3DDevice9Ex *pDevice, const RECT *pSourceRect, const RECT *pDestRect, HWND hDestWindowOverride,
-                   const RGNDATA *pDirtyRegion) {
+                                  const RGNDATA *pDirtyRegion) {
 
     return locator->GetHookingService()->GetOriginalPresent()(pDevice, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
 }

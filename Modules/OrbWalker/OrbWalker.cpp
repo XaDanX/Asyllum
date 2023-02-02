@@ -52,31 +52,21 @@ namespace OrbWalkerUtils {
 }
 
 
-#define COL_TO_D3COL(col) D3DCOLOR_ARGB((int)(col.w*255), (int)(col.x*255), (int)(col.y*255), (int)(col.z*255))
-
-struct Vertex {
-    float    pos[3];
-    D3DCOLOR col;
-    float    uv[2];
-};
 
 void OrbWalker::OnTick() {
-    auto image = locator->GetTextureManager()->GetTexture("circle1");
-    Vector3 pos = locator->GetObjectManager()->GetLocalPlayer()->position;
-    Vector2 size = Vector2(240, 240);
-    auto color = D3DCOLOR_ARGB(255, 255, 255, 255);
+    for (auto hero : locator->GetObjectManager()->GetHeroList()) {
+        auto radius = hero->GetUnitInfo()->gameplayRadius + hero->attackRange;
 
-    float halfX = size.x / 2.f;
-    float halfY = size.y / 2.f;
+        locator->GetRenderer()->DrawRiotCircle(hero->position, radius, ImColor(0, 255, 0, 255));
+        //locator->GetRenderer()->DrawCircleAt(hero->position, radius, false, 100, ImColor(0, 255, 0, 255), 1);
+    }
 
-    auto p1 = Vector3(pos.x - halfX, pos.y, pos.z + halfY);
-    auto p2 = Vector3(pos.x + halfX, pos.y, pos.z + halfY);
-    auto p3 = Vector3(pos.x + halfX, pos.y, pos.z - halfY);
-    auto p4 = Vector3(pos.x - halfX, pos.y, pos.z - halfY);
+    for (auto minion : locator->GetObjectManager()->GetMinionList()) {
+        auto radius = 46;
 
+        locator->GetRenderer()->DrawRiotCircle(minion->position, radius, ImColor(0, 255, 0, 255));
 
-
-
+    }
 
 
     /*
