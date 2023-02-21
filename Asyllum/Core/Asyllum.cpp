@@ -11,31 +11,10 @@
 #include "Locator/Locator.h"
 #include "../Utils/Utils.h"
 #include "Managers/EventManager/Event.h"
+#include "Data/GameKeybind.h"
 #include <filesystem>
 #include <format>
 #include <iostream>
-
-
-
-
-void TestEventManager(Event::OnSpellCast args) {
-    auto startPos = locator->GetEngine()->WorldToScreen(args.spell.startPos);
-    auto endPos = locator->GetEngine()->WorldToScreen(args.spell.endPos);
-
-    ImGui::GetBackgroundDrawList()->AddLine(ImVec2(startPos.x, startPos.y), ImVec2(endPos.x, endPos.y), ImColor(255, 255, 255, 255), 2);
-    ImGui::GetBackgroundDrawList()->AddCircle(ImVec2(startPos.x, startPos.y), args.spell.spellInfo->width / 2, ImColor(255, 0, 0, 255), 50);
-    ImGui::GetBackgroundDrawList()->AddCircle(ImVec2(endPos.x, endPos.y), args.spell.spellInfo->width / 2, ImColor(255, 0, 0, 255), 50);
-    endPos.y -= 10;
-    locator->GetRenderer()->Text(endPos, args.spell.name.c_str(), ImColor(255, 255, 255, 255));
-
-    if (!Utils::IsValid(args.spell.spellInfo)) {
-        locator->GetConsole()->Print("Invalid spell info for: %s", args.spell.name.c_str());
-    } else {
-        locator->GetConsole()->Print("Casted: %s", args.spell.name.c_str());
-    }
-
-}
-
 
 namespace {
     std::string deployablePath(XorStr("C:\\Deployable").c_str());
@@ -46,28 +25,26 @@ bool Asyllum::Initialize() {
         Sleep(1000);
     }
 
-    locator->GetGameData()->Load(deployablePath);
-    locator->GetHookingService()->Initialize();
-
-    locator->GetModuleManager()->Initialize();
+    locator->GetGameData()->Load(deployablePath); // load data, icons
+    GameKeybind::InitFromGameConfigs(); // load config
+    locator->GetHookingService()->Initialize(); // init hooks
 
     for (auto hero : locator->GetObjectManager()->GetHeroList()) {
         auto info = hero->GetUnitInfo();
         if (!Utils::IsValid(info)) {
-            locator->GetConsole()->Print(XorStr("Couldn't find unit data for: %s").c_str(), hero->name.c_str());
+            locator->GetConsole()->Print(XorStr("[CORE] Could not find unit data for: %s").c_str(), hero->name.c_str());
         }
         for (int index=0; index < 4; index++) {
             auto spell = hero->GetSpellSlotById(index)->GetSpellInfo();
             if (!Utils::IsValid(spell)) {
-                locator->GetConsole()->Print(XorStr("Couldn`t find spell data for: %s | with id: %i").c_str(), hero->name.c_str(), index);
+                locator->GetConsole()->Print(XorStr("[CORE] Could not find spell data for: %s | with id: %i").c_str(), hero->name.c_str(), index);
             }
         }
     }
+    
+    locator->GetModuleManager()->Initialize();
 
-    locator->GetConsole()->Print(XorStr("Initialized!").c_str());
-
-    locator->GetEventManager()->Subscribe<Event::OnSpellCast>(&TestEventManager);
-
+    locator->GetConsole()->Print(XorStr("[CORE] Initialized!").c_str());
     return true;
 }
 
@@ -82,6 +59,7 @@ void Asyllum::OnTick() {
     auto timeBegin = std::chrono::high_resolution_clock::now();
     locator->GetEngine()->Update();
     locator->GetModuleManager()->UpdateModules();
+
 
     std::chrono::duration<float, std::milli> updateTime = std::chrono::high_resolution_clock::now() - timeBegin;
     ImGui::Begin(XorStr("DEBUG INFO").c_str(), 0,
@@ -100,9 +78,9 @@ void Asyllum::OnTick() {
         peakUpdateTime = static_cast<float>(updateTime.count());
 
 
-
 }
 
 
 void Asyllum::OnThreadTick() {
+
 }

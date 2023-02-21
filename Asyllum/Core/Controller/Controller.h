@@ -9,6 +9,7 @@
 #include "../../Globals/KeyCodes.h"
 #include "../../Math/Vector.h"
 #include "../Hooking/FakeMouse.h"
+#include "../Hooking/DirectInputHook.h"
 #include <windows.h>
 #include <chrono>
 #include <functional>
@@ -61,6 +62,7 @@ public:
 
     /// Checks if the key is held down
     bool    IsDown(HKey key);
+    bool    IsDown(int key);
 
     /// Checks if key was pressed in the last `lastMillis` milliseconds. This can have only one caller
     bool    WasPressed(HKey key, float lastMillis = 250.f);
@@ -157,14 +159,7 @@ public:
     }
 
     bool Update() {
-        INPUT ip;
-
-        ip.type = INPUT_KEYBOARD;
-        // Press the "A" key
-        ip.ki.wVk = MapVirtualKeyA(key, MAPVK_VSC_TO_VK); // virtual-key code for the "a" key
-        ip.ki.dwFlags = 0; // 0 for key press
-        SendInput(1, &ip, sizeof(INPUT));
-
+        DirectInputHook::QueueKey(key, true);
         return true;
     }
 
@@ -179,13 +174,7 @@ public:
     }
 
     bool Update() {
-        INPUT ip;
-
-        ip.type = INPUT_KEYBOARD;
-        // Press the "A" key
-        ip.ki.wVk = MapVirtualKeyA(key, MAPVK_VSC_TO_VK); // virtual-key code for the "a" key
-        ip.ki.dwFlags = KEYEVENTF_KEYUP; // 0 for key press
-        SendInput(1, &ip, sizeof(INPUT));
+        DirectInputHook::QueueKey(key, false);
         return true;
     }
 

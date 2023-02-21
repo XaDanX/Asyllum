@@ -16,7 +16,6 @@ class Hero : public ObjectBase { // TODO: Active spell / IsCasting flag
 public:
     Vector2 GetHealthBarPosition();
     UnitInfo* GetUnitInfo();
-    AiManager* GetAiManager();
     BuffManager* GetBuffManager();
 
     SpellSlot* GetSpellSlotById(int id);
@@ -26,6 +25,8 @@ public:
     float GetTotalAttackSpeed();
 
     bool IsLethalTempoActive();
+
+    void ForceVisibility();
 
 };
 

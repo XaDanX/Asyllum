@@ -20,6 +20,11 @@ public:
     float startTime;
     float endTime;
     SpellInfo* spellInfo;
+
+public:
+    float RemainingCastTime();
+    float RemainingCastTimeMath();
+    float TimeToCollision(Vector3 pos);
 };
 
 

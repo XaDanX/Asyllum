@@ -9,7 +9,7 @@
 namespace Offsets {
 
     namespace Functions {
-        constexpr std::uint32_t IsNotWall {0x18ade2c};
+        constexpr std::uint32_t IsNotWall {0x18d9e1c};
     }
 
     namespace SpellBook {
@@ -21,12 +21,12 @@ namespace Offsets {
     }
 
     namespace Game {
-        constexpr std::uint32_t HudInstance {0x18C6B24};//
-        constexpr std::uint32_t ViewProjMatrices {0x3189D00};//
-        constexpr std::uint32_t LocalPlayer{0x3163080};//
-        constexpr std::uint32_t GameTime {0x315CCF4}; //
+        constexpr std::uint32_t HudInstance {0x18D9AD4};//
+        constexpr std::uint32_t ViewProjMatrices {0x319CF18};//
+        constexpr std::uint32_t LocalPlayer{0x31767BC};//
+        constexpr std::uint32_t GameTime {0x316FDE4};//
         constexpr std::uint32_t ObjectManager {0x18A6ED8};
-        constexpr std::uint32_t Renderer {0x318F6A0};//
+        constexpr std::uint32_t Renderer {0x31A28B8}; //
     }
 
     namespace HudInstance {
@@ -42,10 +42,10 @@ namespace Offsets {
     }
 
     namespace Templates {
-        constexpr std::uint32_t HeroTemplate {0x18C6BBC}; //
-        constexpr std::uint32_t MinionTemplate {0x2514284}; //
-        constexpr std::uint32_t TurretTemplate {0x315BA04}; //
-        constexpr std::uint32_t MissileTemplate {0x3163F08}; //
+        constexpr std::uint32_t HeroTemplate {0x18D9B6C};//
+        constexpr std::uint32_t MinionTemplate {0x252729C};//
+        constexpr std::uint32_t TurretTemplate {0x316EAC4};//
+        constexpr std::uint32_t MissileTemplate {0x3176830};
     }
 
     namespace Renderer {
@@ -54,27 +54,30 @@ namespace Offsets {
     }
 
     namespace GameObject {
-        constexpr std::uint32_t Index {0x8}; //
-        constexpr std::uint32_t Team {0x34}; //
+        constexpr std::uint32_t Index {0x8};
+        constexpr std::uint32_t Team {0x34};
         constexpr std::uint32_t PlayerName {0xB8};
-        constexpr std::uint32_t NetworkId {0xB4}; //
-        constexpr std::uint32_t Position {0x1DC}; //
-        constexpr std::uint32_t Visibility {0x274}; //
-        constexpr std::uint32_t SpawnCount {0x288}; //
-        constexpr std::uint32_t Mana {0x29C}; //
-        constexpr std::uint32_t MaxMana {0x2AC}; //
+        constexpr std::uint32_t NetworkId {0xB4};
+        constexpr std::uint32_t Position {0x1DC};
+        constexpr std::uint32_t Visibility {0x274};
+        constexpr std::uint32_t SpawnCount {0x288};
+        constexpr std::uint32_t Mana {0x29C};
+        constexpr std::uint32_t MaxMana {0x2AC};
         constexpr std::uint32_t Dead {0x021C};
-        constexpr std::uint32_t Health {0xE7C}; //
-        constexpr std::uint32_t MaxHealth {0xE8C}; //
-        constexpr std::uint32_t Name {0x2DBC};
-        constexpr std::uint32_t AttackRange {0x13A4};
+        constexpr std::uint32_t Health {0xE7C};
+        constexpr std::uint32_t MaxHealth {0xE8C};
+        constexpr std::uint32_t Name {0x2DB4}; //
+        constexpr std::uint32_t AttackRange {0x13A4}; //
         constexpr std::uint32_t Targetable {0xD04};
-        constexpr std::uint32_t AiManager {0x2E94};
-        constexpr std::uint32_t SpellCast {0x2528};
-        constexpr std::uint32_t SpellBook {0x29D0};
-        constexpr std::uint32_t BuffManager {0x2340};
+        constexpr std::uint32_t AiManager {0x2E8C};
+        constexpr std::uint32_t SpellCast {0x2520}; //
+        constexpr std::uint32_t SpellBook {0x29C8}; //
+        constexpr std::uint32_t BuffManager {0x2338}; //
         constexpr std::uint32_t AttackSpeedMultiplier {0x1358};
         constexpr std::uint32_t Scale {0x1838};
+        constexpr std::uint32_t ActionState {0x111C};
+        constexpr std::uint32_t CharacterData {0x2D8C}; //
+        constexpr std::uint32_t MovementSpeed {0x139C};
 
     }
 
@@ -82,7 +85,7 @@ namespace Offsets {
         constexpr std::uint32_t SpellData {0x8};
         constexpr std::uint32_t SpellName {0x18};
         constexpr std::uint32_t SpellSlot {0xC};
-        constexpr std::uint32_t CastTime {0x10};
+        constexpr std::uint32_t CastTime {0x10C};
         constexpr std::uint32_t StartPos {0x88};
         constexpr std::uint32_t EndPos {0x94};
         constexpr std::uint32_t EndPosAlt {0xA0};
@@ -106,7 +109,17 @@ namespace Offsets {
         constexpr std::uint32_t ServerPosition {0x2EC};
         constexpr std::uint32_t NavigationArray {0x1E4};
         constexpr std::uint32_t NavigationArrayLength {NavigationArray + 4};
+        constexpr std::uint32_t StartPath {0x1CC};
+        constexpr std::uint32_t EndPath {0x1D8};
         constexpr std::uint32_t CurrentSegment {0x1C4};
+        constexpr std::uint32_t IsDashing {0x214};
+        constexpr std::uint32_t DashSpeed {0x1F8};
+        constexpr std::uint32_t IsMoving {0x1C0};
+
+    }
+
+    namespace CharacterData {
+        constexpr std::uint32_t Hash {0x10};
     }
 }
 #endif //ASYLLUM_OFFSETS_H

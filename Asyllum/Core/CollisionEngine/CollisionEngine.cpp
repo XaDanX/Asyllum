@@ -6,37 +6,73 @@
 #include "../Locator/Locator.h"
 #include "../../Utils/Utils.h"
 
-void CollisionEngine::Update() noexcept {
 
-    for (auto hero : locator->GetObjectManager()->GetHeroList()) {
-        auto spellCast = hero->GetSpellCast();
-        if (!Utils::IsValid((void*)spellCast))
-            continue;
 
-        if (spellCast->spellSlot > 3 || spellCast->spellSlot < 0)
-            continue;
 
-        if (spells.contains(spellCast->GetName()))
-            continue;
+CollisionInfo CollisionEngine::FindCollisionLine(Spell spell) {
+    CollisionInfo result;
 
-        if (spellCast->endTime < locator->GetEngine()->GameTime())
-            continue;
-
-        CollidableSpell spell = CollidableSpell();
-        spell.endTime = spellCast->endTime;
-        spell.startTime = spellCast->startTime;
-        spell.name = spellCast->GetName();
-        spell.startPos = spellCast->startPos;
-        spell.endPos = spellCast->endPos;
-        spells.insert({spell.name, spell});
+    if (spell.spellInfo == nullptr) {
+        return result;
     }
 
-    for (auto it = spells.cbegin(), next_it = it; it != spells.cend(); it = next_it) {
-        ++next_it;
+    if (spell.spellInfo->width < 1.f || spell.spellInfo->speed < 1.f)
+        return result;
 
-        if (it->second.endTime < locator->GetEngine()->GameTime()) {
-            spells.erase(it);
+    auto direction = spell.endPos.sub(spell.startPos).normalize();
+
+    float UnitDelta = 1.f + spell.spellInfo->width/3.f;
+
+    Vector2 spellStart = Vector2(spell.startPos.x, spell.startPos.z);
+    Vector2 spellEnd = Vector2(spell.endPos.x, spell.endPos.z);
+
+    float distanceLeft = spellStart.distance(spellEnd);
+    int   iterations   = (int)(max(0, distanceLeft - UnitDelta) / UnitDelta);
+    float timePerIter  = UnitDelta / spell.spellInfo->speed;
+
+    float deltaXSpell = direction.x * timePerIter * spell.spellInfo->speed;
+    float deltaYSpell = direction.z * timePerIter * spell.spellInfo->speed;
+    float castTime    = spell.RemainingCastTime() + spell.spellInfo->delay;
+
+    for(auto& target : locator->GetObjectManager()->GetHeroList()) {
+        if (target->GetUnitInfo() == nullptr) {
+            continue;
+        }
+        if ((DWORD)target == (DWORD)spell.caster) {
+            continue;
+        }
+
+        Vector2 spellPos = spellStart;
+        for (int i = 0; i < iterations; ++i) {
+
+            Vector3 targetPos3D = target->position ;
+            Vector2 targetPos2D = Vector2(targetPos3D.x, targetPos3D.z);
+
+            auto tworld = locator->GetEngine()->WorldToScreen(targetPos3D);
+            auto sworld = locator->GetEngine()->WorldToScreen(target->position);
+            ImGui::GetBackgroundDrawList()->AddLine(ImVec2(tworld.x, tworld.y), ImVec2(sworld.x, sworld.y), ImColor(255, 255, 255, 255), 4);
+
+            if (targetPos2D.distance(spellPos) < target->GetUnitInfo()->gameplayRadius + spell.spellInfo->width) {
+                result.hitList.push_back(reinterpret_cast<ObjectBase*>((DWORD)target));
+                if (target->IsLocalPlayer())
+                    result.CollideWithPlayer = true;
+                break;
+            }
+            spellPos.x += deltaXSpell;
+            spellPos.y += deltaYSpell;
         }
     }
 
+    /*
+     * SORTING VECTOR
+     */
+
+    if (result.hitList.size() > 1) {
+        auto startPos = spell.startPos;
+        std::sort(result.hitList.begin(), result.hitList.end(), [&startPos](ObjectBase *a, ObjectBase *b) {
+            return a->position.distance(startPos) < b->position.distance(startPos);
+        });
+    }
+
+    return result;
 }

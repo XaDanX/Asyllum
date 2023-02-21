@@ -11,10 +11,11 @@
 #include <string>
 #include <filesystem>
 #include <unordered_map>
+#include "../../../Protection/XorStr.h"
 
 namespace fs = std::filesystem;
 namespace {
-    fs::path pngDirectory = "C:/Deployable/icons_spells/";
+    fs::path pngDirectory = XorStr("C:/Deployable/icons_spells/").c_str();
 }
 
 class TextureManager {

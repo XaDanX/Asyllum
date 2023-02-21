@@ -10,8 +10,9 @@ void Console::Render() {
     ImGui::Begin(XorStr("Console").c_str(), &ShowConsole, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);
     ImGui::BeginChild(XorStr("console#scroll").c_str(), ImVec2(490, 225), true);
     for (auto i : consoleEvents) {
-        ImGui::Text(i.c_str());
+        ImGui::TextColored(ImColor(228, 158, 0, 255), XorStr("%s").c_str(), i.c_str());
     }
+    //ImGui::SetScrollHere(1.0f);
     ImGui::EndChild();
     ImGui::End();
 }
@@ -32,7 +33,7 @@ void Console::Print(const char* fmt, ...) {
             va_start(argList, fmt);
     vsprintf_s(buffer, fmt, argList);
             va_end(argList);
-    consoleEvents.push_front(buffer);
-    if (consoleEvents.size() > 300)
-        consoleEvents.pop_back();
+    if (consoleEvents.size() > 900)
+        consoleEvents.clear();
+    consoleEvents.push_back(buffer);
 }

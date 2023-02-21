@@ -38,14 +38,6 @@ UnitInfo *Hero::GetUnitInfo() {
     return locator->GetGameData()->GetUnitInfoByName(fixedName);
 }
 
-AiManager *Hero::GetAiManager() {
-    int v1 = *reinterpret_cast<__int8*>(reinterpret_cast<DWORD>(this) + Offsets::GameObject::AiManager);
-    int v2 = reinterpret_cast<DWORD>(this) + Offsets::GameObject::AiManager - 8;
-    int v3 = *reinterpret_cast<int*>(v2 + 4);
-    int v4 = *reinterpret_cast<int*>((v2 + (4 * v1 + 12)));
-    v4 = v4 ^ (~v3);
-    return reinterpret_cast<AiManager*>(*reinterpret_cast<int*>(v4 + 8));
-}
 
 SpellSlot *Hero::GetSpellSlotById(int id) {
     return reinterpret_cast<SpellSlot*>(*reinterpret_cast<int*>((DWORD)this + Offsets::GameObject::SpellBook + (0x4 * id)));
@@ -83,4 +75,8 @@ SpellCast *Hero::GetSpellCast() {
         return nullptr;
     }
     return reinterpret_cast<SpellCast*>(*reinterpret_cast<int*>((DWORD)this + Offsets::GameObject::SpellCast));
+}
+
+void Hero::ForceVisibility() {
+    *reinterpret_cast<int*>((DWORD)this + Offsets::GameObject::Visibility) = 8;
 }

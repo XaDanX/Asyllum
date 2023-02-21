@@ -7,6 +7,8 @@
 #pragma once
 #include <cmath>
 
+
+
 struct Vector2 {
     Vector2() = default;
     Vector2(float _x, float _y) {
@@ -122,6 +124,11 @@ struct Vector3 {
     [[nodiscard]] Vector3 clone() const {
         return {x, y, z};
     }
+
+
+
+
+
 };
 
 struct Vector4 {
@@ -170,5 +177,8 @@ struct Vector4 {
     [[nodiscard]] Vector4 clone() const {
         return {x, y, z, w};
     }
+
+
 };
+
 #endif //ASYLLUM_VECTOR_H

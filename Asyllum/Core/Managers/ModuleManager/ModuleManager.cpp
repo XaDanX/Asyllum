@@ -6,6 +6,8 @@
 #include "../../Locator/Locator.h"
 #include "../../../Protection/XorStr.h"
 #include "../../../../Modules/OrbWalker/OrbWalker.h"
+#include "../../../../Modules/SpellTracker/SpellTracker.h"
+#include "../../../../Modules/Evade/Evade.h"
 
 void ModuleManager::RegisterModule(Module* module) {
 
@@ -27,26 +29,45 @@ void ModuleManager::RegisterModules() {
         Append all modules here
     */
     this->RegisterModule(new OrbWalker());
+    this->RegisterModule(new SpellTracker());
+    this->RegisterModule(new Evade());
 
 }
 
 void ModuleManager::Initialize() {
     this->RegisterModules();
     for (auto& currentModule : this->moduleList) {
+        locator->GetConsole()->Print(XorStr("[MODULE MANAGER] Loaded module: %s!").c_str(), currentModule->GetName().c_str());
         currentModule->OnLoad();
     }
 }
 
+
 void ModuleManager::UpdateModules() {
+    /*__try{
+        for (auto &currentModule : this->moduleList) {
+            currentModule->OnTick();
+            currentModule->input.UpdateIssuedOperations();
+        }
+    } __except (1) {
+        locator->GetConsole()->Print(XorStr("[MODULE MANAGER] Exception occurred in one of modules!").c_str());
+    }*/
     for (auto &currentModule : this->moduleList) {
-        currentModule->OnTick();
-        currentModule->input.UpdateIssuedOperations();
+        try {
+            currentModule->OnTick();
+            currentModule->input.UpdateIssuedOperations();
+        } catch (const std::exception &e) {
+            locator->GetConsole()->Print(("[MODULE MANAGER] Exception occurred in module " + currentModule->GetName() + ": " + e.what()).c_str());
+        }
     }
+
+
 }
 
 void ModuleManager::UpdateModulesGui() {
     ImGui::SetNextWindowSize({800, 900});
-    ImGui::Begin(XorStr("Asyllum").c_str());
+
+    ImGui::Begin(XorStr("Asyllum | DEV").c_str());
     ImGui::Columns(2, nullptr, false);
     ImGui::SetColumnOffset(1, 150);
 
@@ -67,12 +88,6 @@ void ModuleManager::UpdateModulesGui() {
             module->OnGui();
         }
     }
-
-    if (this->tab == -1) {
-        ImGui::Text(XorStr("dev version.").c_str());
-    }
-
-
     ImGui::EndChild();
 
     ImGui::End();

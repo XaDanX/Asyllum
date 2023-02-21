@@ -4,6 +4,7 @@
 
 #include "HookingService.h"
 #include "DirectX.h"
+#include "DirectInputHook.h"
 #include "../../kiero/kiero.h"
 #include "Helpers.h"
 #include "../../kiero/minhook/include/MinHook.h"
@@ -12,13 +13,12 @@
 
 bool HookingService::Initialize() {
     bool attached = false;
-    do
-    {
-        if (kiero::init(kiero::RenderType::D3D9) == kiero::Status::Success)
-        {
+    do {
+        if (kiero::init(kiero::RenderType::D3D9) == kiero::Status::Success) {
             kiero::bind(16, (void**)&oReset, DirectX::hkReset);
             kiero::bind(42, (void**)&oEndScene, DirectX::hkEndScene);
             FakeMouse::Init();
+            DirectInputHook::Hook();
             kiero::bind(17, (void**)&oPresent, DirectX::hkPresent);
             do {
                 this->window = HookingHelper::GetProcessWindow();

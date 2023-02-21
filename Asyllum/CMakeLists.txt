@@ -50,7 +50,7 @@ set(ALL_FILES
     ${no_group_source_files}
     ${Headers}
     ${Sources}
-        Core/Hooking/HookingService.cpp Core/Hooking/HookingService.cpp Core/Hooking/HookingService.h Core/Hooking/DirectX.cpp Core/Hooking/DirectX.h Core/Hooking/Helpers.h Protection/PebUnlink.h Protection/XorStr.h Core/Asyllum.cpp Core/Asyllum.h Core/Locator/Locator.cpp Core/Locator/Locator.h Math/Vector.h Math/Math.h Globals/Globals.cpp Globals/Globals.h Core/Helpers/Helpers.h Globals/Offsets.h Core/Objects/ObjectBase.cpp Core/Objects/ObjectBase.h Core/Types/Definitions.h Core/Engine/Engine.cpp Core/Engine/Engine.h Core/Objects/Hero/Hero.cpp Core/Objects/Hero/Hero.h Core/Managers/ObjectManager/ObjectManager.cpp Core/Managers/ObjectManager/ObjectManager.h Core/Managers/ObjectManager/Template.h Core/Data/UnitInfo.cpp Core/Data/UnitInfo.h Core/Data/GameData.cpp Core/Data/GameData.h Core/Data/SpellInfo.cpp Core/Data/SpellInfo.h Core/Helpers/StringUtils.h Core/Renderer/Renderer.cpp Core/Renderer/Renderer.h Core/Managers/ModuleManager/Module.h Core/Managers/ModuleManager/ModuleManager.cpp Core/Managers/ModuleManager/ModuleManager.h Core/Objects/Minion/Minion.cpp Core/Objects/Minion/Minion.h Core/Objects/Turret/Turret.cpp Core/Objects/Turret/Turret.h Core/Objects/Hero/AiManager/AiManager.cpp Core/Objects/Hero/AiManager/AiManager.h Core/Objects/Hero/SpellBook/SpellSlot.cpp Core/Objects/Hero/SpellBook/SpellSlot.h Core/Renderer/Console/Console.cpp Core/Renderer/Console/Console.h Core/Renderer/TextureManager/TextureManager.cpp Core/Renderer/TextureManager/TextureManager.h Utils/Utils.cpp Utils/Utils.h Core/HudInstance/HudInstance.cpp Core/HudInstance/HudInstance.h Core/Hooking/FakeMouse.cpp Core/Hooking/FakeMouse.h Core/Controller/Controller.h Protection/LazyImporter.h Core/Objects/Hero/BuffManager/BuffManager.cpp Core/Objects/Hero/BuffManager/BuffManager.h Core/Objects/Hero/SpellCast/SpellCast.cpp Core/Objects/Hero/SpellCast/SpellCast.h Core/CollisionEngine/CollisionEngine.cpp Core/CollisionEngine/CollisionEngine.h Core/Managers/EventManager/EventManager.cpp Core/Managers/EventManager/EventManager.h Core/Managers/EventManager/Event.h Core/Data/Spell/Spell.cpp Core/Data/Spell/Spell.h Core/Controller/Controller.cpp ../Modules/OrbWalker/OrbWalker.cpp ../Modules/OrbWalker/OrbWalker.h ../Modules/Evade/Evade.cpp ../Modules/Evade/Evade.h ../Modules/Evade/EvadableSpell.h)
+        Core/Hooking/HookingService.cpp Core/Hooking/HookingService.cpp Core/Hooking/HookingService.h Core/Hooking/DirectX.cpp Core/Hooking/DirectX.h Core/Hooking/Helpers.h Protection/PebUnlink.h Protection/XorStr.h Core/Asyllum.cpp Core/Asyllum.h Core/Locator/Locator.cpp Core/Locator/Locator.h Math/Vector.h Math/Math.h Globals/Globals.cpp Globals/Globals.h Core/Helpers/Helpers.h Globals/Offsets.h Core/Objects/ObjectBase.cpp Core/Objects/ObjectBase.h Core/Types/Definitions.h Core/Engine/Engine.cpp Core/Engine/Engine.h Core/Objects/Hero/Hero.cpp Core/Objects/Hero/Hero.h Core/Managers/ObjectManager/ObjectManager.cpp Core/Managers/ObjectManager/ObjectManager.h Core/Managers/ObjectManager/Template.h Core/Data/UnitInfo.cpp Core/Data/UnitInfo.h Core/Data/GameData.cpp Core/Data/GameData.h Core/Data/SpellInfo.cpp Core/Data/SpellInfo.h Core/Helpers/StringUtils.h Core/Renderer/Renderer.cpp Core/Renderer/Renderer.h Core/Managers/ModuleManager/Module.h Core/Managers/ModuleManager/ModuleManager.cpp Core/Managers/ModuleManager/ModuleManager.h Core/Objects/Minion/Minion.cpp Core/Objects/Minion/Minion.h Core/Objects/Turret/Turret.cpp Core/Objects/Turret/Turret.h Core/Objects/Hero/AiManager/AiManager.cpp Core/Objects/Hero/AiManager/AiManager.h Core/Objects/Hero/SpellBook/SpellSlot.cpp Core/Objects/Hero/SpellBook/SpellSlot.h Core/Renderer/Console/Console.cpp Core/Renderer/Console/Console.h Core/Renderer/TextureManager/TextureManager.cpp Core/Renderer/TextureManager/TextureManager.h Utils/Utils.cpp Utils/Utils.h Core/HudInstance/HudInstance.cpp Core/HudInstance/HudInstance.h Core/Hooking/FakeMouse.cpp Core/Hooking/FakeMouse.h Core/Controller/Controller.h Protection/LazyImporter.h Core/Objects/Hero/BuffManager/BuffManager.cpp Core/Objects/Hero/BuffManager/BuffManager.h Core/Objects/Hero/SpellCast/SpellCast.cpp Core/Objects/Hero/SpellCast/SpellCast.h Core/CollisionEngine/CollisionEngine.cpp Core/CollisionEngine/CollisionEngine.h Core/Managers/EventManager/EventManager.cpp Core/Managers/EventManager/EventManager.h Core/Managers/EventManager/Event.h Core/Data/Spell/Spell.cpp Core/Data/Spell/Spell.h Core/Controller/Controller.cpp ../Modules/OrbWalker/OrbWalker.cpp ../Modules/OrbWalker/OrbWalker.h ../Modules/Evade/Evade.cpp ../Modules/Evade/Evade.h ../Modules/Evade/EvadableSpell.h ../Modules/SpellTracker/SpellTracker.cpp ../Modules/SpellTracker/SpellTracker.h Core/Hooking/DirectInputHook.cpp Core/Hooking/DirectInputHook.h Core/Data/GameKeybind.cpp Core/Data/GameKeybind.h Math/Clipper.cpp Math/Clipper.h Math/Crt.cpp Math/Crt.h)
 
 ################################################################################
 # Target
@@ -147,7 +147,9 @@ if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
     set(ADDITIONAL_LIBRARY_DEPENDENCIES
         "$<$<CONFIG:Debug>:"
             "d3d9;"
-            "d3dx9"
+            "d3dx9;"
+            "dinput8;"
+            "dinput"
         ">"
     )
 endif()
@@ -159,7 +161,9 @@ if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
     set(ADDITIONAL_LIBRARY_DEPENDENCIES
             "d3d9;"
             "C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Lib/x86/d3dx9.lib;"
-            "dxgi"
+            "dxgi;"
+            "dxguid;"
+            "C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Lib/x86/dinput8.lib"
             )
 endif()
 target_include_directories(${PROJECT_NAME} PRIVATE

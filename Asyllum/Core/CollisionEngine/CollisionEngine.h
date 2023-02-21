@@ -8,20 +8,16 @@
 #include <map>
 #include <string>
 #include "../Objects/Hero/SpellCast/SpellCast.h"
+#include "../Data/Spell/Spell.h"
 
-class CollidableSpell {
-public:
-    std::string name;
-    float startTime;
-    float endTime;
-    Vector3 startPos;
-    Vector3 endPos;
+struct CollisionInfo {
+    bool CollideWithPlayer = false;
+    std::vector<ObjectBase*> hitList;
 };
 
 class CollisionEngine {
 public:
-    std::map<std::string, CollidableSpell> spells; // <name, SpellCast>
-    void Update() noexcept;
+    static CollisionInfo FindCollisionLine(Spell spell);
 
 };
 

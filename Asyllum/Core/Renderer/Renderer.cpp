@@ -46,9 +46,12 @@ struct Vertex {
 
 const static int                          VertexBuffSize = 10000;
 LPDIRECT3DVERTEXBUFFER9                   vertexBuff     = NULL;
-void Renderer::DrawRiotCircle(const Vector3 &pos, float radius, ImColor color) {
-
-    auto image = locator->GetTextureManager()->GetTexture("test");
+void Renderer::DrawRiotCircle(const Vector3 &pos, float radius, ImColor color, bool filled) {
+    IDirect3DTexture9* image;
+    if (filled)
+        image = locator->GetTextureManager()->GetTexture(XorStr("circle1"));
+    else
+        image = locator->GetTextureManager()->GetTexture(XorStr("circle1_nofill"));
     Vector2 size = Vector2(radius * 2, radius * 2);
     auto colorFixed = D3DCOLOR_ARGB((int)(color.Value.w*255), (int)(color.Value.x*255), (int)(color.Value.y*255), (int)(color.Value.z*255));
 
@@ -73,7 +76,7 @@ void Renderer::DrawRiotCircle(const Vector3 &pos, float radius, ImColor color) {
         return;
     }
 
-    vtx->col = color;
+    vtx->col = colorFixed;
     vtx->pos[0] = p1.x;
     vtx->pos[1] = p1.y;
     vtx->pos[2] = p1.z;
@@ -81,7 +84,7 @@ void Renderer::DrawRiotCircle(const Vector3 &pos, float radius, ImColor color) {
     vtx->uv[1] = 0.f;
 
     vtx++;
-    vtx->col = color;
+    vtx->col = colorFixed;
     vtx->pos[0] = p2.x;
     vtx->pos[1] = p2.y;
     vtx->pos[2] = p2.z;
@@ -89,7 +92,7 @@ void Renderer::DrawRiotCircle(const Vector3 &pos, float radius, ImColor color) {
     vtx->uv[1] = 0.f;
 
     vtx++;
-    vtx->col = color;
+    vtx->col = colorFixed;
     vtx->pos[0] = p4.x;
     vtx->pos[1] = p4.y;
     vtx->pos[2] = p4.z;
@@ -97,7 +100,7 @@ void Renderer::DrawRiotCircle(const Vector3 &pos, float radius, ImColor color) {
     vtx->uv[1] = 1.f;
 
     vtx++;
-    vtx->col = color;
+    vtx->col = colorFixed;
     vtx->pos[0] = p4.x;
     vtx->pos[1] = p4.y;
     vtx->pos[2] = p4.z;
@@ -105,7 +108,7 @@ void Renderer::DrawRiotCircle(const Vector3 &pos, float radius, ImColor color) {
     vtx->uv[1] = 1.f;
 
     vtx++;
-    vtx->col = color;
+    vtx->col = colorFixed;
     vtx->pos[0] = p3.x;
     vtx->pos[1] = p3.y;
     vtx->pos[2] = p3.z;
@@ -113,7 +116,7 @@ void Renderer::DrawRiotCircle(const Vector3 &pos, float radius, ImColor color) {
     vtx->uv[1] = 1.f;
 
     vtx++;
-    vtx->col = color;
+    vtx->col = colorFixed;
     vtx->pos[0] = p2.x;
     vtx->pos[1] = p2.y;
     vtx->pos[2] = p2.z;
@@ -134,4 +137,23 @@ void Renderer::DrawRiotCircle(const Vector3 &pos, float radius, ImColor color) {
 
     locator->GetHookingService()->GetDevice()->DrawPrimitive(D3DPRIMITIVETYPE::D3DPT_TRIANGLELIST, 0, 2);
 
+}
+
+bool Renderer::CustomGuiHotkey(int *k, const ImVec2 &size_arg) {
+    static bool waitingforkey = false;
+    if (waitingforkey == false) {
+        if (ImGui::Button(KeyNames[*(int*)k], size_arg))
+            waitingforkey = true;
+    }
+    else if (waitingforkey == true) {
+        ImGui::Button("...", size_arg);
+        for (auto& Key : KeyCodes)
+        {
+            if (GetAsyncKeyState(Key) & 0x8000) {
+                *(int*)k = Key;
+                waitingforkey = false;
+            }
+        }
+    }
+    return true;
 }

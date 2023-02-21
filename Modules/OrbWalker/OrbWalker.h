@@ -9,6 +9,9 @@
 #include "../../Asyllum/Core/Managers/ModuleManager/Module.h"
 
 class OrbWalker : public Module {
+private:
+    bool enabled = false;
+    HKey hotKey = HKey::SPACE;
 public:
     void OnTick();
 

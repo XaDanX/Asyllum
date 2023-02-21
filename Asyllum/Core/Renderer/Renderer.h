@@ -16,7 +16,9 @@ private:
 public:
     void Text(const Vector2& pos, const char* text, const ImVec4& color);
     void DrawCircleAt(const Vector3& worldPos, float radius, bool filled, int numPoints, ImColor color, float thickness);
-    void DrawRiotCircle(const Vector3& pos, float radius, ImColor color);
+    void DrawRiotCircle(const Vector3& pos, float radius, ImColor color, bool filled);
+public: // Gui components
+    bool CustomGuiHotkey(int* k, const ImVec2& size_arg = ImVec2(50, 22));
 };
 
 

@@ -102,11 +102,9 @@ void Engine::ProcessSpells() {
     for (auto& caster : locator->GetObjectManager()->GetHeroList()) {
 
         //if (caster->IsLocalPlayer() || caster->IsAllyTo<Hero*>(localPlayer)) continue; // catching only enemy spells.
-
         auto activeSpellCast = caster->GetSpellCast();
 
         if (!Utils::IsValid(activeSpellCast)) continue;
-
         if (activeSpellCast->spellSlot == -1) {
             Event::OnAutoAttack eventArgs{};
             eventArgs.caster = caster;
@@ -131,10 +129,7 @@ void Engine::ProcessSpells() {
             if (Utils::IsValid(spellInfo)) {
                 spell.spellInfo = spellInfo;
 
-                // project end positionusing the range of the spell
                 if (spellInfo->projectDestination) {
-                    //spell.startPos.y += spellInfo->height;
-
                     spell.endPos = Vector3(spell.endPos.x - spell.startPos.x, 0, spell.endPos.z - spell.startPos.z);
                     spell.endPos = spell.endPos.normalize();
 
