@@ -50,7 +50,6 @@ CollisionInfo CollisionEngine::FindCollisionLine(Spell spell) {
 
             auto tworld = locator->GetEngine()->WorldToScreen(targetPos3D);
             auto sworld = locator->GetEngine()->WorldToScreen(target->position);
-            ImGui::GetBackgroundDrawList()->AddLine(ImVec2(tworld.x, tworld.y), ImVec2(sworld.x, sworld.y), ImColor(255, 255, 255, 255), 4);
 
             if (targetPos2D.distance(spellPos) < target->GetUnitInfo()->gameplayRadius + spell.spellInfo->width) {
                 result.hitList.push_back(reinterpret_cast<ObjectBase*>((DWORD)target));

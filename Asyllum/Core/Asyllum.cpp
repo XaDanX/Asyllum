@@ -41,16 +41,16 @@ bool Asyllum::Initialize() {
             }
         }
     }
-    
-    locator->GetModuleManager()->Initialize();
 
     locator->GetConsole()->Print(XorStr("[CORE] Initialized!").c_str());
+    locator->GetModuleManager()->Initialize();
     return true;
 }
 
 
 void Asyllum::OnGui() {
-    locator->GetModuleManager()->UpdateModulesGui();
+    locator->GetMenu()->Update();
+    //locator->GetModuleManager()->UpdateModulesGui();
     locator->GetConsole()->Render();
 }
 

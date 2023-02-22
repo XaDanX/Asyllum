@@ -13,6 +13,7 @@
 #include "Hero/AiManager/AiManager.h"
 
 enum [[maybe_unused]] HashName {
+    UnknownHash = 0,
     Aatrox = 0x71097207,
     Ahri = 0xD4BD813E,
     Akali = 0x5F193A14,

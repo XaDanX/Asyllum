@@ -1,9 +1,8 @@
 //
-// Created by XaDanX on 1/28/2023.
+// Created by XaDanX on 2/22/2023.
 //
 
 #include "OrbWalker.h"
-
 #include "../../Asyllum/Core/Locator/Locator.h"
 #include "../../Asyllum/Core/Data/GameKeybind.h"
 #include "../../Asyllum/Utils/Utils.h"
@@ -18,32 +17,33 @@ namespace OrbWalkerUtils {
         return (int)(1000.0f / locator->GetObjectManager()->GetLocalPlayer()->GetTotalAttackSpeed());
     }
     float GetWindupTime() {
-        return (1 / locator->GetObjectManager()->GetLocalPlayer()->GetTotalAttackSpeed() * 1000 *
-                locator->GetObjectManager()->GetLocalPlayer()->GetUnitInfo()->basicAttackWindup);
+        auto player = locator->GetObjectManager()->GetLocalPlayer();
+        return (1 / player->GetTotalAttackSpeed() * 1000 *
+                player->GetUnitInfo()->basicAttackWindup);
     }
 
     bool CanAttack() {
-        if (locator->GetObjectManager()->GetLocalPlayer()->GetAiManager()->isDashing)
+        auto player = locator->GetObjectManager()->GetLocalPlayer();
+        if (player->GetAiManager()->isDashing)
             return false;
-        if (locator->GetObjectManager()->GetLocalPlayer()->name.str().contains(XorStr("Kaisa").c_str())) {
-            if (Utils::IsValid(locator->GetObjectManager()->GetLocalPlayer()->GetSpellCast())) {
-                if (locator->GetObjectManager()->GetLocalPlayer()->GetSpellCast()->spellSlot == 0x2) {
+        if (player->characterData->hash == HashName::Kaisa) {
+            if (Utils::IsValid(player->GetSpellCast())) {
+                if (player->GetSpellCast()->spellSlot == 0x2) {
                     return false;
                 }
             }
         }
-        return lastAutoAttackTick + GetAttackDelay() + 60.0 < locator->GetEngine()->GetProcessorTime(); //60 = ping
+        return lastAutoAttackTick + (float)GetAttackDelay() + 60.0 < locator->GetEngine()->GetProcessorTime(); //60 = ping
     }
 
     bool CanMove() {
         return lastMoveTick < locator->GetEngine()->GetProcessorTime();
     }
 
-    Hero* GetBestTarget() { // CLOSEST ONE // TODO: TARGET SELECTOR
+    Hero* GetBestTarget() {
         float oldDistance = FLT_MAX;
         Hero* bestTarget = nullptr;
-        for (auto& unit : locator->GetObjectManager()->GetHeroList())
-        {
+        for (auto& unit : locator->GetObjectManager()->GetHeroList()) {
             if (!unit->IsAlive()) continue;
             if (unit->IsLocalPlayer()) continue;
             if (!unit->targetable) continue;
@@ -62,34 +62,15 @@ namespace OrbWalkerUtils {
     }
 }
 
-
-
 void OrbWalker::OnTick() {
     auto localPlayer = locator->GetObjectManager()->GetLocalPlayer();
     locator->GetRenderer()->DrawRiotCircle(localPlayer->position,
                                            localPlayer->GetUnitInfo()->gameplayRadius + localPlayer->attackRange,
-                                           ImColor(0, 255, 50, 150), true);
-    /*
-    ImGui::Begin("OrbWalker DEBUG");
-    ImGui::Separator();
-    ImGui::Text("Attack speed %f", locator->GetObjectManager()->GetLocalPlayer()->GetTotalAttackSpeed());
-    ImGui::Separator();
-    ImGui::Text("Attack delay: %i", OrbWalkerUtils::GetAttackDelay());
-    ImGui::Separator();
-    ImGui::Text("Windup time: %f", OrbWalkerUtils::GetWindupTime());
-    ImGui::Separator();
-    ImGui::Text("Can attack: %s", OrbWalkerUtils::CanAttack() ? "true" : "false");
-    ImGui::Separator();
-    ImGui::Text("Can move: %s", OrbWalkerUtils::CanMove() ? "true" : "false");
-    ImGui::Separator();
-    ImGui::Text("Lethal tempo: %s", locator->GetObjectManager()->GetLocalPlayer()->IsLethalTempoActive() ? "true" : "false");
-    ImGui::Separator();
-    ImGui::Text("Dashing: %s", locator->GetObjectManager()->GetLocalPlayer()->GetAiManager()->isDashing ? "true" : "false");
-    ImGui::Separator();
-    ImGui::Text("AiManager: 0x%08x", (int)locator->GetObjectManager()->GetLocalPlayer()->GetAiManager());
-    ImGui::End();*/
+                                           ImColor(0, 255, 50, 150), false);
+
     if (input.IsDown(this->hotKey) && this->enabled) {
-        if (!locator->GetEngine()->GetHudInstance()->IsFocused() || locator->GetHookingService()->isMenuOpen) return;
+        if (!locator->GetEngine()->GetHudInstance()->IsFocused() || locator->GetHookingService()->isMenuOpen)
+            return;
         auto target = OrbWalkerUtils::GetBestTarget();
         if (target) {
             if (OrbWalkerUtils::CanAttack()) {
@@ -102,7 +83,7 @@ void OrbWalker::OnTick() {
         }
         if (OrbWalkerUtils::CanMove()) {
             this->input.IssueClick(CT_RIGHT_CLICK, GameKeybind::TargetChampionsOnly);
-            OrbWalkerUtils::lastMoveTick = locator->GetEngine()->GetProcessorTime() + 70;
+            OrbWalkerUtils::lastMoveTick = locator->GetEngine()->GetProcessorTime() + 90;
             return;
         }
 
@@ -113,9 +94,4 @@ void OrbWalker::OnTick() {
 
 void OrbWalker::OnLoad() {
 
-}
-
-void OrbWalker::OnGui() {
-    ImGui::Checkbox(XorStr("Enabled").c_str(), &this->enabled);
-    this->hotKey = (HKey)input.ImGuiKeySelect(XorStr("OrbWalker key").c_str(), this->hotKey);
 }

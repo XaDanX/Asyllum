@@ -112,6 +112,7 @@ void GameData::LoadSpellData(std::string& path) {
     for (auto spellObj : j) {
 
         SpellInfo* spell = new SpellInfo();
+        spell->flags = (SpellFlags)spellObj[XorStr("flags").c_str()].get<__int64>();
         spell->name = StringUtils::ToLower(std::string(spellObj[XorStr("name").c_str()]));
         spell->parent = StringUtils::ToLower(std::string(spellObj[XorStr("parent").c_str()]));
         spell->icon = StringUtils::ToLower(std::string(spellObj[XorStr("icon").c_str()]));
@@ -126,6 +127,7 @@ void GameData::LoadSpellData(std::string& path) {
         spell->travelTime = spellObj[XorStr("travelTime").c_str()].get<float>();
         spell->delay = spellObj[XorStr("delay").c_str()].get<float>();
         spell->projectDestination = spellObj[XorStr("projectDestination").c_str()].get<bool>();
+        spell->flags = (SpellFlags)(spell->flags | (spellObj["projectDestination"].get<bool>() ? ProjectedDestination : 0));
 
         Spells[spell->name] = spell;
     }

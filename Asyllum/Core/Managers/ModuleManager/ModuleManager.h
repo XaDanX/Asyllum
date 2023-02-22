@@ -12,15 +12,15 @@
 
 class ModuleManager {
 private:
-    std::vector<std::unique_ptr<Module>> moduleList;
     void RegisterModules();
 
     int tab = -1;
 
 public:
+    std::vector<std::unique_ptr<Module>> moduleList;
+
     void Initialize();
     void UpdateModules();
-    void UpdateModulesGui();
     void OnExit();
     void RegisterModule(Module* module);
 };

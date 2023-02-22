@@ -75,3 +75,10 @@ EventManager *Locator::GetEventManager() {
     return eventManager.get();
 }
 
+Menu *Locator::GetMenu() {
+    if (!menu) {
+        menu = std::make_unique<Menu>();
+    }
+    return menu.get();
+}
+

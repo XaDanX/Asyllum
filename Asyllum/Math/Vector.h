@@ -125,6 +125,12 @@ struct Vector3 {
         return {x, y, z};
     }
 
+    [[nodiscard]] Vector3 extend(const Vector3& o, float dist) const {
+        auto from = *this;
+        auto result = from.add(o.sub(from).normalize()).scale(dist);
+        return result;
+    }
+
 
 
 

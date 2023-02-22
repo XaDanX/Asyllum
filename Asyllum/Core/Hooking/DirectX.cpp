@@ -21,8 +21,8 @@ long DirectX::hkEndScene(LPDIRECT3DDEVICE9 pDevice) {
                 ImGuiIO &io = ImGui::GetIO();
                 io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
                 io.Fonts->AddFontFromFileTTF(XorStr("C:\\Deployable\\Font.ttf").c_str(), 16.0f);
-
-                ImGuiStyle *style = &ImGui::GetStyle();
+                locator->GetMenu()->Initialize();
+                /*ImGuiStyle *style = &ImGui::GetStyle();
 
                 style->Colors[ImGuiCol_Text] = ImVec4(0.80f, 0.80f, 0.83f, 1.00f);
                 style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
@@ -81,7 +81,7 @@ long DirectX::hkEndScene(LPDIRECT3DDEVICE9 pDevice) {
                 style->FramePadding.x = 6;
                 style->FramePadding.y = 4;
                 style->Alpha = 1.0f;
-                style->FrameRounding = 3.0f;
+                style->FrameRounding = 3.0f;*/
 
                 ImGui_ImplWin32_Init(locator->GetHookingService()->GetWindow());
                 ImGui_ImplDX9_Init(pDevice);
@@ -146,16 +146,6 @@ long DirectX::hkEndScene(LPDIRECT3DDEVICE9 pDevice) {
                 locator->GetAsyllumInstance()->OnTick();
                 if (locator->GetHookingService()->isMenuOpen) {
                     locator->GetAsyllumInstance()->OnGui();
-
-                    ImGui::Begin(XorStr("Panic menu").c_str(), 0,
-                                 ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
-                                 ImGuiWindowFlags_NoScrollbar |
-                                 ImGuiWindowFlags_NoScrollWithMouse);
-                    if (ImGui::Button(XorStr("Unload").c_str())) {
-                        locator->GetHookingService()->UnHook();
-                    }
-                    ImGui::End();
-
                 }
 
 

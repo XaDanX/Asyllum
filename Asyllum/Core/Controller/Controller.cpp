@@ -65,8 +65,8 @@ void InputController::SetMouseCursor(const Vector2 & position)
     ::ZeroMemory(&Input, sizeof(INPUT));
     Input.type = INPUT_MOUSE;
     Input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE;
-    Input.mi.dx = fx;
-    Input.mi.dy = fy;
+    Input.mi.dx = static_cast<LONG>(fx);
+    Input.mi.dy = static_cast<LONG>(fy);
     ::SendInput(1, &Input, sizeof(INPUT));
 }
 
@@ -245,7 +245,6 @@ int InputController::GetVirtualKey(HKey key) {
 
 void InputController::PushIoBatch(std::shared_ptr<IoStepBatch> batch)
 {
-    /// Override if equals
     if (!ioQueue.empty() && batch->controlId == ioQueue.back()->controlId) {
         ioQueue.pop_back();
     }

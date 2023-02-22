@@ -18,6 +18,7 @@
 #include "../Renderer/Renderer.h"
 #include "../Controller/Controller.h"
 #include "../Managers/EventManager/EventManager.h"
+#include "../../Menu/Menu.h"
 
 class Locator {
 public:
@@ -31,6 +32,7 @@ public:
     TextureManager* GetTextureManager();
     Renderer* GetRenderer();
     EventManager* GetEventManager();
+    Menu* GetMenu();
 private:
     std::unique_ptr<HookingService> hookingService;
     std::unique_ptr<Asyllum> asyllum;
@@ -42,6 +44,7 @@ private:
     std::unique_ptr<TextureManager> textureManager;
     std::unique_ptr<Renderer> renderer;
     std::unique_ptr<EventManager> eventManager;
+    std::unique_ptr<Menu> menu;
 };
 inline extern std::unique_ptr<Locator> locator = std::make_unique<Locator>();
 

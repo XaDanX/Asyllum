@@ -128,16 +128,10 @@ void Engine::ProcessSpells() {
             auto spellInfo = locator->GetGameData()->GetSpellInfoByName(spell.name);
             if (Utils::IsValid(spellInfo)) {
                 spell.spellInfo = spellInfo;
-
-                if (spellInfo->projectDestination) {
-                    spell.endPos = Vector3(spell.endPos.x - spell.startPos.x, 0, spell.endPos.z - spell.startPos.z);
-                    spell.endPos = spell.endPos.normalize();
-
-                    spell.endPos.x = spell.endPos.x * spellInfo->castRange + spell.startPos.x;
-                    spell.endPos.y = spell.startPos.y;
-                    spell.endPos.z = spell.endPos.z * spellInfo->castRange + spell.startPos.z;
-                }
             }
+
+            if (!spell.IsValid())
+                return;
 
             Event::OnSpellCast eventArgs{};
             eventArgs.caster = caster;

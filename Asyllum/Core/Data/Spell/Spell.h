@@ -7,6 +7,7 @@
 
 #include "../../Objects/Hero/Hero.h"
 
+#define INVALID_FLOAT 999999.f
 
 class Spell {
 public:
@@ -17,14 +18,17 @@ public:
     float castTime;
     Vector3 startPos;
     Vector3 endPos;
+    Vector3 currentPos;
     float startTime;
     float endTime;
     SpellInfo* spellInfo;
 
 public:
     float RemainingCastTime();
-    float RemainingCastTimeMath();
     float TimeToCollision(Vector3 pos);
+    bool IsValid();
+    bool IsPointInRange(Vector3 point);
+    bool IsCasted();
 };
 
 
