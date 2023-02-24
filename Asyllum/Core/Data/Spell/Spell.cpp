@@ -21,25 +21,42 @@ float Spell::TimeToCollision(Vector3 pos) {
 }
 
 bool Spell::IsValid() {
-    if (Utils::IsValid((void*)spellInfo))
+    if (!Utils::IsValid((void*)spellInfo))
         return false;
     auto time = locator->GetEngine()->GameTime();
-    if ((startTime + spellInfo->castRange / spellInfo->speed + spellInfo->delay) > time) {
-        if (spellInfo->speed != INVALID_FLOAT && startTime + spellInfo->delay < time) {
-            if (spellInfo->projectDestination) { // projectedDestination tells us its MOST LIKELY linear spell.
-                float a = spellInfo->speed * (time - startTime - spellInfo->delay);
-                currentPos = startPos.extend(endPos, a);
 
-                endPos = Vector3(endPos.x - startPos.x, 0, endPos.z - startPos.z);
-                endPos = endPos.normalize();
-
-                endPos.x = endPos.x * spellInfo->castRange + startPos.x;
-                endPos.y = startPos.y;
-            }
-        }
-    } else {
+    if (endTime < time)
         return false;
+
+    if (spellInfo->projectDestination) { // projectedDestination tells us its MOST LIKELY linear spell.
+        direction = endPos.sub(startPos).normalize();
+
+        if (spellInfo->projectDestination) {
+            endPos = Vector3(endPos.x - startPos.x, 0, endPos.z - startPos.z);
+            endPos = endPos.normalize();
+
+            endPos.x = endPos.x * spellInfo->castRange + startPos.x;
+            endPos.y = startPos.y;
+            endPos.z = endPos.z * spellInfo->castRange + startPos.z;
+        }
+
+        float deltaTime = time - castTime;
+
+        auto current = startPos;
+
+        if (startTime < time) {
+            current = startPos.add(
+                    direction.mult(spellInfo->speed * (deltaTime - spellInfo->castTime)));
+        }
+
+        currentPos = current;
+        if (startPos.distance(current) > spellInfo->castRange) {
+            currentPos = endPos;
+        }
+
+        path = Geometry::Rectangle(currentPos, endPos, spellInfo->width).ToPolygon();
     }
+
     return true;
 }
 
@@ -56,7 +73,7 @@ bool Spell::IsPointInRange(Vector3 point) {
 }
 
 bool Spell::IsCasted() {
-    return RemainingCastTime() < 0;
+    return RemainingCastTime() <= 0;
 }
 
 

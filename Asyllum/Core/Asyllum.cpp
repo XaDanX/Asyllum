@@ -12,6 +12,7 @@
 #include "../Utils/Utils.h"
 #include "Managers/EventManager/Event.h"
 #include "Data/GameKeybind.h"
+#include "../Math/Geometry.h"
 #include <filesystem>
 #include <format>
 #include <iostream>
@@ -48,6 +49,7 @@ bool Asyllum::Initialize() {
 
     locator->GetConsole()->Print(XorStr("[CORE] Initialized!").c_str());
     locator->GetModuleManager()->Initialize();
+
     return true;
 }
 
@@ -81,7 +83,6 @@ void Asyllum::OnTick() {
     ImGui::End();
     if (static_cast<float>(updateTime.count()) > peakUpdateTime)
         peakUpdateTime = static_cast<float>(updateTime.count());
-
 
 }
 

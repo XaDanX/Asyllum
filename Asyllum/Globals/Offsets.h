@@ -76,21 +76,21 @@ namespace Offsets {
         constexpr std::uint32_t AttackSpeedMultiplier {0x1358}; //
         constexpr std::uint32_t Scale {0x1838}; //
         constexpr std::uint32_t ActionState {0x111C}; // not used :D
-        constexpr std::uint32_t CharacterData {0x2B6C};//
+        constexpr std::uint32_t CharacterData {0x2B6C};////
         constexpr std::uint32_t MovementSpeed {0x139C}; //
 
     }
 
     namespace SpellCast {
-        constexpr std::uint32_t SpellData {0x8};
-        constexpr std::uint32_t SpellName {0x18};
-        constexpr std::uint32_t SpellSlot {0xC};
-        constexpr std::uint32_t CastTime {0x10C};
-        constexpr std::uint32_t StartPos {0x88};
-        constexpr std::uint32_t EndPos {0x94};
+        constexpr std::uint32_t SpellData {0x8}; //
+        constexpr std::uint32_t SpellName {0x18}; //
+        constexpr std::uint32_t SpellSlot {0xC}; //
+        constexpr std::uint32_t CastTime {0x15C}; //?
+        constexpr std::uint32_t StartPos {0x88}; //
+        constexpr std::uint32_t EndPos {0x94}; //
         constexpr std::uint32_t EndPosAlt {0xA0};
-        constexpr std::uint32_t StartTime {0x144};
-        constexpr std::uint32_t EndTime {0x148};
+        constexpr std::uint32_t StartTime {0x10}; //
+        constexpr std::uint32_t EndTime {0x148}; //
     }
 
     namespace BuffManager {

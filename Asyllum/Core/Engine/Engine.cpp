@@ -104,6 +104,7 @@ void Engine::ProcessSpells() {
         //if (caster->IsLocalPlayer() || caster->IsAllyTo<Hero*>(localPlayer)) continue; // catching only enemy spells.
         auto activeSpellCast = caster->GetSpellCast();
 
+
         if (!Utils::IsValid(activeSpellCast)) continue;
         if (activeSpellCast->spellSlot == -1) {
             Event::OnAutoAttack eventArgs{};
@@ -125,13 +126,11 @@ void Engine::ProcessSpells() {
             spell.destIndex = 0; // TODO:: ADD DESTINATION INDEX
             spell.spellInfo = nullptr;
 
+
             auto spellInfo = locator->GetGameData()->GetSpellInfoByName(spell.name);
             if (Utils::IsValid(spellInfo)) {
                 spell.spellInfo = spellInfo;
             }
-
-            if (!spell.IsValid())
-                return;
 
             Event::OnSpellCast eventArgs{};
             eventArgs.caster = caster;

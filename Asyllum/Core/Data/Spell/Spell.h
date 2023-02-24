@@ -6,6 +6,7 @@
 #define ASYLLUM_SPELL_H
 
 #include "../../Objects/Hero/Hero.h"
+#include "../../../Math/Geometry.h"
 
 #define INVALID_FLOAT 999999.f
 
@@ -19,9 +20,12 @@ public:
     Vector3 startPos;
     Vector3 endPos;
     Vector3 currentPos;
+    Vector3 direction;
     float startTime;
     float endTime;
     SpellInfo* spellInfo;
+
+    Geometry::Polygon path;
 
 public:
     float RemainingCastTime();

@@ -131,6 +131,10 @@ struct Vector3 {
         return result;
     }
 
+    [[nodiscard]] Vector3 perpendicular() const {
+        return {-z, y, x};
+    }
+
 
 
 

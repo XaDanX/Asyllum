@@ -32,8 +32,6 @@ CollisionInfo CollisionEngine::FindCollisionLine(Spell spell) {
 
     float deltaXSpell = direction.x * timePerIter * spell.spellInfo->speed;
     float deltaYSpell = direction.z * timePerIter * spell.spellInfo->speed;
-    float castTime    = spell.RemainingCastTime() + spell.spellInfo->delay;
-
     for(auto& target : locator->GetObjectManager()->GetHeroList()) {
         if (target->GetUnitInfo() == nullptr) {
             continue;
@@ -46,10 +44,7 @@ CollisionInfo CollisionEngine::FindCollisionLine(Spell spell) {
         for (int i = 0; i < iterations; ++i) {
 
             Vector3 targetPos3D = target->position ;
-            Vector2 targetPos2D = Vector2(targetPos3D.x, targetPos3D.z);
-
-            auto tworld = locator->GetEngine()->WorldToScreen(targetPos3D);
-            auto sworld = locator->GetEngine()->WorldToScreen(target->position);
+            Vector2 targetPos2D = Vector2(targetPos3D.x, targetPos3D.z);;
 
             if (targetPos2D.distance(spellPos) < target->GetUnitInfo()->gameplayRadius + spell.spellInfo->width) {
                 result.hitList.push_back(reinterpret_cast<ObjectBase*>((DWORD)target));
