@@ -10,7 +10,6 @@
 #include "../../Asyllum/imgui/imgui.h"
 
 
-
 class OrbWalker : public Module {
 public:
     OrbWalker(std::string _name, ModuleType _type, HashName _champion) : Module(_name, _type, _champion) {
@@ -18,17 +17,21 @@ public:
         this->type = _type;
         this->champion = _champion;
     }
+
     void OnTick();
+
     void OnLoad();
-    void OnGui(){};
-    void OnConfigLoad(){};
-    void OnConfigSave(){};
+
+    void OnGui() {};
+
+    void OnConfigLoad() {};
+
+    void OnConfigSave() {};
 
 public: // config
     bool enabled = true;
     HKey hotKey = HKey::N;
 };
-
 
 
 #endif //ASYLLUM_ORBWALKER_H

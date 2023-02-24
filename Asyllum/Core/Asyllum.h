@@ -21,5 +21,4 @@ public:
 };
 
 
-
 #endif //ASYLLUM_ASYLLUM_H

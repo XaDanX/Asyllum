@@ -31,7 +31,6 @@ enum ModuleType {
 };
 
 
-
 class Module {
 public:
     bool enabled = true;
@@ -40,11 +39,12 @@ public:
     ModuleType type;
     HashName champion;
 
-    Module(std::string _name, ModuleType _type, HashName _champion = HashName::UnknownHash){
+    Module(std::string _name, ModuleType _type, HashName _champion = HashName::UnknownHash) {
         this->name = std::move(_name);
         this->type = _type;
         this->champion = _champion;
     }
+
 public:
     virtual void OnTick() = 0;
 
@@ -53,6 +53,8 @@ public:
     virtual void OnGui() = 0;
 
     virtual void OnConfigLoad() = 0;
+
     virtual void OnConfigSave() = 0;
 };
+
 #endif //ASYLLUM_MODULE_H

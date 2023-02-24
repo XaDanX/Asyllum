@@ -37,12 +37,11 @@ void Menu::Update() {
     ImGui::Begin( "MW" , 0 , ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);
 
 
-    ImGui::BeginChild("##Logo", ImVec2(208, 58), true);
+    ImGui::BeginChild("##Logo", ImVec2(208, 58), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
     ImGui::SameLine();
 
-    ImGui::SetCursorPosY(11);
-    ImGui::SetCursorPos(ImVec2(0, 0));
+    ImGui::SetCursorPos(ImVec2(1, 5));//
     ImGui::Image(locator->GetTextureManager()->GetTexture("logo"), ImVec2(200, 50));
     ImGui::EndChild();
 

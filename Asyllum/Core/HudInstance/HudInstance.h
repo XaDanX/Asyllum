@@ -25,7 +25,7 @@ public:
         DEFINE_MEMBER_N(int, focus, Offsets::HudInstance::Focus);
     };
 
-    bool IsFocused() {
+    bool IsFocused() const {
         return focus == 0x1;
     }
 };

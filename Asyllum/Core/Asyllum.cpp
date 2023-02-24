@@ -21,23 +21,27 @@ namespace {
 }
 
 bool Asyllum::Initialize() {
-    while (locator->GetEngine()->GameTime() < 10.0) {
+    while (locator->GetEngine()->GameTime() < 2.0) {
         Sleep(1000);
     }
+
 
     locator->GetGameData()->Load(deployablePath); // load data, icons
     GameKeybind::InitFromGameConfigs(); // load config
     locator->GetHookingService()->Initialize(); // init hooks
 
-    for (auto hero : locator->GetObjectManager()->GetHeroList()) {
+    for (auto hero: locator->GetObjectManager()->GetHeroList()) {
+        if (hero->IsDummy())
+            continue;
         auto info = hero->GetUnitInfo();
         if (!Utils::IsValid(info)) {
             locator->GetConsole()->Print(XorStr("[CORE] Could not find unit data for: %s").c_str(), hero->name.c_str());
         }
-        for (int index=0; index < 4; index++) {
+        for (int index = 0; index < 4; index++) {
             auto spell = hero->GetSpellSlotById(index)->GetSpellInfo();
             if (!Utils::IsValid(spell)) {
-                locator->GetConsole()->Print(XorStr("[CORE] Could not find spell data for: %s | with id: %i").c_str(), hero->name.c_str(), index);
+                locator->GetConsole()->Print(XorStr("[CORE] Could not find spell data for: %s | with id: %i").c_str(),
+                                             hero->name.c_str(), index);
             }
         }
     }
@@ -55,6 +59,7 @@ void Asyllum::OnGui() {
 }
 
 float peakUpdateTime = 0;
+
 void Asyllum::OnTick() {
     auto timeBegin = std::chrono::high_resolution_clock::now();
     locator->GetEngine()->Update();

@@ -14,8 +14,9 @@ namespace OrbWalkerUtils {
     float lastMoveTick = 0;
 
     int GetAttackDelay() {
-        return (int)(1000.0f / locator->GetObjectManager()->GetLocalPlayer()->GetTotalAttackSpeed());
+        return (int) (1000.0f / locator->GetObjectManager()->GetLocalPlayer()->GetTotalAttackSpeed());
     }
+
     float GetWindupTime() {
         auto player = locator->GetObjectManager()->GetLocalPlayer();
         return (1 / player->GetTotalAttackSpeed() * 1000 *
@@ -33,25 +34,29 @@ namespace OrbWalkerUtils {
                 }
             }
         }
-        return lastAutoAttackTick + (float)GetAttackDelay() + 60.0 < locator->GetEngine()->GetProcessorTime(); //60 = ping
+        return lastAutoAttackTick + (float) GetAttackDelay() + 60.0 <
+               locator->GetEngine()->GameTime() * 1000; //60 = ping
     }
 
     bool CanMove() {
-        return lastMoveTick < locator->GetEngine()->GetProcessorTime();
+        return lastMoveTick < locator->GetEngine()->GameTime() * 1000;
     }
 
-    Hero* GetBestTarget() {
+    Hero *GetBestTarget() {
         float oldDistance = FLT_MAX;
-        Hero* bestTarget = nullptr;
-        for (auto& unit : locator->GetObjectManager()->GetHeroList()) {
+        Hero *bestTarget = nullptr;
+        for (auto &unit: locator->GetObjectManager()->GetHeroList()) {
             if (!unit->IsAlive()) continue;
             if (unit->IsLocalPlayer()) continue;
             if (!unit->targetable) continue;
             if (!unit->IsOnScreen()) continue;
 
-            if (unit->DistanceTo<Hero*>(locator->GetObjectManager()->GetLocalPlayer()) - unit->GetUnitInfo()->gameplayRadius > (locator->GetObjectManager()->GetLocalPlayer()->attackRange + locator->GetObjectManager()->GetLocalPlayer()->GetUnitInfo()->gameplayRadius)) continue;
+            if (unit->DistanceTo<Hero *>(locator->GetObjectManager()->GetLocalPlayer()) -
+                unit->GetUnitInfo()->gameplayRadius > (locator->GetObjectManager()->GetLocalPlayer()->attackRange +
+                                                       locator->GetObjectManager()->GetLocalPlayer()->GetUnitInfo()->gameplayRadius))
+                continue;
 
-            auto distance = locator->GetObjectManager()->GetLocalPlayer()->DistanceTo<Hero*>(unit);
+            auto distance = locator->GetObjectManager()->GetLocalPlayer()->DistanceTo<Hero *>(unit);
 
             if (distance < oldDistance) {
                 oldDistance = distance;
@@ -74,16 +79,18 @@ void OrbWalker::OnTick() {
         auto target = OrbWalkerUtils::GetBestTarget();
         if (target) {
             if (OrbWalkerUtils::CanAttack()) {
-                Vector3& loc = target->position;
-                input.IssueClickAt(CT_RIGHT_CLICK, [loc] {return locator->GetEngine()->WorldToScreen(loc);}, GameKeybind::TargetChampionsOnly);
-                OrbWalkerUtils::lastAutoAttackTick = locator->GetEngine()->GetProcessorTime() + (float)TICK_RATE;
-                OrbWalkerUtils::lastMoveTick = locator->GetEngine()->GetProcessorTime() + OrbWalkerUtils::GetWindupTime() + (float)TICK_RATE;
+                Vector3 &loc = target->position;
+                input.IssueClickAt(CT_RIGHT_CLICK, [loc] { return locator->GetEngine()->WorldToScreen(loc); },
+                                   GameKeybind::TargetChampionsOnly);
+                OrbWalkerUtils::lastAutoAttackTick = locator->GetEngine()->GameTime() * 1000 + (float) TICK_RATE;
+                OrbWalkerUtils::lastMoveTick =
+                        locator->GetEngine()->GameTime() * 1000 + OrbWalkerUtils::GetWindupTime() + (float) TICK_RATE;
                 return;
             }
         }
         if (OrbWalkerUtils::CanMove()) {
             this->input.IssueClick(CT_RIGHT_CLICK, GameKeybind::TargetChampionsOnly);
-            OrbWalkerUtils::lastMoveTick = locator->GetEngine()->GetProcessorTime() + 90;
+            OrbWalkerUtils::lastMoveTick = locator->GetEngine()->GameTime() * 1000 + 90;
             return;
         }
 
