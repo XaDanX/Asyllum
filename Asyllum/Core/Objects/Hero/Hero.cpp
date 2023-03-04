@@ -9,28 +9,6 @@
 
 
 Vector2 Hero::GetHealthBarPosition() {
-
-    /*Vector3 point = position.clone();
-
-    auto unit = GetUnitInfo();
-    auto height = 100.f;
-    if (Utils::IsValid(unit)) {
-        height = unit->healthBarHeight;
-    }
-
-    point.y += height;
-
-    auto zoomMultiplier = 2250.0 / 100;
-    auto zoomPercent = (locator->GetEngine()->GetHudInstance()->zoomInstance->visibleZoom / zoomMultiplier) / 100;
-
-    Vector2 out = locator->GetEngine()->WorldToScreen(point);
-
-    float delta = (float) locator->GetEngine()->WindowHeight() * 0.00083333335f * (height * this->scale);
-    delta = static_cast<float>(delta) / static_cast<float>(zoomPercent);
-    out.y -= delta;
-    out.x -= 70.0f;
-    return out;*/
-
     auto unit = GetUnitInfo();
     auto height = 100.f;
     if (Utils::IsValid(unit)) {

@@ -75,6 +75,21 @@ struct Vector3 {
         return static_cast<float>(sqrt(pow(x - o.x, 2) + pow(y - o.y, 2) + pow(z - o.z, 2)));
     }
 
+    [[nodiscard]] float distance_squared(const Vector3 &o) const {
+
+        Vector3 delta;
+        delta.x = x - o.x;
+        delta.x = x - o.y;
+        delta.x = x - o.z;
+        return x * x + y * y + z * z;
+    }
+
+    Vector3 append(Vector3 pos1, Vector3 pos2, float dist) {
+        auto norm = pos2.sub(pos1).normalize();
+        auto mul = norm.mult(dist);
+        return pos2.add(mul);
+    }
+
     [[nodiscard]] Vector3 rotate_x(float angle) const {
         return {
                 x,
@@ -155,6 +170,8 @@ struct Vector3 {
 
     }
 
+    Vector3 segment_point(const Vector3 &segment_start, const Vector3 &segment_end);
+
 
 };
 
@@ -180,6 +197,8 @@ struct Vector4 {
     [[nodiscard]] float distance(const Vector4 &o) const {
         return static_cast<float>(sqrt(pow(x - o.x, 2) + pow(y - o.y, 2) + pow(z - o.z, 2) + pow(w - o.w, 2)));
     }
+
+
 
     [[nodiscard]] Vector4 vscale(const Vector4 &s) const {
         return {x * s.x, y * s.y, z * s.z, w * s.w};

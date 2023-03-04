@@ -35,11 +35,11 @@ namespace OrbWalkerUtils {
             }
         }
         return lastAutoAttackTick + (float) GetAttackDelay() + 60.0 <
-               locator->GetEngine()->GameTime() * 1000; //60 = ping
+                locator->GetEngine()->GetGameTick(); //60 = ping
     }
 
     bool CanMove() {
-        return lastMoveTick < locator->GetEngine()->GameTime() * 1000;
+        return lastMoveTick < locator->GetEngine()->GetGameTick();
     }
 
     Hero *GetBestTarget() {
@@ -82,15 +82,15 @@ void OrbWalker::OnTick() {
                 Vector3 &loc = target->position;
                 input.IssueClickAt(CT_RIGHT_CLICK, [loc] { return locator->GetEngine()->WorldToScreen(loc); },
                                    GameKeybind::TargetChampionsOnly);
-                OrbWalkerUtils::lastAutoAttackTick = locator->GetEngine()->GameTime() * 1000 + (float) TICK_RATE;
+                OrbWalkerUtils::lastAutoAttackTick = locator->GetEngine()->GetGameTick()  + (float)TICK_RATE;
                 OrbWalkerUtils::lastMoveTick =
-                        locator->GetEngine()->GameTime() * 1000 + OrbWalkerUtils::GetWindupTime() + (float) TICK_RATE;
+                        locator->GetEngine()->GetGameTick() + OrbWalkerUtils::GetWindupTime() + OrbWalkerUtils::GetWindupTime() * 0.05 + (float)TICK_RATE;
                 return;
             }
         }
         if (OrbWalkerUtils::CanMove()) {
             this->input.IssueClick(CT_RIGHT_CLICK, GameKeybind::TargetChampionsOnly);
-            OrbWalkerUtils::lastMoveTick = locator->GetEngine()->GameTime() * 1000 + 90;
+            OrbWalkerUtils::lastMoveTick = locator->GetEngine()->GetGameTick() + 90;
             return;
         }
 

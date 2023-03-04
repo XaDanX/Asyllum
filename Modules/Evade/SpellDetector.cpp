@@ -41,6 +41,7 @@ void SpellDetector::Update() {
 
 
 
+
 }
 
 void SpellDetector::ProcessActiveSpells() {

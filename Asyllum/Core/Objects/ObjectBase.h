@@ -12,7 +12,6 @@
 #include "../Data/UnitInfo.h"
 #include "../../Protection/XorStr.h"
 #include "Hero/AiManager/AiManager.h"
-
 enum [[maybe_unused]] HashName {
     UnknownHash = 0,
     Aatrox = 0x71097207,

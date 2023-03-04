@@ -52,8 +52,8 @@ void Evade::OnTick() {
     }
 
     if (Evade::isEvading) {
-        auto a = locator->GetEngine()->WorldToScreen(player->position);
-        ImGui::GetBackgroundDrawList()->AddText({a.x, a.y}, ImColor(0, 255, 0, 255), "Evading");
+        auto worldPos = locator->GetEngine()->WorldToScreen(player->position);
+        ImGui::GetBackgroundDrawList()->AddText({worldPos.x, worldPos.y}, ImColor(0, 255, 0, 255), "Evading");
     }
 
     auto evadable = GetSpellToEvade();
@@ -149,9 +149,9 @@ Vector3 Evade::GetLinearEvadePoint(DetectedSpell* spell, Vector3 pos) {
     distance += distance * 0.2;
     float angle;
     if (determinant < 0.0)
-        angle = 1.57079633;
+        angle = 1.57079633f;
     else
-        angle = -1.57079633;
+        angle = -1.57079633f;
 
     auto point = player->position.add(spellDir.rotate_y(angle).mult(distance));
     if (!locator->GetEngine()->IsNotWall(point)) {
@@ -211,5 +211,4 @@ void Evade::OnGui() {
         }
     }
 }
-
 
