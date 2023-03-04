@@ -6,8 +6,9 @@
 #include "../../Locator/Locator.h"
 #include "../../../Protection/XorStr.h"
 #include "../../../../Modules/OrbWalker/OrbWalker.h"
+#include "../../../../Modules/Evade/Evade.h"
 
-void ModuleManager::RegisterModule(Module* module) {
+void ModuleManager::RegisterModule(Module *module) {
 
     if (module->type != ModuleType::UTILITY_SCRIPT) {
         if (locator->GetObjectManager()->GetLocalPlayer()->characterData->hash == module->champion) {
@@ -25,12 +26,14 @@ void ModuleManager::RegisterModules() {
         Append all modules here
     */
     RegisterModule(new OrbWalker(XorStr("OrbWalker"), ModuleType::UTILITY_SCRIPT, HashName::UnknownHash));
+    RegisterModule(new Evade(XorStr("Evade"), ModuleType::UTILITY_SCRIPT, HashName::UnknownHash));
 }
 
 void ModuleManager::Initialize() {
     this->RegisterModules();
-    for (auto& currentModule : this->moduleList) {
-        locator->GetConsole()->Print(XorStr("[MODULE MANAGER] Loaded module: %s!").c_str(), currentModule->name.c_str());
+    for (auto &currentModule: this->moduleList) {
+        locator->GetConsole()->Print(XorStr("[MODULE MANAGER] Loaded module: %s!").c_str(),
+                                     currentModule->name.c_str());
         currentModule->OnLoad();
     }
 }
@@ -45,12 +48,13 @@ void ModuleManager::UpdateModules() {
     } __except (1) {
         locator->GetConsole()->Print(XorStr("[MODULE MANAGER] Exception occurred in one of modules!").c_str());
     }*/
-    for (auto &currentModule : this->moduleList) {
+    for (auto &currentModule: this->moduleList) {
         try {
             currentModule->OnTick();
             currentModule->input.UpdateIssuedOperations();
         } catch (const std::exception &e) {
-            locator->GetConsole()->Print(("[MODULE MANAGER] Exception occurred in module " + currentModule->name + ": " + e.what()).c_str());
+            locator->GetConsole()->Print(
+                    ("[MODULE MANAGER] Exception occurred in module " + currentModule->name + ": " + e.what()).c_str());
         }
     }
 
@@ -58,7 +62,7 @@ void ModuleManager::UpdateModules() {
 }
 
 void ModuleManager::OnExit() {
-    for (auto& currentModule : this->moduleList) {
+    for (auto &currentModule: this->moduleList) {
         //currentModule->OnExit();
     }
 }

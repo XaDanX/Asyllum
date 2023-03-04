@@ -6,7 +6,7 @@
 #define ASYLLUM_MATH_H
 
 namespace {
-    void MultiplySquareMatrices(float* output, float* a, float* b) {
+    void MultiplySquareMatrices(float *output, float *a, float *b) {
         int size = 4 * 4;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -22,9 +22,9 @@ namespace {
         auto px = s2.x - s1.x;
         auto py = s2.y - s1.y;
 
-        auto norm = (px*px) + (py*py);
+        auto norm = (px * px) + (py * py);
 
-        auto u = ((p.x - s1.x) * px + (p.y - s1.y) * py) / (float)norm;
+        auto u = ((p.x - s1.x) * px + (p.y - s1.y) * py) / (float) norm;
 
         if (u > 1)
             u = 1;
@@ -37,7 +37,7 @@ namespace {
         auto dx = x - p.x;
         auto dy = y - p.y;
 
-        return static_cast<float>(std::pow(dx*dx + dy*dy, 0.5));
+        return static_cast<float>(std::pow(dx * dx + dy * dy, 0.5));
 
     }
     /*float PerpedincularDistToSegment(Vector2 p, Vector2 s1, Vector2 s2) { //p = pos s1 start s2 end // start end pos

@@ -8,7 +8,7 @@
 
 #include "../ObjectBase.h"
 
-class Minion : public ObjectBase  {
+class Minion : public ObjectBase {
 
 };
 

@@ -4,20 +4,22 @@
 
 #ifndef ASYLLUM_COLLISIONENGINE_H
 #define ASYLLUM_COLLISIONENGINE_H
+
 #include <iostream>
 #include <map>
 #include <string>
 #include "../Objects/Hero/SpellCast/SpellCast.h"
 #include "../Data/Spell/Spell.h"
+#include "../../../Modules/Evade/SpellDetector.h"
 
 struct CollisionInfo {
     bool CollideWithPlayer = false;
-    std::vector<ObjectBase*> hitList;
+    std::vector<ObjectBase *> hitList;
 };
 
 class CollisionEngine {
 public:
-    static CollisionInfo FindCollisionLine(Spell spell);
+    static CollisionInfo FindCollisionLine(DetectedSpell spell);
 
 };
 

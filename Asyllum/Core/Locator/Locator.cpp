@@ -4,11 +4,11 @@
 
 #include "Locator.h"
 
-HookingService* Locator::GetHookingService() {
+HookingService *Locator::GetHookingService() {
     if (!hookingService) {
         hookingService = std::make_unique<HookingService>();
     }
-   return hookingService.get();
+    return hookingService.get();
 }
 
 
@@ -19,7 +19,7 @@ Asyllum *Locator::GetAsyllumInstance() {
     return asyllum.get();
 }
 
-Engine* Locator::GetEngine() {
+Engine *Locator::GetEngine() {
     if (!engine) {
         engine = std::make_unique<Engine>();
     }

@@ -12,7 +12,8 @@ std::function<Vector2()>  FakeMouse::FakePositionGetter;
 
 void FakeMouse::Init() {
 
-    if (MH_CreateHook(GetCursorPos, &FakeMouse::HookedGetCursorPos, reinterpret_cast<void**>(&TrueGetCursorPos)) != MH_OK) {
+    if (MH_CreateHook(GetCursorPos, &FakeMouse::HookedGetCursorPos, reinterpret_cast<void **>(&TrueGetCursorPos)) !=
+        MH_OK) {
     }
 
     if (MH_EnableHook(GetCursorPos) != MH_OK) {
@@ -21,28 +22,28 @@ void FakeMouse::Init() {
 
 BOOL __stdcall FakeMouse::HookedGetCursorPos(LPPOINT lpPoint) {
     if (lpPoint != NULL && FakeMouse::Enabled) {
-        __try {
+        __try{
                 return SpoofedGetCursorPos(lpPoint);
         }
-        __except (EXCEPTION_EXECUTE_HANDLER) {
+        __except(EXCEPTION_EXECUTE_HANDLER)
+        {
             return TRUE;
         }
-    }
-    else
+    } else
         return TrueGetCursorPos(lpPoint);
 }
 
 BOOL __stdcall FakeMouse::SpoofedGetCursorPos(LPPOINT lpPoint) {
     Vector2 v = FakeMouse::FakePositionGetter();
-    lpPoint->x = (LONG)v.x;
-    lpPoint->y = (LONG)v.y;
+    lpPoint->x = (LONG) v.x;
+    lpPoint->y = (LONG) v.y;
     return TRUE;
 }
 
-void FakeMouse::UnSpoof()  {
+void FakeMouse::UnSpoof() {
     FakeMouse::Enabled = false;
 }
 
-void FakeMouse::Spoof(){
+void FakeMouse::Spoof() {
     FakeMouse::Enabled = true;
 }

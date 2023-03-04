@@ -4,6 +4,7 @@
 
 #ifndef ASYLLUM_BUFFMANAGER_H
 #define ASYLLUM_BUFFMANAGER_H
+
 #include <Windows.h>
 #include <iostream>
 #include <vector>
@@ -11,8 +12,7 @@
 #include "../../../../Globals/Globals.h"
 #include "../../../Types/Definitions.h"
 
-enum class BuffType : int
-{
+enum class BuffType : int {
     Internal = 0,
     Aura = 1,
     CombatEnhancer = 2,
@@ -54,16 +54,14 @@ enum class BuffType : int
     UnKillable = 38
 };
 
-class ScriptBaseBuff
-{
+class ScriptBaseBuff {
 public:
     union {
         DEFINE_MEMBER_N(char, name[32], Offsets::BuffManager::Name);
     };
 };
 
-class BuffInstance
-{
+class BuffInstance {
 public:
     union {
         DEFINE_MEMBER_N(BuffType, type, Offsets::BuffManager::BuffType);
@@ -77,31 +75,28 @@ public:
 
 class BuffManager {
 public:
-    std::vector<BuffInstance*> GetBuffList()
-    {
-        std::vector<BuffInstance*> buffs;
-        const DWORD buffBegin = *reinterpret_cast<DWORD*>((DWORD)this + Offsets::BuffManager::BuffStart);
-        const DWORD buffEnd = *reinterpret_cast<DWORD*>((DWORD)this + Offsets::BuffManager::BuffEnd);
+    std::vector<BuffInstance *> GetBuffList() {
+        std::vector<BuffInstance *> buffs;
+        const DWORD buffBegin = *reinterpret_cast<DWORD *>((DWORD) this + Offsets::BuffManager::BuffStart);
+        const DWORD buffEnd = *reinterpret_cast<DWORD *>((DWORD) this + Offsets::BuffManager::BuffEnd);
 
-        if (buffBegin != 0 && buffEnd != 0)
-        {
-            for (DWORD i = 0; i < (buffEnd - buffBegin); i += 0x08)
-            {
-                BuffInstance* buff = *reinterpret_cast<BuffInstance**>(buffBegin + i);
+        if (buffBegin != 0 && buffEnd != 0) {
+            for (DWORD i = 0; i < (buffEnd - buffBegin); i += 0x08) {
+                BuffInstance *buff = *reinterpret_cast<BuffInstance **>(buffBegin + i);
 
-                if ((DWORD)buff < 0x1000)
+                if ((DWORD) buff < 0x1000)
                     continue;
 
-                if ((DWORD)buff->scriptBaseBuff < 0x1000)
+                if ((DWORD) buff->scriptBaseBuff < 0x1000)
                     continue;
 
-               // if (buff->stacks <= 0)
-                    //continue;
+                // if (buff->stacks <= 0)
+                //continue;
 
-                if (*reinterpret_cast<float*>(RVA(Offsets::Game::GameTime)) > buff->endTime)
+                if (*reinterpret_cast<float *>(RVA(Offsets::Game::GameTime)) > buff->endTime)
                     continue;
 
-                if (*reinterpret_cast<float*>(RVA(Offsets::Game::GameTime)) < buff->startTime)
+                if (*reinterpret_cast<float *>(RVA(Offsets::Game::GameTime)) < buff->startTime)
                     continue;
 
                 buffs.emplace_back(buff);
@@ -111,10 +106,8 @@ public:
         return buffs;
     }
 
-    bool HasBuff(const std::string& name)
-    {
-        for (auto& buff : GetBuffList())
-        {
+    bool HasBuff(const std::string &name) {
+        for (auto &buff: GetBuffList()) {
             if (strcmp(buff->scriptBaseBuff->name, name.c_str()) == 0)
                 return true;
         }

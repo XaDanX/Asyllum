@@ -13,7 +13,7 @@
 class Spell {
 public:
     std::string name;
-    Hero* caster;
+    Hero *caster;
     BYTE destIndex; // maybe auto resolve? idk
     int spellSlot;
     float castTime;
@@ -23,15 +23,17 @@ public:
     Vector3 direction;
     float startTime;
     float endTime;
-    SpellInfo* spellInfo;
-
-    Geometry::Polygon path;
+    SpellInfo *spellInfo;
 
 public:
     float RemainingCastTime();
+
     float TimeToCollision(Vector3 pos);
+
     bool IsValid();
+
     bool IsPointInRange(Vector3 point);
+
     bool IsCasted();
 };
 

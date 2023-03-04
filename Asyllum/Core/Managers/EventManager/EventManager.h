@@ -4,25 +4,26 @@
 
 #ifndef ASYLLUM_EVENTMANAGER_H
 #define ASYLLUM_EVENTMANAGER_H
+
 #include <typeinfo>
 #include <WTypesbase.h>
 #include <unordered_map>
 
-template <typename T>
+template<typename T>
 constexpr static size_t GetHashCode() {
     return typeid(T).hash_code();
 }
 
 class EventManager {
 private:
-    std::unordered_map<size_t, std::vector<void*>> subscribers;
+    std::unordered_map<size_t, std::vector<void *>> subscribers;
 public:
-    template <typename TEvent>
-    inline constexpr void Subscribe(void* callback) {
+    template<typename TEvent>
+    inline constexpr void Subscribe(void *callback) {
         subscribers[GetHashCode<TEvent>()].emplace_back(callback);
     }
 
-    template <typename TEvent>
+    template<typename TEvent>
     inline constexpr void Publish(TEvent event) {
         auto found = subscribers.find(GetHashCode<TEvent>());
 
@@ -30,9 +31,8 @@ public:
             return;
         }
 
-        for (auto sub : found->second)
-        {
-            static_cast<void(*)(TEvent)>(sub)(event);
+        for (auto sub: found->second) {
+            static_cast<void (*)(TEvent)>(sub)(event);
         }
     }
 

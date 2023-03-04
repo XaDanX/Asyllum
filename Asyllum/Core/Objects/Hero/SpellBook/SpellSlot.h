@@ -4,6 +4,7 @@
 
 #ifndef ASYLLUM_SPELLSLOT_H
 #define ASYLLUM_SPELLSLOT_H
+
 #include <vector>
 #include "../../../../Globals/Globals.h"
 #include "../../../../Globals/Offsets.h"
@@ -39,16 +40,19 @@ public:
 
 
 private:
-    SpellInfo* spellInfo;
+    SpellInfo *spellInfo;
 public:
     std::string GetName() {
-        int addr = *reinterpret_cast<int*>(reinterpret_cast<DWORD>(this) + Offsets::SpellBook::SpellInfo) + 0x18;
+        int addr = *reinterpret_cast<int *>(reinterpret_cast<DWORD>(this) + Offsets::SpellBook::SpellInfo) + 0x18;
         return StringUtils::GetString(addr);
 
     }
+
     bool IsReady();
+
     int GetCooldown();
-    SpellInfo* GetSpellInfo();
+
+    SpellInfo *GetSpellInfo();
 };
 
 

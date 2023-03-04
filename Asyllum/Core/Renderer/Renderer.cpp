@@ -8,21 +8,22 @@
 
 void Renderer::Text(const Vector2 &pos, const char *text, const ImVec4 &color) {
     ImVec2 size = ImGui::CalcTextSize(text);
-    drawList->AddText(ImVec2(pos.x - size.x/2.f, pos.y - size.y/2.f), ImColor(color), text);
+    drawList->AddText(ImVec2(pos.x - size.x / 2.f, pos.y - size.y / 2.f), ImColor(color), text);
 }
 
-void Renderer::DrawCircleAt(const Vector3& worldPos, float radius, bool filled, int numPoints, ImColor color, float thickness) {
+void Renderer::DrawCircleAt(const Vector3 &worldPos, float radius, bool filled, int numPoints, ImColor color,
+                            float thickness) {
     if (numPoints >= 200)
         return;
 
     static ImVec2 points[200];
 
-    ImDrawList* canvas = ImGui::GetBackgroundDrawList();
+    ImDrawList *canvas = ImGui::GetBackgroundDrawList();
 
     float step = 6.2831f / numPoints;
     float theta = 0.f;
     for (int i = 0; i < numPoints; i++, theta += step) {
-        Vector3 worldSpace = { worldPos.x + radius * cos(theta), worldPos.y, worldPos.z - radius * sin(theta) };
+        Vector3 worldSpace = {worldPos.x + radius * cos(theta), worldPos.y, worldPos.z - radius * sin(theta)};
         Vector2 screenSpace = locator->GetEngine()->WorldToScreen(worldSpace);
 
         points[i].x = screenSpace.x;
@@ -36,24 +37,25 @@ void Renderer::DrawCircleAt(const Vector3& worldPos, float radius, bool filled, 
 }
 
 
-
 struct Vertex {
-    float    pos[3];
+    float pos[3];
     D3DCOLOR col;
-    float    uv[2];
+    float uv[2];
 };
 
 
-const static int                          VertexBuffSize = 10000;
-LPDIRECT3DVERTEXBUFFER9                   vertexBuff     = NULL;
+const static int VertexBuffSize = 10000;
+LPDIRECT3DVERTEXBUFFER9 vertexBuff = NULL;
+
 void Renderer::DrawRiotCircle(const Vector3 &pos, float radius, ImColor color, bool filled) {
-    IDirect3DTexture9* image;
+    IDirect3DTexture9 *image;
     if (filled)
         image = locator->GetTextureManager()->GetTexture(XorStr("circle1"));
     else
         image = locator->GetTextureManager()->GetTexture(XorStr("circle1_nofill"));
     Vector2 size = Vector2(radius * 2, radius * 2);
-    auto colorFixed = D3DCOLOR_ARGB((int)(color.Value.w*255), (int)(color.Value.x*255), (int)(color.Value.y*255), (int)(color.Value.z*255));
+    auto colorFixed = D3DCOLOR_ARGB((int) (color.Value.w * 255), (int) (color.Value.x * 255),
+                                    (int) (color.Value.y * 255), (int) (color.Value.z * 255));
 
     float halfX = size.x / 2.f;
     float halfY = size.y / 2.f;
@@ -64,15 +66,17 @@ void Renderer::DrawRiotCircle(const Vector3 &pos, float radius, ImColor color, b
     auto p4 = Vector3(pos.x - halfX, pos.y, pos.z - halfY);
 
 
-
     if (!vertexBuff) {
-        if (locator->GetHookingService()->GetDevice()->CreateVertexBuffer(VertexBuffSize * sizeof(Vertex), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1), D3DPOOL_DEFAULT, &vertexBuff, NULL) < 0) {
+        if (locator->GetHookingService()->GetDevice()->CreateVertexBuffer(VertexBuffSize * sizeof(Vertex),
+                                                                          D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY,
+                                                                          (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1),
+                                                                          D3DPOOL_DEFAULT, &vertexBuff, NULL) < 0) {
             return;
         }
     }
 
-    Vertex* vtx;
-    if (vertexBuff->Lock(0, (UINT)(VertexBuffSize), (void**)&vtx, D3DLOCK_DISCARD) < 0) {
+    Vertex *vtx;
+    if (vertexBuff->Lock(0, (UINT) (VertexBuffSize), (void **) &vtx, D3DLOCK_DISCARD) < 0) {
         return;
     }
 
@@ -129,7 +133,7 @@ void Renderer::DrawRiotCircle(const Vector3 &pos, float radius, ImColor color, b
     locator->GetHookingService()->GetDevice()->SetStreamSource(0, vertexBuff, 0, sizeof(Vertex));
     locator->GetHookingService()->GetDevice()->SetFVF((D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1));
 
-    RECT scissor = { 0, 0, locator->GetEngine()->WindowWidth(), locator->GetEngine()->WindowHeight() };
+    RECT scissor = {0, 0, locator->GetEngine()->WindowWidth(), locator->GetEngine()->WindowHeight()};
     locator->GetHookingService()->GetDevice()->SetScissorRect(&scissor);
 
 
@@ -142,18 +146,29 @@ void Renderer::DrawRiotCircle(const Vector3 &pos, float radius, ImColor color, b
 bool Renderer::CustomGuiHotkey(int *k, const ImVec2 &size_arg) {
     static bool waitingforkey = false;
     if (waitingforkey == false) {
-        if (ImGui::Button(KeyNames[*(int*)k], size_arg))
+        if (ImGui::Button(KeyNames[*(int *) k], size_arg))
             waitingforkey = true;
-    }
-    else if (waitingforkey == true) {
+    } else if (waitingforkey == true) {
         ImGui::Button("...", size_arg);
-        for (auto& Key : KeyCodes)
-        {
+        for (auto &Key: KeyCodes) {
             if (GetAsyncKeyState(Key) & 0x8000) {
-                *(int*)k = Key;
+                *(int *) k = Key;
                 waitingforkey = false;
             }
         }
     }
     return true;
+}
+
+void Renderer::DrawPolygon(Geometry::Polygon polygon, ImColor color, int thickness) {
+    ImVec2 points[200];
+    int i = 0;
+    for (auto& point : polygon.points) {
+        Vector2 screenSpace = locator->GetEngine()->WorldToScreen(point);
+        points[i].x = screenSpace.x;
+        points[i].y = screenSpace.y;
+        i++;
+    }
+
+    ImGui::GetBackgroundDrawList()->AddPolyline(points, i, color, true, thickness);
 }

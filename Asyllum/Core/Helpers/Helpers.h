@@ -4,8 +4,10 @@
 
 #ifndef ASYLLUM_HELPERS_H
 #define ASYLLUM_HELPERS_H
+
 #include <Windows.h>
 #include <TlHelp32.h>
+
 namespace Helpers {
     MODULEENTRY32 GetModule(const char *modName, DWORD proc_id) {
         HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, proc_id);

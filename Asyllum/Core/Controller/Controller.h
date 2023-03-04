@@ -4,6 +4,7 @@
 
 #ifndef ASYLLUM_CONTROLLER_H
 #define ASYLLUM_CONTROLLER_H
+
 #include <iostream>
 #include <queue>
 #include "../../Globals/KeyCodes.h"
@@ -36,22 +37,26 @@ enum ClickType {
 class IoStep {
 
 public:
-    void         Start() {};
+    void Start() {};
+
     virtual bool Update() = 0;
 };
 
 class IoStepBatch {
 public:
     IoStepBatch(std::initializer_list<std::shared_ptr<IoStep>> initSteps, int controlId);
+
     void Start();
+
     bool Update();
-    bool operator==(const IoStepBatch& other);
+
+    bool operator==(const IoStepBatch &other);
 
 public:
-    int                                 controlId;
+    int controlId;
 
 private:
-    std::shared_ptr<IoStep>             currentStep;
+    std::shared_ptr<IoStep> currentStep;
     std::queue<std::shared_ptr<IoStep>> steps;
 };
 
@@ -59,14 +64,15 @@ class InputController {
 
 public:
 
-    bool    IsDown(HKey key);
-    bool    IsDown(int key);
+    bool IsDown(HKey key);
 
-    bool    WasPressed(HKey key, float lastMillis = 250.f);
+    bool IsDown(int key);
+
+    bool WasPressed(HKey key, float lastMillis = 250.f);
 
     Vector2 GetMouseCursor();
 
-    void    SetMouseCursor(const Vector2& position);
+    void SetMouseCursor(const Vector2 &position);
 
     void UpdateIssuedOperations();
 
@@ -86,7 +92,7 @@ public:
 
     void IssueDelay(float millis);
 
-    static int ImGuiKeySelect(const char* label, int key);
+    static int ImGuiKeySelect(const char *label, int key);
 
     int GetVirtualKey(HKey key);
 
@@ -94,19 +100,19 @@ private:
     void PushIoBatch(std::shared_ptr<IoStepBatch> batch);
 
 public:
-    static const float                ScreenWidth;
-    static const float                ScreenHeight;
-    static const float                WidthRatio;
-    static const float                HeightRatio;
+    static const float ScreenWidth;
+    static const float ScreenHeight;
+    static const float WidthRatio;
+    static const float HeightRatio;
 
 private:
-    std::shared_ptr<IoStepBatch>             ioCurrent;
+    std::shared_ptr<IoStepBatch> ioCurrent;
     std::deque<std::shared_ptr<IoStepBatch>> ioQueue;
 
-    duration<float, std::milli>       timeDiff;
+    duration<float, std::milli> timeDiff;
     high_resolution_clock::time_point nowTime;
-    high_resolution_clock::time_point lastTimePressed[300] = { high_resolution_clock::now() };
-    bool                              pressed[300] = { 0 };
+    high_resolution_clock::time_point lastTimePressed[300] = {high_resolution_clock::now()};
+    bool pressed[300] = {0};
 };
 
 class IoDelay : public IoStep {
@@ -127,8 +133,8 @@ public:
         return true;
     }
 
-    float                             delayMillis;
-    duration<float, std::milli>       timeDiff;
+    float delayMillis;
+    duration<float, std::milli> timeDiff;
     high_resolution_clock::time_point startTime;
 };
 
@@ -169,7 +175,7 @@ public:
         FakeMouse::FakePositionGetter = [pos] { return pos; };
     }
 
-    IoSpoofMouse(std::function<Vector2()>& getter) {
+    IoSpoofMouse(std::function<Vector2()> &getter) {
         FakeMouse::FakePositionGetter = getter;
     }
 
@@ -200,7 +206,7 @@ public:
         if (condition && !condition())
             return true;
 
-        INPUT input = { 0 };
+        INPUT input = {0};
         input.type = INPUT_MOUSE;
         input.mi.dwFlags = (type == ClickType::CT_LEFT_CLICK ? MOUSEEVENTF_LEFTDOWN : MOUSEEVENTF_RIGHTDOWN);
         SendInput(1, &input, sizeof(INPUT));
@@ -223,7 +229,7 @@ public:
         if (condition && !condition())
             return true;
 
-        INPUT input = { 0 };
+        INPUT input = {0};
         input.type = INPUT_MOUSE;
         input.mi.dwFlags = (type == ClickType::CT_LEFT_CLICK ? MOUSEEVENTF_LEFTUP : MOUSEEVENTF_RIGHTUP);
         SendInput(1, &input, sizeof(INPUT));

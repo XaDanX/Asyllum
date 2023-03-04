@@ -22,17 +22,28 @@
 
 class Locator {
 public:
-    HookingService* GetHookingService();
-    Asyllum* GetAsyllumInstance();
-    Engine* GetEngine();
-    ObjectManager* GetObjectManager();
-    GameData* GetGameData();
-    ModuleManager* GetModuleManager();
-    Console* GetConsole();
-    TextureManager* GetTextureManager();
-    Renderer* GetRenderer();
-    EventManager* GetEventManager();
-    Menu* GetMenu();
+    HookingService *GetHookingService();
+
+    Asyllum *GetAsyllumInstance();
+
+    Engine *GetEngine();
+
+    ObjectManager *GetObjectManager();
+
+    GameData *GetGameData();
+
+    ModuleManager *GetModuleManager();
+
+    Console *GetConsole();
+
+    TextureManager *GetTextureManager();
+
+    Renderer *GetRenderer();
+
+    EventManager *GetEventManager();
+
+    Menu *GetMenu();
+
 private:
     std::unique_ptr<HookingService> hookingService;
     std::unique_ptr<Asyllum> asyllum;
@@ -46,6 +57,7 @@ private:
     std::unique_ptr<EventManager> eventManager;
     std::unique_ptr<Menu> menu;
 };
+
 inline extern std::unique_ptr<Locator> locator = std::make_unique<Locator>();
 
 

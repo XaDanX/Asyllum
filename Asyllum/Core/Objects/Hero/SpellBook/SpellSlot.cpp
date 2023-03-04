@@ -18,7 +18,7 @@ bool SpellSlot::IsReady() {
 int SpellSlot::GetCooldown() {
     auto time = readyTime - locator->GetEngine()->GameTime();
     if (time > 0)
-        return (int)time;
+        return (int) time;
     else
         return 0;
 }

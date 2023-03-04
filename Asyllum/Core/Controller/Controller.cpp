@@ -5,11 +5,11 @@
 #include "../../imgui/imgui.h"
 #include <windows.h>
 
-const float InputController::ScreenHeight = (float)::GetSystemMetrics(SM_CYSCREEN) - 1;
-const float InputController::ScreenWidth  = (float)::GetSystemMetrics(SM_CXSCREEN) - 1;
+const float InputController::ScreenHeight = (float) ::GetSystemMetrics(SM_CYSCREEN) - 1;
+const float InputController::ScreenWidth = (float) ::GetSystemMetrics(SM_CXSCREEN) - 1;
 
 const float InputController::HeightRatio = 65535.0f / ScreenHeight;
-const float InputController::WidthRatio  = 65535.0f / ScreenWidth;
+const float InputController::WidthRatio = 65535.0f / ScreenWidth;
 
 bool InputController::IsDown(HKey key) {
     int virtualKey = GetVirtualKey(key);
@@ -18,12 +18,12 @@ bool InputController::IsDown(HKey key) {
 
     return GetAsyncKeyState(virtualKey);
 }
+
 bool InputController::IsDown(int key) {
     return GetAsyncKeyState(key);
 }
 
-bool InputController::WasPressed(HKey key, float lastMillis)
-{
+bool InputController::WasPressed(HKey key, float lastMillis) {
     int virtualKey = GetVirtualKey(key);
     if (virtualKey == 0)
         return false;
@@ -47,21 +47,19 @@ bool InputController::WasPressed(HKey key, float lastMillis)
     return false;
 }
 
-Vector2 InputController::GetMouseCursor()
-{
+Vector2 InputController::GetMouseCursor() {
     POINT pos;
     GetCursorPos(&pos);
-    return { (float)pos.x, (float)pos.y };
+    return {(float) pos.x, (float) pos.y};
 }
 
-void InputController::SetMouseCursor(const Vector2 & position)
-{
-    float fScreenWidth  = (float)(GetSystemMetrics(SM_CXSCREEN) - 1);
-    float fScreenHeight = (float)(GetSystemMetrics(SM_CYSCREEN) - 1);
+void InputController::SetMouseCursor(const Vector2 &position) {
+    float fScreenWidth = (float) (GetSystemMetrics(SM_CXSCREEN) - 1);
+    float fScreenHeight = (float) (GetSystemMetrics(SM_CYSCREEN) - 1);
     float fx = position.x * (65535.0f / fScreenWidth);
     float fy = position.y * (65535.0f / fScreenHeight);
 
-    INPUT    Input = { 0 };
+    INPUT Input = {0};
     ::ZeroMemory(&Input, sizeof(INPUT));
     Input.type = INPUT_MOUSE;
     Input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE;
@@ -70,8 +68,7 @@ void InputController::SetMouseCursor(const Vector2 & position)
     ::SendInput(1, &Input, sizeof(INPUT));
 }
 
-void InputController::UpdateIssuedOperations()
-{
+void InputController::UpdateIssuedOperations() {
     if (ioCurrent == nullptr) {
         if (ioQueue.empty())
             return;
@@ -86,11 +83,9 @@ void InputController::UpdateIssuedOperations()
     }
 }
 
-void InputController::IssuePressKey(HKey key)
-{
+void InputController::IssuePressKey(HKey key) {
     PushIoBatch(
-            std::shared_ptr<IoStepBatch>(new IoStepBatch(
-                    {
+            std::shared_ptr<IoStepBatch>(new IoStepBatch({
                             std::shared_ptr<IoStep>(new IoPressKey(key)),
                             std::shared_ptr<IoStep>(new IoDelay(5.f)),
                             std::shared_ptr<IoStep>(new IoReleaseKey(key))
@@ -113,19 +108,19 @@ void InputController::IssuePressKeyAt(HKey key, std::function<Vector2()> posGett
     );
 }
 
-void InputController::IssueClick(ClickType type, HKey withKeyHold)
-{
+void InputController::IssueClick(ClickType type, HKey withKeyHold) {
     std::shared_ptr<IoStepBatch> batch;
     if (withKeyHold != NO_KEY) {
         batch = std::shared_ptr<IoStepBatch>(new IoStepBatch({
-                                                                     std::shared_ptr<IoStep>(new IoPressKey(withKeyHold)),
+                                                                     std::shared_ptr<IoStep>(
+                                                                             new IoPressKey(withKeyHold)),
                                                                      std::shared_ptr<IoStep>(new IoPressMouse(type)),
                                                                      std::shared_ptr<IoStep>(new IoDelay(5.f)),
                                                                      std::shared_ptr<IoStep>(new IoReleaseMouse(type)),
-                                                                     std::shared_ptr<IoStep>(new IoReleaseKey(withKeyHold)),
+                                                                     std::shared_ptr<IoStep>(
+                                                                             new IoReleaseKey(withKeyHold)),
                                                              }, IO_CLICK));
-    }
-    else {
+    } else {
         batch = std::shared_ptr<IoStepBatch>(new IoStepBatch({
                                                                      std::shared_ptr<IoStep>(new IoPressMouse(type)),
                                                                      std::shared_ptr<IoStep>(new IoDelay(5.f)),
@@ -136,24 +131,26 @@ void InputController::IssueClick(ClickType type, HKey withKeyHold)
     PushIoBatch(batch);
 }
 
-void InputController::IssueClickAt(ClickType type, std::function<Vector2()> posGetter, HKey withKeyHold)
-{
+void InputController::IssueClickAt(ClickType type, std::function<Vector2()> posGetter, HKey withKeyHold) {
     std::shared_ptr<IoStepBatch> batch;
     if (withKeyHold != NO_KEY) {
         batch = std::shared_ptr<IoStepBatch>(new IoStepBatch({
-                                                                     std::shared_ptr<IoStep>(new IoPressKey(withKeyHold)),
-                                                                     std::shared_ptr<IoStep>(new IoSpoofMouse(posGetter)),
+                                                                     std::shared_ptr<IoStep>(
+                                                                             new IoPressKey(withKeyHold)),
+                                                                     std::shared_ptr<IoStep>(
+                                                                             new IoSpoofMouse(posGetter)),
                                                                      std::shared_ptr<IoStep>(new IoPressMouse(type)),
                                                                      std::shared_ptr<IoStep>(new IoDelay(5.f)),
                                                                      std::shared_ptr<IoStep>(new IoReleaseMouse(type)),
                                                                      std::shared_ptr<IoStep>(new IoDelay(5.f)),
                                                                      std::shared_ptr<IoStep>(new IoUnspoofMouse()),
-                                                                     std::shared_ptr<IoStep>(new IoReleaseKey(withKeyHold)),
+                                                                     std::shared_ptr<IoStep>(
+                                                                             new IoReleaseKey(withKeyHold)),
                                                              }, IO_CLICK_AT));
-    }
-    else {
+    } else {
         batch = std::shared_ptr<IoStepBatch>(new IoStepBatch({
-                                                                     std::shared_ptr<IoStep>(new IoSpoofMouse(posGetter)),
+                                                                     std::shared_ptr<IoStep>(
+                                                                             new IoSpoofMouse(posGetter)),
                                                                      std::shared_ptr<IoStep>(new IoPressMouse(type)),
                                                                      std::shared_ptr<IoStep>(new IoDelay(5.f)),
                                                                      std::shared_ptr<IoStep>(new IoReleaseMouse(type)),
@@ -198,8 +195,7 @@ void InputController::IssueClickUnit(ClickType type, const GameUnit& unit)
     );
 }*/
 
-void InputController::IssueHoldKey(HKey key)
-{
+void InputController::IssueHoldKey(HKey key) {
     PushIoBatch(
             std::shared_ptr<IoStepBatch>(new IoStepBatch({
                                                                  std::shared_ptr<IoStep>(new IoPressKey(key))
@@ -207,8 +203,7 @@ void InputController::IssueHoldKey(HKey key)
     );
 }
 
-void InputController::IssueUnholdKey(HKey key)
-{
+void InputController::IssueUnholdKey(HKey key) {
     PushIoBatch(
             std::shared_ptr<IoStepBatch>(new IoStepBatch({
                                                                  std::shared_ptr<IoStep>(new IoReleaseKey(key))
@@ -216,8 +211,7 @@ void InputController::IssueUnholdKey(HKey key)
     );
 }
 
-void InputController::IssueUnholdKeyAt(HKey key, std::function<Vector2()> posGetter)
-{
+void InputController::IssueUnholdKeyAt(HKey key, std::function<Vector2()> posGetter) {
     PushIoBatch(
             std::shared_ptr<IoStepBatch>(new IoStepBatch({
                                                                  std::shared_ptr<IoStep>(new IoSpoofMouse(posGetter)),
@@ -228,8 +222,7 @@ void InputController::IssueUnholdKeyAt(HKey key, std::function<Vector2()> posGet
     );
 }
 
-void InputController::IssueDelay(float millis)
-{
+void InputController::IssueDelay(float millis) {
     PushIoBatch(
             std::shared_ptr<IoStepBatch>(new IoStepBatch({
                                                                  std::shared_ptr<IoStep>(new IoDelay(N))
@@ -243,8 +236,7 @@ int InputController::GetVirtualKey(HKey key) {
 
 }
 
-void InputController::PushIoBatch(std::shared_ptr<IoStepBatch> batch)
-{
+void InputController::PushIoBatch(std::shared_ptr<IoStepBatch> batch) {
     if (!ioQueue.empty() && batch->controlId == ioQueue.back()->controlId) {
         ioQueue.pop_back();
     }
@@ -253,16 +245,13 @@ void InputController::PushIoBatch(std::shared_ptr<IoStepBatch> batch)
 
 
 IoStepBatch::IoStepBatch(std::initializer_list<std::shared_ptr<IoStep>> initSteps, int id)
-        :steps(initSteps), controlId(id), currentStep(nullptr)
-{
+        : steps(initSteps), controlId(id), currentStep(nullptr) {
 }
 
-void IoStepBatch::Start()
-{
+void IoStepBatch::Start() {
 }
 
-bool IoStepBatch::Update()
-{
+bool IoStepBatch::Update() {
     if (currentStep == nullptr) {
         currentStep = steps.front();
         currentStep->Start();
@@ -277,13 +266,12 @@ bool IoStepBatch::Update()
     return false;
 }
 
-bool IoStepBatch::operator==(const IoStepBatch & other)
-{
+bool IoStepBatch::operator==(const IoStepBatch &other) {
     return this->controlId == other.controlId;
 }
 
 
-void DrawButton(HKey key, HKey& clickedBtn, bool& wasClicked) {
+void DrawButton(HKey key, HKey &clickedBtn, bool &wasClicked) {
     if (ImGui::Button(KeyNames[key])) {
         clickedBtn = key;
         wasClicked = true;
@@ -291,7 +279,7 @@ void DrawButton(HKey key, HKey& clickedBtn, bool& wasClicked) {
     ImGui::SameLine();
 }
 
-void DrawColorButton(HKey key, HKey& clickedBtn, bool& wasClicked, const ImVec4& color) {
+void DrawColorButton(HKey key, HKey &clickedBtn, bool &wasClicked, const ImVec4 &color) {
 
     ImGui::PushStyleColor(ImGuiCol_Button, color);
     if (ImGui::Button(KeyNames[key])) {
@@ -301,8 +289,8 @@ void DrawColorButton(HKey key, HKey& clickedBtn, bool& wasClicked, const ImVec4&
     ImGui::PopStyleColor();
     ImGui::SameLine();
 }
-int InputController::ImGuiKeySelect(const char* label, int key)
-{
+
+int InputController::ImGuiKeySelect(const char *label, int key) {
     ImGui::PushID(label);
     ImGui::BeginGroup();
     if (ImGui::Button(KeyNames[key])) {

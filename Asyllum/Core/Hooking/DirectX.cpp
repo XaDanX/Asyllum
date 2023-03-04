@@ -9,7 +9,6 @@
 #include "../Locator/Locator.h"
 
 
-
 extern bool init = false;
 
 long DirectX::hkEndScene(LPDIRECT3DDEVICE9 pDevice) {
@@ -171,7 +170,9 @@ long DirectX::hkEndScene(LPDIRECT3DDEVICE9 pDevice) {
 
 
             return locator->GetHookingService()->GetOriginalEndScene()(pDevice);
-    } __except (1) {
+    }
+    __except(1)
+    {
         locator->GetConsole()->Print(XorStr("[CORE] Unhandled exception occurred!").c_str());
         ImGui::EndFrame();
         return locator->GetHookingService()->GetOriginalEndScene()(pDevice);
@@ -187,8 +188,7 @@ LRESULT __stdcall DirectX::WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LP
     return CallWindowProc(locator->GetHookingService()->GetOriginalWndProc(), hWnd, uMsg, wParam, lParam);
 }
 
-long __stdcall DirectX::hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS* pPresentationParameters)
-{
+long __stdcall DirectX::hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS *pPresentationParameters) {
     ImGui_ImplDX9_InvalidateDeviceObjects();
     long result = locator->GetHookingService()->GetOriginalReset()(pDevice, pPresentationParameters);
     if (result >= 0) {
@@ -197,10 +197,10 @@ long __stdcall DirectX::hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS
     if (!locator->GetHookingService()->isHooked) {
         locator->GetHookingService()->GetOriginalReset()(pDevice, pPresentationParameters);
 
-        for (auto& it : locator->GetGameData()->Units) {
+        for (auto &it: locator->GetGameData()->Units) {
             delete it.second;
         }
-        for (auto& it : locator->GetGameData()->Spells) {
+        for (auto &it: locator->GetGameData()->Spells) {
             delete it.second;
         }
         locator->GetGameData()->Units.clear();
@@ -212,10 +212,10 @@ long __stdcall DirectX::hkReset(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS
 }
 
 
-
-
-long __stdcall DirectX::hkPresent(IDirect3DDevice9Ex *pDevice, const RECT *pSourceRect, const RECT *pDestRect, HWND hDestWindowOverride,
+long __stdcall DirectX::hkPresent(IDirect3DDevice9Ex *pDevice, const RECT *pSourceRect, const RECT *pDestRect,
+                                  HWND hDestWindowOverride,
                                   const RGNDATA *pDirtyRegion) {
 
-    return locator->GetHookingService()->GetOriginalPresent()(pDevice, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
+    return locator->GetHookingService()->GetOriginalPresent()(pDevice, pSourceRect, pDestRect, hDestWindowOverride,
+                                                              pDirtyRegion);
 }

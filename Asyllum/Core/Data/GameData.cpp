@@ -13,7 +13,7 @@ using json = nlohmann::json;
 namespace fs = std::experimental::filesystem;
 
 
-void GameData::Load(std::string& path) {
+void GameData::Load(std::string &path) {
     std::string unitData = path + XorStr("\\UnitData.json").c_str(); //  TODO CHANGE
     std::string spellData = path + XorStr("\\SpellData.json").c_str(); //  TODO CHANGE
 
@@ -28,18 +28,18 @@ void GameData::Load(std::string& path) {
     //logger->Info(XorStr("Loaded %i spells!").c_str(), this->Spells.size());
 }
 
-UnitInfo* GameData::GetUnitInfoByName(std::string& name) {
+UnitInfo *GameData::GetUnitInfoByName(std::string &name) {
     auto find = Units.find(name);
     return (find == Units.end() ? nullptr : find->second);
 }
 
-SpellInfo* GameData::GetSpellInfoByName(std::string& name) {
+SpellInfo *GameData::GetSpellInfoByName(std::string &name) {
     auto find = Spells.find(name);
     return (find == Spells.end() ? nullptr : find->second);
 }
 
 
-void GameData::LoadUnitData(std::string& path) {
+void GameData::LoadUnitData(std::string &path) {
 
     std::ifstream file(path);
 
@@ -51,12 +51,11 @@ void GameData::LoadUnitData(std::string& path) {
     json j;
     file >> j;
 
-    for (auto unitObj : j) {
+    for (auto unitObj: j) {
 
-        UnitInfo* unit = new UnitInfo();
+        UnitInfo *unit = new UnitInfo();
         std::string strName = unitObj[XorStr("name").c_str()].get<std::string>();
         std::string basicAtk = unitObj[XorStr("basicAtk").c_str()].get<std::string>();
-
 
 
         unit->acquisitionRange = unitObj[XorStr("acquisitionRange").c_str()].get<float>();
@@ -83,7 +82,7 @@ void GameData::LoadUnitData(std::string& path) {
 
 }
 
-void GameData::LoadSpellData(std::string& path) {
+void GameData::LoadSpellData(std::string &path) {
 
     std::ifstream file(path);
 
@@ -94,25 +93,25 @@ void GameData::LoadSpellData(std::string& path) {
     json j;
     file >> j;
 
-    SpellInfo* flash = new SpellInfo();
+    SpellInfo *flash = new SpellInfo();
     flash->name = StringUtils::ToLower(std::string(XorStr("SummonerFlash").c_str()));
     flash->icon = StringUtils::ToLower(std::string(XorStr("SummonerFlash").c_str()));
     Spells[flash->name] = flash;
 
-    SpellInfo* ghost = new SpellInfo();
+    SpellInfo *ghost = new SpellInfo();
     ghost->name = StringUtils::ToLower(std::string(XorStr("summonerhaste").c_str()));
     ghost->icon = StringUtils::ToLower(std::string(XorStr("summonerhaste").c_str()));
     Spells[ghost->name] = ghost;
 
-    SpellInfo* ignite = new SpellInfo();
+    SpellInfo *ignite = new SpellInfo();
     ignite->name = StringUtils::ToLower(std::string(XorStr("summonerdot").c_str()));
     ignite->icon = StringUtils::ToLower(std::string(XorStr("summonerignite").c_str()));
     Spells[ignite->name] = ignite;
 
-    for (auto spellObj : j) {
+    for (auto spellObj: j) {
 
-        SpellInfo* spell = new SpellInfo();
-        spell->flags = (SpellFlags)spellObj[XorStr("flags").c_str()].get<__int64>();
+        SpellInfo *spell = new SpellInfo();
+        spell->flags = (SpellFlags) spellObj[XorStr("flags").c_str()].get<__int64>();
         spell->name = StringUtils::ToLower(std::string(spellObj[XorStr("name").c_str()]));
         spell->parent = StringUtils::ToLower(std::string(spellObj[XorStr("parent").c_str()]));
         spell->icon = StringUtils::ToLower(std::string(spellObj[XorStr("icon").c_str()]));
@@ -127,7 +126,8 @@ void GameData::LoadSpellData(std::string& path) {
         spell->travelTime = spellObj[XorStr("travelTime").c_str()].get<float>();
         spell->delay = spellObj[XorStr("delay").c_str()].get<float>();
         spell->projectDestination = spellObj[XorStr("projectDestination").c_str()].get<bool>();
-        spell->flags = (SpellFlags)(spell->flags | (spellObj["projectDestination"].get<bool>() ? ProjectedDestination : 0));
+        spell->flags = (SpellFlags) (spell->flags |
+                                     (spellObj["projectDestination"].get<bool>() ? ProjectedDestination : 0));
 
         Spells[spell->name] = spell;
     }

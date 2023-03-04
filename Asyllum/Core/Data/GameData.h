@@ -4,6 +4,7 @@
 
 #ifndef ASYLLUM_GAMEDATA_H
 #define ASYLLUM_GAMEDATA_H
+
 #include <string>
 #include "UnitInfo.h"
 #include "SpellInfo.h"
@@ -14,17 +15,20 @@
 
 class GameData {
 public:
-    void Load(std::string& path);
+    void Load(std::string &path);
 
-    UnitInfo* GetUnitInfoByName(std::string& name);
-    SpellInfo* GetSpellInfoByName(std::string& name);
+    UnitInfo *GetUnitInfoByName(std::string &name);
+
+    SpellInfo *GetSpellInfoByName(std::string &name);
+
 public:
-    std::map<std::string, UnitInfo*>  Units{};
-    std::map<std::string, SpellInfo*>  Spells{};
+    std::map<std::string, UnitInfo *> Units{};
+    std::map<std::string, SpellInfo *> Spells{};
 
 private:
-    void LoadUnitData(std::string& path);
-    void LoadSpellData(std::string& path);
+    void LoadUnitData(std::string &path);
+
+    void LoadSpellData(std::string &path);
 
 };
 

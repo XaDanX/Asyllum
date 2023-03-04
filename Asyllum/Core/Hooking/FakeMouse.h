@@ -4,16 +4,18 @@
 
 #ifndef ASYLLUM_FAKEMOUSE_H
 #define ASYLLUM_FAKEMOUSE_H
+
 #include <Windows.h>
 #include <functional>
 #include "../../Math/Vector.h"
 
-typedef BOOL(WINAPI* GetCursorPosFunc)(LPPOINT lpPoint);
+typedef BOOL(WINAPI *GetCursorPosFunc)(LPPOINT lpPoint);
 
 class FakeMouse {
 
 public:
     static void Init();
+
     static void UnHook();
 
     static bool Enabled;
@@ -27,9 +29,10 @@ public:
     static void SetSpoofedCursorPos(int x, int y);
 
 private:
-    static GetCursorPosFunc  TrueGetCursorPos;
+    static GetCursorPosFunc TrueGetCursorPos;
 
     static BOOL __stdcall    HookedGetCursorPos(LPPOINT lpPoint);
+
     static BOOL __stdcall    SpoofedGetCursorPos(LPPOINT lpPoint);
 };
 

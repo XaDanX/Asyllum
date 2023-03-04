@@ -3,6 +3,7 @@
 //
 
 #include "Globals.h"
+
 namespace Globals {
     int baseAddress = 0;
     float viewMatrix[16]{};

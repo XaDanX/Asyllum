@@ -4,6 +4,7 @@
 
 #ifndef ASYLLUM_GAMEKEYBIND_H
 #define ASYLLUM_GAMEKEYBIND_H
+
 #include <map>
 #include "../../Globals/KeyCodes.h"
 
@@ -41,7 +42,7 @@ private:
     static HKey GetKeyForConfig(std::string cfg, HKey defaultKey = HKey::NO_KEY);
 
     static std::map<std::string, std::string> gameKeyCfgs;
-    static std::map<std::string, HKey>        keyConvert;
+    static std::map<std::string, HKey> keyConvert;
 };
 
 

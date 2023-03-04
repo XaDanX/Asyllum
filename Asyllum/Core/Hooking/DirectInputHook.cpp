@@ -7,39 +7,39 @@
 #include "../../kiero/minhook/include/MinHook.h"
 #include "../Locator/Locator.h"
 
-typedef HRESULT(WINAPI* DirectInputGetDeviceData)(IDirectInputDevice8*, DWORD a, LPDIDEVICEOBJECTDATA, LPDWORD, DWORD);
+typedef HRESULT(WINAPI *DirectInputGetDeviceData)(IDirectInputDevice8 *, DWORD a, LPDIDEVICEOBJECTDATA, LPDWORD, DWORD);
+
 bool                                DirectInputHook::DisableGameKeys = false;
 DirectInputGetDeviceData            DirectInputHook::OriginalDirectInputGetDeviceData;
 std::set<DWORD>                     DirectInputHook::DisabledGameKeys;
 std::map<DWORD, InputEventInfo>     DirectInputHook::AdditionalEvents;
 DWORD                               DirectInputHook::SequenceNumber;
 
-void DirectInputHook::Hook()
-{
-    HINSTANCE hInst = (HINSTANCE)GetModuleHandle(NULL);
+void DirectInputHook::Hook() {
+    HINSTANCE hInst = (HINSTANCE) GetModuleHandle(NULL);
     IDirectInput8 *pDirectInput = NULL;
 
-    if (DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)&pDirectInput, NULL) != DI_OK) {
+    if (DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID *) &pDirectInput, NULL) != DI_OK) {
     }
 
-    LPDIRECTINPUTDEVICE8  lpdiKeyboard;
+    LPDIRECTINPUTDEVICE8 lpdiKeyboard;
     if (pDirectInput->CreateDevice(GUID_SysKeyboard, &lpdiKeyboard, NULL) != DI_OK) {
         pDirectInput->Release();
         return;
     }
 
-    void ** VTable = *reinterpret_cast<void***>(lpdiKeyboard);
-    OriginalDirectInputGetDeviceData = (DirectInputGetDeviceData)(VTable[10]);
+    void **VTable = *reinterpret_cast<void ***>(lpdiKeyboard);
+    OriginalDirectInputGetDeviceData = (DirectInputGetDeviceData) (VTable[10]);
 
-    if (MH_CreateHook((DirectInputGetDeviceData)(VTable[10]), &HookedDirectInputGetDeviceData, reinterpret_cast<void**>(&OriginalDirectInputGetDeviceData)) != MH_OK) {
+    if (MH_CreateHook((DirectInputGetDeviceData) (VTable[10]), &HookedDirectInputGetDeviceData,
+                      reinterpret_cast<void **>(&OriginalDirectInputGetDeviceData)) != MH_OK) {
     }
 
-    if (MH_EnableHook((DirectInputGetDeviceData)(VTable[10])) != MH_OK) {
+    if (MH_EnableHook((DirectInputGetDeviceData) (VTable[10])) != MH_OK) {
     }
 }
 
-void DirectInputHook::QueueKey(HKey key, bool pressed)
-{
+void DirectInputHook::QueueKey(HKey key, bool pressed) {
     AdditionalEvents[key] = {
             ConvertToDIKey(key),
             pressed ? 0x80u : 0u,
@@ -56,7 +56,9 @@ void DirectInputHook::SetKeyActive(HKey key, bool active) {
         DisabledGameKeys.insert(ConvertToDIKey(key));
 }
 
-HRESULT __stdcall DirectInputHook::HookedDirectInputGetDeviceData(IDirectInputDevice8 * pThis, DWORD a, LPDIDEVICEOBJECTDATA data, LPDWORD numElemsPtr, DWORD d) {
+HRESULT __stdcall DirectInputHook::HookedDirectInputGetDeviceData(IDirectInputDevice8 *pThis, DWORD a,
+                                                                  LPDIDEVICEOBJECTDATA data, LPDWORD numElemsPtr,
+                                                                  DWORD d) {
     auto result = OriginalDirectInputGetDeviceData(pThis, a, data, numElemsPtr, d);
     if (result != DI_OK)
         return result;

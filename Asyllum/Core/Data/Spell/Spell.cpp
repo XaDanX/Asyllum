@@ -14,18 +14,18 @@ float Spell::RemainingCastTime() {
 float Spell::TimeToCollision(Vector3 pos) {
     float time = 0.0;
     if (Utils::IsValid((void*)spellInfo)) {
-        time = startPos.distance(pos) / spellInfo->speed;
+        time = currentPos.distance(pos) / spellInfo->speed;//startPos.distance(pos) / spellInfo->speed;
     }
     time += RemainingCastTime();
     return time;
 }
 
 bool Spell::IsValid() {
-    if (!Utils::IsValid((void*)spellInfo))
+    if (!Utils::IsValid((void *)spellInfo))
         return false;
     auto time = locator->GetEngine()->GameTime();
 
-    if (endTime < time)
+    if (endTime < time && endTime > 0)
         return false;
 
     if (spellInfo->projectDestination) { // projectedDestination tells us its MOST LIKELY linear spell.
@@ -42,26 +42,28 @@ bool Spell::IsValid() {
 
         float deltaTime = time - castTime;
 
-        auto current = startPos;
+        if (endTime > 0) {
+            auto current = startPos;
 
-        if (startTime < time) {
-            current = startPos.add(
-                    direction.mult(spellInfo->speed * (deltaTime - spellInfo->castTime)));
+            if (startTime < time) {
+                current = startPos.add(
+                        direction.mult(spellInfo->speed * (deltaTime - spellInfo->castTime)));
+            }
+
+            currentPos = current;
         }
 
-        currentPos = current;
-        if (startPos.distance(current) > spellInfo->castRange) {
+        if (startPos.distance(currentPos) > spellInfo->castRange - 10) {
             currentPos = endPos;
         }
-
-        path = Geometry::Rectangle(currentPos, endPos, spellInfo->width).ToPolygon();
+        currentPos.y = startPos.y; // Setting same Y for calculating, waiting for GetHeightPos for drawing
     }
 
     return true;
 }
 
 bool Spell::IsPointInRange(Vector3 point) {
-    if (!Utils::IsValid((void*)spellInfo))
+    if (!Utils::IsValid((void *) spellInfo))
         return true;
 
     float distance = endPos.distance(point);

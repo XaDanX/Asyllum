@@ -5,6 +5,6 @@
 #include "Utils.h"
 
 bool Utils::IsValid(void *pointer) {
-    if ((int)pointer < 0x100) return false;
+    if ((int) pointer < 0x100) return false;
     return true;
 }

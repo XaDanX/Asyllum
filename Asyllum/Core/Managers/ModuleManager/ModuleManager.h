@@ -20,9 +20,12 @@ public:
     std::vector<std::unique_ptr<Module>> moduleList;
 
     void Initialize();
+
     void UpdateModules();
+
     void OnExit();
-    void RegisterModule(Module* module);
+
+    void RegisterModule(Module *module);
 };
 
 

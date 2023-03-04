@@ -15,12 +15,14 @@
 class Hero : public ObjectBase { // TODO: Active spell / IsCasting flag
 public:
     Vector2 GetHealthBarPosition();
-    UnitInfo* GetUnitInfo();
-    BuffManager* GetBuffManager();
 
-    SpellSlot* GetSpellSlotById(int id);
+    UnitInfo *GetUnitInfo();
 
-    SpellCast* GetSpellCast();
+    BuffManager *GetBuffManager();
+
+    SpellSlot *GetSpellSlotById(int id);
+
+    SpellCast *GetSpellCast();
 
     float GetTotalAttackSpeed();
 

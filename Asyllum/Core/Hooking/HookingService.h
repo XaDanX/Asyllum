@@ -3,6 +3,7 @@
 //
 #ifndef ASYLLUM_HOOKINGSERVICE_H
 #define ASYLLUM_HOOKINGSERVICE_H
+
 #include <d3d9.h>
 #include <iostream>
 #include "FakeMouse.h"
@@ -12,16 +13,20 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam
 
 class HookingService {
 private:
-    typedef long(__stdcall* EndScene)(LPDIRECT3DDEVICE9);
+    typedef long(__stdcall *EndScene)(LPDIRECT3DDEVICE9);
+
     EndScene oEndScene;
 
-    typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
+    typedef LRESULT(CALLBACK *WNDPROC)(HWND, UINT, WPARAM, LPARAM);
+
     WNDPROC oWndProc;
 
-    typedef long(__stdcall* Reset)(LPDIRECT3DDEVICE9, D3DPRESENT_PARAMETERS*);
+    typedef long(__stdcall *Reset)(LPDIRECT3DDEVICE9, D3DPRESENT_PARAMETERS *);
+
     Reset oReset;
 
-    typedef long(__stdcall* Present)(IDirect3DDevice9Ex*, const RECT*, const RECT*, HWND, const RGNDATA*);
+    typedef long(__stdcall *Present)(IDirect3DDevice9Ex *, const RECT *, const RECT *, HWND, const RGNDATA *);
+
     Present oPresent;
 
     HWND window = NULL;
@@ -30,7 +35,9 @@ private:
 public:
     bool isMenuOpen = true;
     bool isHooked = true;
+
     bool Initialize();
+
     bool UnHook();
 
     Present GetOriginalPresent() {
@@ -56,6 +63,7 @@ public:
     LPDIRECT3DDEVICE9 GetDevice() {
         return this->device;
     }
+
     void SetDevice(LPDIRECT3DDEVICE9 dev) {
         this->device = dev;
     }

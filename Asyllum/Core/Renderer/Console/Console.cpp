@@ -17,8 +17,7 @@ void Console::Render() {
     ImGui::End();
 }
 
-void Console::Show()
-{
+void Console::Show() {
     ShowConsole = true;
 }
 
@@ -26,7 +25,7 @@ void Console::Hide() {
     ShowConsole = false;
 }
 
-void Console::Print(const char* fmt, ...) {
+void Console::Print(const char *fmt, ...) {
     char buffer[512];
     ZeroMemory(buffer, 511);
     va_list argList;

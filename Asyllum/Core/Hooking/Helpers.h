@@ -2,6 +2,7 @@
 // Created by XaDanX on 12/1/2022.
 //
 #include <Windows.h>
+
 #ifndef ASYLLUM_HELPERS_H
 #define ASYLLUM_HELPERS_H
 
@@ -13,7 +14,7 @@ namespace HookingHelper {
         GetWindowThreadProcessId(handle, &wndProcId);
 
         if (GetCurrentProcessId() != wndProcId)
-        return TRUE;
+            return TRUE;
 
         pWindow = handle;
         return FALSE;

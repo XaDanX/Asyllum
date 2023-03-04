@@ -17,20 +17,20 @@ namespace Geometry {
     public:
         std::vector<Vector3> points;
 
-        void Add(const Vector3& point) {
+        void Add(const Vector3 &point) {
             points.push_back(point);
         }
 
-        bool IsInside(const Vector3& point) {
+        bool IsInside(const Vector3 &point) {
             return !IsOutside(point);
         }
 
-        bool IsOutside(const Vector3& point) {
+        bool IsOutside(const Vector3 &point) {
             const auto p = ClipperLib::IntPoint(point.x, point.z);
             return ClipperLib::PointInPolygon(p, ToClipperPath()) != 1;
         }
 
-        int PointInPolygon(const Vector3& point) {
+        int PointInPolygon(const Vector3 &point) {
             const auto p = ClipperLib::IntPoint(point.x, point.z);
             return ClipperLib::PointInPolygon(p, ToClipperPath());
         }
@@ -38,7 +38,7 @@ namespace Geometry {
         std::vector<ClipperLib::IntPoint> ToClipperPath() {
             std::vector<ClipperLib::IntPoint> result;
 
-            for (const auto& point : points)
+            for (const auto &point: points)
                 result.emplace_back(point.x, point.z);
 
             return result;
@@ -53,7 +53,7 @@ namespace Geometry {
         Vector3 endPos;
         float width;
 
-        Rectangle(const Vector3& start, const Vector3& end, float widthStart) {
+        Rectangle(const Vector3 &start, const Vector3 &end, float widthStart) {
             startPos = start;
             endPos = end;
             width = widthStart;

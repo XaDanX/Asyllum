@@ -7,7 +7,7 @@
 
 
 inline namespace Utils {
-    bool IsValid(void* pointer);
+    bool IsValid(void *pointer);
 }
 
 

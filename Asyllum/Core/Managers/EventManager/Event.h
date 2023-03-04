@@ -14,16 +14,16 @@ namespace Event {
 
     struct OnSpellCast {
         Spell spell;
-        Hero* caster;
+        Hero *caster;
     };
 
     struct OnAutoAttack {
-        Hero* caster;
+        Hero *caster;
         BYTE destIndex;
     };
 
     struct OnRecall {
-        Hero* caster;
+        Hero *caster;
         float startTime;
     };
 }

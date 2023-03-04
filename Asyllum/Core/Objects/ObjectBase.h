@@ -4,6 +4,7 @@
 
 #ifndef ASYLLUM_OBJECTBASE_H
 #define ASYLLUM_OBJECTBASE_H
+
 #include "../../Globals/Globals.h"
 #include "../../Globals/Offsets.h"
 #include "../../Math/Vector.h"
@@ -329,30 +330,30 @@ enum [[maybe_unused]] CharacterState {
 class CharacterData {
 public:
     union {
-        DEFINE_MEMBER_N(HashName, hash, (unsigned int)Offsets::CharacterData::Hash);
+        DEFINE_MEMBER_N(HashName, hash, (unsigned int) Offsets::CharacterData::Hash);
     };
 };
 
 class ObjectBase {
 public:
     union {
-        DEFINE_MEMBER_N(BYTE, index, (unsigned int)Offsets::GameObject::Index);
-        DEFINE_MEMBER_N(short, team, (unsigned int)Offsets::GameObject::Team);
-        DEFINE_MEMBER_N(int, networkId, (unsigned int)Offsets::GameObject::NetworkId);
-        DEFINE_MEMBER_N(Vector3, position, (unsigned int)Offsets::GameObject::Position);
-        DEFINE_MEMBER_N(bool, visibility, (unsigned int)Offsets::GameObject::Visibility);
-        DEFINE_MEMBER_N(int, spawnCount, (unsigned int)Offsets::GameObject::SpawnCount);
-        DEFINE_MEMBER_N(float, mana, (unsigned int)Offsets::GameObject::Mana);
-        DEFINE_MEMBER_N(float, maxMana, (unsigned int)Offsets::GameObject::MaxMana);
-        DEFINE_MEMBER_N(bool, dead, (unsigned int)Offsets::GameObject::Dead);
-        DEFINE_MEMBER_N(float, health, (unsigned int)Offsets::GameObject::Health);
-        DEFINE_MEMBER_N(float, maxHealth, (unsigned int)Offsets::GameObject::MaxHealth);
-        DEFINE_MEMBER_N(LolString, name, (unsigned int)Offsets::GameObject::Name);
-        DEFINE_MEMBER_N(float, attackRange, (unsigned int)Offsets::GameObject::AttackRange);
-        DEFINE_MEMBER_N(float, scale, (unsigned int)Offsets::GameObject::Scale);
-        DEFINE_MEMBER_N(bool, targetable, (unsigned int)Offsets::GameObject::Targetable);
+        DEFINE_MEMBER_N(BYTE, index, (unsigned int) Offsets::GameObject::Index);
+        DEFINE_MEMBER_N(short, team, (unsigned int) Offsets::GameObject::Team);
+        DEFINE_MEMBER_N(int, networkId, (unsigned int) Offsets::GameObject::NetworkId);
+        DEFINE_MEMBER_N(Vector3, position, (unsigned int) Offsets::GameObject::Position);
+        DEFINE_MEMBER_N(bool, visibility, (unsigned int) Offsets::GameObject::Visibility);
+        DEFINE_MEMBER_N(int, spawnCount, (unsigned int) Offsets::GameObject::SpawnCount);
+        DEFINE_MEMBER_N(float, mana, (unsigned int) Offsets::GameObject::Mana);
+        DEFINE_MEMBER_N(float, maxMana, (unsigned int) Offsets::GameObject::MaxMana);
+        DEFINE_MEMBER_N(bool, dead, (unsigned int) Offsets::GameObject::Dead);
+        DEFINE_MEMBER_N(float, health, (unsigned int) Offsets::GameObject::Health);
+        DEFINE_MEMBER_N(float, maxHealth, (unsigned int) Offsets::GameObject::MaxHealth);
+        DEFINE_MEMBER_N(LolString, name, (unsigned int) Offsets::GameObject::Name);
+        DEFINE_MEMBER_N(float, attackRange, (unsigned int) Offsets::GameObject::AttackRange);
+        DEFINE_MEMBER_N(float, scale, (unsigned int) Offsets::GameObject::Scale);
+        DEFINE_MEMBER_N(bool, targetable, (unsigned int) Offsets::GameObject::Targetable);
         DEFINE_MEMBER_N(float, attackSpeedMultiplier, Offsets::GameObject::AttackSpeedMultiplier);
-        DEFINE_MEMBER_N(LolString, playerName, (unsigned int)Offsets::GameObject::PlayerName);
+        DEFINE_MEMBER_N(LolString, playerName, (unsigned int) Offsets::GameObject::PlayerName);
         DEFINE_MEMBER_N(int, actionState, Offsets::GameObject::ActionState);
         DEFINE_MEMBER_N(CharacterData*, characterData, Offsets::GameObject::CharacterData);
         DEFINE_MEMBER_N(float, movementSpeed, Offsets::GameObject::MovementSpeed);
@@ -364,19 +365,22 @@ private:
 public:
 
     bool IsMinion() {
-        return reinterpret_cast<unsigned __int8*>(this) && CompareObjectFlags(static_cast<int>(ObjectTypeFlags::Minion)) && maxHealth > 20;
+        return reinterpret_cast<unsigned __int8 *>(this) &&
+               CompareObjectFlags(static_cast<int>(ObjectTypeFlags::Minion)) && maxHealth > 20;
     }
 
     bool IsHero() {
-        return reinterpret_cast<unsigned __int8*>(this) && CompareObjectFlags(static_cast<int>(ObjectTypeFlags::Hero));
+        return reinterpret_cast<unsigned __int8 *>(this) && CompareObjectFlags(static_cast<int>(ObjectTypeFlags::Hero));
     }
 
     bool IsTurret() {
-        return reinterpret_cast<unsigned __int8*>(this) && CompareObjectFlags(static_cast<int>(ObjectTypeFlags::Turret));
+        return reinterpret_cast<unsigned __int8 *>(this) &&
+               CompareObjectFlags(static_cast<int>(ObjectTypeFlags::Turret));
     }
 
     bool IsBuilding() {
-        return reinterpret_cast<unsigned __int8*>(this) && CompareObjectFlags(static_cast<int>(ObjectTypeFlags::Building));
+        return reinterpret_cast<unsigned __int8 *>(this) &&
+               CompareObjectFlags(static_cast<int>(ObjectTypeFlags::Building));
     }
 
     bool IsDummy() {
@@ -384,45 +388,46 @@ public:
     }
 
     bool IsAlive() {
-        return (*(unsigned __int8 (__thiscall **)(DWORD *))(*reinterpret_cast<DWORD*>(this) + 140))(reinterpret_cast<DWORD*>(this))
-               && !(*(unsigned __int8 (__thiscall **)(DWORD *))(reinterpret_cast<DWORD*>(this)[148] + 8))(reinterpret_cast<DWORD*>(this) + 148);
+        return (*(unsigned __int8 (__thiscall **)(DWORD *)) (*reinterpret_cast<DWORD *>(this) + 140))(
+                reinterpret_cast<DWORD *>(this))
+               && !(*(unsigned __int8 (__thiscall **)(DWORD *)) (reinterpret_cast<DWORD *>(this)[148] + 8))(
+                reinterpret_cast<DWORD *>(this) + 148);
     }
 
     bool IsLocalPlayer() {
-        return reinterpret_cast<int>(this) == *reinterpret_cast<int*>(Globals::baseAddress + Offsets::Game::LocalPlayer);
+        return reinterpret_cast<int>(this) ==
+               *reinterpret_cast<int *>(Globals::baseAddress + Offsets::Game::LocalPlayer);
     }
 
     bool IsWard() { // TODO: Checking by hash
         return this->maxHealth < 6 && this->maxMana < 150 && (this->name.str().contains(XorStr("BlueTrinket").c_str())
-        || this->name.str().contains(XorStr("YellowTrinket").c_str()) || this->name.str().contains(XorStr("JammerDevice").c_str()));
+                                                              || this->name.str().contains(
+                XorStr("YellowTrinket").c_str()) || this->name.str().contains(XorStr("JammerDevice").c_str()));
     }
 
     bool CheckActionState(CharacterState state) {
         return this->actionState & state;
     }
 
-    template <class T>
+    template<class T>
     bool IsAllyTo(T obj) {
         return this->team == obj->team;
     }
 
-    template <class T>
+    template<class T>
     bool IsEnemyTo(T obj) {
         return this->team != obj->team;
     }
 
-    template <class T>
+    template<class T>
     float DistanceTo(T obj) {
-        return sqrt(powf((this->position.x - obj->position.x), 2) + powf((this->position.y - obj->position.y), 2) + powf((this->position.z - obj->position.z), 2));
+        return sqrt(powf((this->position.x - obj->position.x), 2) + powf((this->position.y - obj->position.y), 2) +
+                    powf((this->position.z - obj->position.z), 2));
     }
 
-    bool IsOnScreen(float offsetX=0, float offsetY=0);
+    bool IsOnScreen(float offsetX = 0, float offsetY = 0);
 
-    AiManager* GetAiManager();
-    Vector3 PredictPosition(float futureTime);
-
-
-
+    AiManager *GetAiManager();
 
 
 };

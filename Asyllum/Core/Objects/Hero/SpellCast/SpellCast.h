@@ -4,6 +4,7 @@
 
 #ifndef ASYLLUM_SPELLCAST_H
 #define ASYLLUM_SPELLCAST_H
+
 #include "../../../../Globals/Offsets.h"
 #include "../../../../Globals/Globals.h"
 #include "../../../Types/Definitions.h"
@@ -33,7 +34,8 @@ public:
     };
 
     std::string GetName() {
-        int addr = *reinterpret_cast<int*>(reinterpret_cast<DWORD>(this) + Offsets::SpellCast::SpellData) + Offsets::SpellCast::SpellName;
+        int addr = *reinterpret_cast<int *>(reinterpret_cast<DWORD>(this) + Offsets::SpellCast::SpellData) +
+                   Offsets::SpellCast::SpellName;
         std::string name = StringUtils::ToLower(StringUtils::GetString(addr));
         return name;
 

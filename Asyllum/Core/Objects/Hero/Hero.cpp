@@ -10,7 +10,7 @@
 
 Vector2 Hero::GetHealthBarPosition() {
 
-    Vector3 point = position.clone();
+    /*Vector3 point = position.clone();
 
     auto unit = GetUnitInfo();
     auto height = 100.f;
@@ -25,11 +25,32 @@ Vector2 Hero::GetHealthBarPosition() {
 
     Vector2 out = locator->GetEngine()->WorldToScreen(point);
 
-    float delta = (float)locator->GetEngine()->WindowHeight() * 0.00083333335f * (height * this->scale);
+    float delta = (float) locator->GetEngine()->WindowHeight() * 0.00083333335f * (height * this->scale);
     delta = static_cast<float>(delta) / static_cast<float>(zoomPercent);
     out.y -= delta;
     out.x -= 70.0f;
-    return out;
+    return out;*/
+
+    auto unit = GetUnitInfo();
+    auto height = 100.f;
+    if (Utils::IsValid(unit)) {
+        height = unit->healthBarHeight;
+    }
+    auto pos = position.clone();
+
+    auto sizeMultiplier = this->scale;
+
+    auto maxZoom = 2250.0;
+    auto currentZoom = locator->GetEngine()->GetHudInstance()->zoomInstance->visibleZoom;
+    auto delta = maxZoom / currentZoom;
+
+    pos.y += height * sizeMultiplier;
+
+    auto ret = locator->GetEngine()->WorldToScreen(pos);
+    ret.y -= ((locator->GetEngine()->WindowHeight() * 0.00083333335f * delta) * height * sizeMultiplier);
+    return ret;
+
+
 
 }
 
@@ -40,17 +61,20 @@ UnitInfo *Hero::GetUnitInfo() {
 
 
 SpellSlot *Hero::GetSpellSlotById(int id) {
-    return reinterpret_cast<SpellSlot*>(*reinterpret_cast<int*>((DWORD)this + Offsets::GameObject::SpellBook + (0x4 * id)));
+    return reinterpret_cast<SpellSlot *>(*reinterpret_cast<int *>((DWORD) this + Offsets::GameObject::SpellBook +
+                                                                  (0x4 * id)));
 }
 
 BuffManager *Hero::GetBuffManager() {
-    return reinterpret_cast<BuffManager*>((DWORD)this + Offsets::GameObject::BuffManager);
+    return reinterpret_cast<BuffManager *>((DWORD) this + Offsets::GameObject::BuffManager);
 }
 
 
 float Hero::GetTotalAttackSpeed() {
     auto unitInfo = this->GetUnitInfo();
-    float attackSpeed = static_cast<float>((static_cast<float>(this->attackSpeedMultiplier) - 1.0) * unitInfo->attackSpeedRatio + unitInfo->baseAttackSpeed);
+    float attackSpeed = static_cast<float>(
+            (static_cast<float>(this->attackSpeedMultiplier) - 1.0) * unitInfo->attackSpeedRatio +
+            unitInfo->baseAttackSpeed);
     if (attackSpeed <= 2.5) {
         return attackSpeed;
     }
@@ -61,7 +85,7 @@ float Hero::GetTotalAttackSpeed() {
 }
 
 bool Hero::IsLethalTempoActive() {
-    for (auto buff : this->GetBuffManager()->GetBuffList()) {
+    for (auto buff: this->GetBuffManager()->GetBuffList()) {
         std::string buffName(buff->scriptBaseBuff->name);
         if (buffName.contains(XorStr("assets/perks/styles/precision/lethaltempo/lethaltempo.lua").c_str())) continue;
         if (buff->stacks != 6) continue;
@@ -71,12 +95,12 @@ bool Hero::IsLethalTempoActive() {
 }
 
 SpellCast *Hero::GetSpellCast() {
-    if (!Utils::IsValid((void*)*reinterpret_cast<int*>((DWORD)this + Offsets::GameObject::SpellCast))) {
+    if (!Utils::IsValid((void *) *reinterpret_cast<int *>((DWORD) this + Offsets::GameObject::SpellCast))) {
         return nullptr;
     }
-    return reinterpret_cast<SpellCast*>(*reinterpret_cast<int*>((DWORD)this + Offsets::GameObject::SpellCast));
+    return reinterpret_cast<SpellCast *>(*reinterpret_cast<int *>((DWORD) this + Offsets::GameObject::SpellCast));
 }
 
 void Hero::ForceVisibility() {
-    *reinterpret_cast<int*>((DWORD)this + Offsets::GameObject::Visibility) = 8;
+    *reinterpret_cast<int *>((DWORD) this + Offsets::GameObject::Visibility) = 8;
 }

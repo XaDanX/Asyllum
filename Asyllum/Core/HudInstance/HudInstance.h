@@ -4,6 +4,7 @@
 
 #ifndef ASYLLUM_HUDINSTANCE_H
 #define ASYLLUM_HUDINSTANCE_H
+
 #include "../../Globals/Globals.h"
 #include "../../Globals/Offsets.h"
 #include "../../Math/Vector.h"
@@ -29,7 +30,6 @@ public:
         return focus == 0x1;
     }
 };
-
 
 
 #endif //ASYLLUM_HUDINSTANCE_H
