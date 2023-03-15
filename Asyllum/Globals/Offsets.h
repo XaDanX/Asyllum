@@ -1,7 +1,3 @@
-//
-// Created by XaDanX on 12/1/2022};
-//
-
 #ifndef ASYLLUM_OFFSETS_H
 #define ASYLLUM_OFFSETS_H
 
@@ -11,10 +7,10 @@
 namespace Offsets {
 
     namespace Functions {
-        constexpr std::uint32_t IsNotWall{0x18d1da4};
+        constexpr std::uint32_t IsNotWall{0x18d4d88};/*compare flags*/
     }
 
-    namespace SpellBook { // always the same
+    namespace SpellBook {  /*always the same*/
         constexpr std::uint32_t Level{0x1C};
         constexpr std::uint32_t ReadyTime{0x24};
         constexpr std::uint32_t SpellInfo{0x10C};
@@ -23,17 +19,17 @@ namespace Offsets {
     }
 
     namespace Game {
-        constexpr std::uint32_t HudInstance{0x18D1A5C};//
-        constexpr std::uint32_t ViewProjMatrices{0x31958E8};//
-        constexpr std::uint32_t LocalPlayer{0x316F708};//
-        constexpr std::uint32_t GameTime{0x31680E4}; //
+        constexpr std::uint32_t HudInstance{0x18D4A3C};//
+        constexpr std::uint32_t ViewProjMatrices{0x3198DB8};//
+        constexpr std::uint32_t LocalPlayer{0x3172ABC};//
+        constexpr std::uint32_t GameTime{0x316B268}; //
         constexpr std::uint32_t ObjectManager{0x18A6ED8};
-        constexpr std::uint32_t Renderer{0x319B280};//
+        constexpr std::uint32_t Renderer{0x319E770};//
     }
 
     namespace HudInstance {
         constexpr std::uint32_t ZoomInstance{0xC};
-        constexpr std::uint32_t CursorWorldPos{0x11C}; //
+        constexpr std::uint32_t CursorWorldPos{0x11C}; 
         constexpr std::uint32_t Focus{0x68};
     }
 
@@ -44,10 +40,10 @@ namespace Offsets {
     }
 
     namespace Templates {
-        constexpr std::uint32_t HeroTemplate{0x18D1AF4};//
-        constexpr std::uint32_t MinionTemplate{0x251F22C};//
-        constexpr std::uint32_t TurretTemplate{0x3166D74};//
-        constexpr std::uint32_t MissileTemplate{0x316F748};//
+        constexpr std::uint32_t HeroTemplate{0x18D4AD4};//
+        constexpr std::uint32_t MinionTemplate{0x252218C};//
+        constexpr std::uint32_t TurretTemplate{0x3169D6C};//
+        constexpr std::uint32_t MissileTemplate{0x3172B3C};//
     }
 
     namespace Renderer {
@@ -57,42 +53,42 @@ namespace Offsets {
 
     namespace GameObject {
         constexpr std::uint32_t Index{0x8};
-        constexpr std::uint32_t Team{0x34};//
-        constexpr std::uint32_t PlayerName{0xB8}; // not used
-        constexpr std::uint32_t NetworkId{0xB4};//
-        constexpr std::uint32_t Position{0x1DC};//
-        constexpr std::uint32_t Visibility{0x274};//
-        constexpr std::uint32_t SpawnCount{0x288};//
-        constexpr std::uint32_t Mana{0x29C};//
+        constexpr std::uint32_t Team{0x34};
+        constexpr std::uint32_t PlayerName{0xB8};
+        constexpr std::uint32_t NetworkId{0xB4};
+        constexpr std::uint32_t Position{0x1DC};
+        constexpr std::uint32_t Visibility{0x274};
+        constexpr std::uint32_t SpawnCount{0x288};
+        constexpr std::uint32_t Mana{0x29C};
         constexpr std::uint32_t MaxMana{0x2AC};
         constexpr std::uint32_t Dead{0x021C};
-        constexpr std::uint32_t Health{0xE7C}; //
-        constexpr std::uint32_t MaxHealth{0xE8C}; //
-        constexpr std::uint32_t Name{0x2B04}; //
-        constexpr std::uint32_t AttackRange{0x13A4};//
-        constexpr std::uint32_t Targetable{0xD04};//
-        constexpr std::uint32_t AiManager{0x2BDC}; //
-        constexpr std::uint32_t SpellCast{0x2270}; //
-        constexpr std::uint32_t SpellBook{0x2718};//
-        constexpr std::uint32_t BuffManager{0x2088}; //
-        constexpr std::uint32_t AttackSpeedMultiplier{0x1358}; //
-        constexpr std::uint32_t Scale{0x1838}; //
-        constexpr std::uint32_t ActionState{0x111C}; // not used :D
-        constexpr std::uint32_t CharacterData{0x2B6C};////
-        constexpr std::uint32_t MovementSpeed{0x139C}; //
+        constexpr std::uint32_t Health{0xE7C}; 
+        constexpr std::uint32_t MaxHealth{0xE8C}; 
+        constexpr std::uint32_t Name{0x2B04};
+        constexpr std::uint32_t AttackRange{0x13A4};
+        constexpr std::uint32_t Targetable{0xD04};
+        constexpr std::uint32_t AiManager{0x2BDC};
+        constexpr std::uint32_t SpellCast{0x2270}; 
+        constexpr std::uint32_t SpellBook{0x2718};
+        constexpr std::uint32_t BuffManager{0x2088}; 
+        constexpr std::uint32_t AttackSpeedMultiplier{0x1358}; 
+        constexpr std::uint32_t Scale{0x1838}; 
+        constexpr std::uint32_t ActionState{0x111C};
+        constexpr std::uint32_t CharacterData{0x2B6C};
+        constexpr std::uint32_t MovementSpeed{0x139C}; 
 
     }
 
     namespace SpellCast {
-        constexpr std::uint32_t SpellData{0x8}; //
-        constexpr std::uint32_t SpellName{0x18}; //
-        constexpr std::uint32_t SpellSlot{0xC}; //
-        constexpr std::uint32_t CastTime{0x15C}; //?
-        constexpr std::uint32_t StartPos{0x88}; //
-        constexpr std::uint32_t EndPos{0x94}; //
+        constexpr std::uint32_t SpellData{0x8}; 
+        constexpr std::uint32_t SpellName{0x18}; 
+        constexpr std::uint32_t SpellSlot{0xC}; 
+        constexpr std::uint32_t CastTime{0x15C};
+        constexpr std::uint32_t StartPos{0x88}; 
+        constexpr std::uint32_t EndPos{0x94}; 
         constexpr std::uint32_t EndPosAlt{0xA0};
-        constexpr std::uint32_t StartTime{0x10}; //
-        constexpr std::uint32_t EndTime{0x148}; //
+        constexpr std::uint32_t StartTime{0x10}; 
+        constexpr std::uint32_t EndTime{0x148}; 
     }
 
     namespace BuffManager {
@@ -113,7 +109,7 @@ namespace Offsets {
         constexpr std::uint32_t NavigationArrayLength{NavigationArray + 4};
         constexpr std::uint32_t StartPath{0x1CC};
         constexpr std::uint32_t EndPath{0x1D8};
-        constexpr std::uint32_t CurrentSegment{0x1C4};
+        constexpr std::uint32_t CurrentSegment{0x1C4};//
         constexpr std::uint32_t IsDashing{0x214};
         constexpr std::uint32_t DashSpeed{0x1F8};
         constexpr std::uint32_t IsMoving{0x1C0};
@@ -136,4 +132,4 @@ namespace Offsets {
         constexpr std::uint32_t Hash{0x10};
     }
 }
-#endif //ASYLLUM_OFFSETS_H
+#endif ASYLLUM_OFFSETS_H

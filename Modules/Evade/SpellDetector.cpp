@@ -55,8 +55,8 @@ void SpellDetector::ProcessActiveSpells() {
 
         auto spell = it->second;
 
-        EvadeSpell* evadeSpell = SpellLibrary::FindSpell(spell.caster->characterData->hash, (Slot)spell.spellSlot);
-        if (!Utils::IsValid((void*)evadeSpell))
+        EvadeSpell *evadeSpell = SpellLibrary::FindSpell(spell.caster->characterData->hash, (Slot) spell.spellSlot);
+        if (!Utils::IsValid((void *) evadeSpell))
             continue;
 
         if (!spell.IsValid())
@@ -64,21 +64,37 @@ void SpellDetector::ProcessActiveSpells() {
 
         DetectedSpell detectedSpell;
 
-        if (evadeSpell->spellType == SpellType::Linear) {
-            detectedSpell.path = Geometry::Rectangle(spell.currentPos, spell.endPos, spell.spellInfo->width).ToPolygon();
+
+        if (spell.name == evadeSpell->name) {
+
+
+            if (evadeSpell->recalculateLength) {
+                spell.RecalculateLength();
+            }
+            spell.CalculateCurrentPos();
+
+            if (evadeSpell->spellType == SpellType::Linear) {
+                if (spell.spellInfo->width > 5) {
+                    detectedSpell.path = Geometry::Rectangle(spell.currentPos, spell.endPos,
+                                                             spell.spellInfo->width).ToPolygon();
+                } else {
+                    detectedSpell.path = Geometry::Rectangle(spell.currentPos, spell.endPos,
+                                                             spell.spellInfo->height * 2).ToPolygon();
+                }
+            }
+
+            detectedSpell.spellInfo = spell.spellInfo;
+            detectedSpell.evadeSpellInfo = evadeSpell;
+            detectedSpell.startPos = spell.startPos;
+            detectedSpell.endPos = spell.endPos;
+            detectedSpell.currentPos = spell.currentPos;
+            detectedSpell.remainingCastTime = spell.RemainingCastTime();
+            detectedSpell.caster = spell.caster;
+
+            detectedSpells.push_back(detectedSpell);
+
+
         }
-
-        detectedSpell.spellInfo = spell.spellInfo;
-        detectedSpell.evadeSpellInfo = evadeSpell;
-        detectedSpell.startPos = spell.startPos;
-        detectedSpell.endPos = spell.endPos;
-        detectedSpell.currentPos = spell.currentPos;
-        detectedSpell.remainingCastTime = spell.RemainingCastTime();
-        detectedSpell.caster = spell.caster;
-
-        detectedSpells.push_back(detectedSpell);
-
-
     }
 }
 
@@ -90,25 +106,38 @@ void SpellDetector::ProcessMissileList() {
 
         auto spell = missile->GetSpellObject();
 
-        if (!spell.IsValid())
+        if (!spell.caster->IsHero())
             continue;
 
-        if (!spell.caster->IsHero())
+        EvadeSpell* evadeSpell = SpellLibrary::FindSpell(spell.caster->characterData->hash, (Slot)spell.spellSlot);
+        if (!Utils::IsValid((void*)evadeSpell))
+            continue;
+
+        if (!spell.IsValid())
             continue;
 
         if (!Utils::IsValid((void*)spell.spellInfo))
             continue;
 
 
-        EvadeSpell* evadeSpell = SpellLibrary::FindSpell(spell.caster->characterData->hash, (Slot)spell.spellSlot);
-        if (!Utils::IsValid((void*)evadeSpell))
-            continue;
 
 
         if(std::count(evadeSpell->missileNames.begin(), evadeSpell->missileNames.end(), spell.name)) {
             DetectedSpell detectedSpell;
+
+            if (evadeSpell->recalculateLength) {
+                spell.RecalculateLength();
+            }
+            spell.CalculateCurrentPos();
+
             if (evadeSpell->spellType == SpellType::Linear) {
-                detectedSpell.path = Geometry::Rectangle(spell.currentPos, spell.endPos, spell.spellInfo->width).ToPolygon();
+                if (spell.spellInfo->width > 5) {
+                    detectedSpell.path = Geometry::Rectangle(spell.currentPos, spell.endPos,
+                                                             spell.spellInfo->width).ToPolygon();
+                } else {
+                    detectedSpell.path = Geometry::Rectangle(spell.currentPos, spell.endPos,
+                                                             spell.spellInfo->height * 2).ToPolygon();
+                }
             }
 
             detectedSpell.spellInfo = spell.spellInfo;

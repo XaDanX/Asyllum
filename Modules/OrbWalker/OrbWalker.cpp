@@ -6,6 +6,9 @@
 #include "../../Asyllum/Core/Locator/Locator.h"
 #include "../../Asyllum/Core/Data/GameKeybind.h"
 #include "../../Asyllum/Utils/Utils.h"
+#include "../../Asyllum/Core/Managers/EventManager/Event.h"
+#include "../Evade/Evade.h"
+
 
 #define TICK_RATE 0.0333;
 namespace OrbWalkerUtils {
@@ -73,7 +76,7 @@ void OrbWalker::OnTick() {
                                            localPlayer->GetUnitInfo()->gameplayRadius + localPlayer->attackRange,
                                            ImColor(0, 255, 50, 150), false);
 
-    if (input.IsDown(this->hotKey) && this->enabled) {
+    if (input.IsDown(this->hotKey) && this->enabled && !Evade::isEvading ) {
         if (!locator->GetEngine()->GetHudInstance()->IsFocused() || locator->GetHookingService()->isMenuOpen)
             return;
         auto target = OrbWalkerUtils::GetBestTarget();
@@ -99,6 +102,19 @@ void OrbWalker::OnTick() {
 
 }
 
-void OrbWalker::OnLoad() {
 
+void OnRecallListener(Event::OnRecall args) {
+    auto player = locator->GetObjectManager()->GetLocalPlayer();
+    auto pos2d = locator->GetEngine()->WorldToScreen(player->position);
+
+    auto pos2d2 = locator->GetEngine()->WorldToScreen(args.caster->position);
+
+    ImGui::GetBackgroundDrawList()->AddLine({pos2d.x, pos2d.y}, {pos2d2.x, pos2d2.y}, ImColor(255, 255, 0, 255), 3);
+    ImGui::GetBackgroundDrawList()->AddText({pos2d2.x, pos2d2.y}, ImColor(255, 0, 0, 255), "REC");
+
+
+}
+
+void OrbWalker::OnLoad() {
+    locator->GetEventManager()->Subscribe<Event::OnRecall>(&OnRecallListener);
 }

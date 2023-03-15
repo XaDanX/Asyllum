@@ -23,11 +23,11 @@ public:
     union {
         DEFINE_MEMBER_N(ZoomInstance*, zoomInstance, Offsets::HudInstance::ZoomInstance);
         DEFINE_MEMBER_N(Vector3, cursorWorldPos, Offsets::HudInstance::CursorWorldPos);
-        DEFINE_MEMBER_N(int, focus, Offsets::HudInstance::Focus);
+        DEFINE_MEMBER_N(uint16_t, focus, Offsets::HudInstance::Focus);
     };
 
     bool IsFocused() const {
-        return focus == 0x1;
+        return focus == (uint16_t)1;
     }
 };
 

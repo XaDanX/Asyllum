@@ -35,6 +35,10 @@ public:
     bool IsPointInRange(Vector3 point);
 
     bool IsCasted();
+
+    void CalculateCurrentPos();
+
+    void RecalculateLength();
 };
 
 

@@ -16,15 +16,9 @@ bool Evade::isEvading = false;
 void Evade::OnTick() {
     spellDetector->Update();
     auto player = locator->GetObjectManager()->GetLocalPlayer();
-
-    auto a = locator->GetEngine()->WorldToScreen(lastMovement);
-    auto b = locator->GetEngine()->WorldToScreen(player->position);
-    ImGui::GetBackgroundDrawList()->AddLine({a.x, a.y}, {b.x, b.y}, ImColor(255, 0, 0, 255), 2);
-
     auto currentTime = locator->GetEngine()->GetGameTick();
 
-
-    if (currentTime < Evade::evadeEndTime + (Evade::evadePoint.distance(player->position) / player->movementSpeed) * 0.4 && Evade::evadePoint.x != 0) { // DETECT WHEN SPELL PASSED PLAYER
+    if (currentTime < Evade::evadeEndTime + (Evade::evadePoint.distance(player->position) / player->movementSpeed) * 0.4 && Evade::evadePoint.x != 0) {
         auto p1 = locator->GetEngine()->WorldToScreen(locator->GetObjectManager()->GetLocalPlayer()->position);
         auto p2 = locator->GetEngine()->WorldToScreen(Evade::evadePoint);
         ImGui::GetBackgroundDrawList()->AddLine({p1.x, p1.y}, {p2.x, p2.y}, ImColor(255, 215, 34, 255), 2);
@@ -53,7 +47,7 @@ void Evade::OnTick() {
 
     if (Evade::isEvading) {
         auto worldPos = locator->GetEngine()->WorldToScreen(player->position);
-        ImGui::GetBackgroundDrawList()->AddText({worldPos.x, worldPos.y}, ImColor(0, 255, 0, 255), "Evading");
+        ImGui::GetBackgroundDrawList()->AddText({worldPos.x, worldPos.y}, ImColor(0, 255, 0, 255), XorStr("Evading").c_str());
     }
 
     auto evadable = GetSpellToEvade();
@@ -69,9 +63,9 @@ void Evade::OnTick() {
 
 
     for (const auto& spell : spellDetector->detectedSpells) {
-        locator->GetRenderer()->DrawPolygon(spell.path, ImColor(255, 0, 0, 255), 1);
-        Geometry::Polygon drawable = Geometry::Rectangle(spell.currentPos, spell.endPos, spell.spellInfo->width + spell.spellInfo->height).ToPolygon();
-        locator->GetRenderer()->DrawPolygon(drawable, ImColor(255, 255, 255, 255), 1);
+        locator->GetRenderer()->DrawPolygon(spell.path, ImColor(255, 0, 0, 255), 2);
+        Geometry::Polygon drawable = Geometry::Rectangle(spell.currentPos, spell.endPos, spell.spellInfo->width * 2).ToPolygon();
+        locator->GetRenderer()->DrawPolygon(drawable, ImColor(255, 255, 255, 255), 2);
 
     }
 
@@ -99,10 +93,15 @@ bool Evade::IsDangerous(Vector3 pos) {
 }
 
 std::unique_ptr<DetectedSpell> Evade::GetSpellToEvade() { // PATH, GET FIRST NODE, GET DIRECTION, EXTEND LENGTH + ...
+    auto player = locator->GetObjectManager()->GetLocalPlayer();
     std::unique_ptr<DetectedSpell> bestCollision = nullptr;
     DangerLevel bestPriority = DangerLevel::NoDanger;
 
     for (auto& spell : spellDetector->detectedSpells) {
+        if (spell.caster->IsAllyTo<Hero*>(player))
+            continue;
+
+
         auto res = CollisionEngine::FindCollisionLine(spell);
         auto collision = (!res.hitList.empty() && res.CollideWithPlayer);
         if (collision || spell.path.IsInside(GetMovePath())) {
