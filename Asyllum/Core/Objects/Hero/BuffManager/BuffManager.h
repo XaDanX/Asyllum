@@ -77,17 +77,17 @@ class BuffManager {
 public:
     std::vector<BuffInstance *> GetBuffList() {
         std::vector<BuffInstance *> buffs;
-        const DWORD buffBegin = *reinterpret_cast<DWORD *>((DWORD) this + Offsets::BuffManager::BuffStart);
-        const DWORD buffEnd = *reinterpret_cast<DWORD *>((DWORD) this + Offsets::BuffManager::BuffEnd);
+        const uint64_t buffBegin = *reinterpret_cast<uint64_t *>((uint64_t) this + Offsets::BuffManager::BuffStart);
+        const uint64_t buffEnd = *reinterpret_cast<uint64_t *>((uint64_t) this + Offsets::BuffManager::BuffEnd);
 
         if (buffBegin != 0 && buffEnd != 0) {
             for (DWORD i = 0; i < (buffEnd - buffBegin); i += 0x08) {
                 BuffInstance *buff = *reinterpret_cast<BuffInstance **>(buffBegin + i);
 
-                if ((DWORD) buff < 0x1000)
+                if ((uint64_t)buff < 0x1000)
                     continue;
 
-                if ((DWORD) buff->scriptBaseBuff < 0x1000)
+                if ((uint64_t) buff->scriptBaseBuff < 0x1000)
                     continue;
 
                 // if (buff->stacks <= 0)

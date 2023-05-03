@@ -5,8 +5,10 @@
 #ifndef ASYLLUM_GLOBALS_H
 #define ASYLLUM_GLOBALS_H
 
+#include <cstdint>
+
 namespace Globals {
-    extern int baseAddress;
+    extern uint64_t baseAddress;
     extern float viewMatrix[16];
     extern float projectionMatrix[16];
     extern float viewProjectionMatrix[16];
@@ -15,6 +17,7 @@ namespace Globals {
 #define STR_MERGE_IMPL(a, b) a##b
 #define STR_MERGE(a, b) STR_MERGE_IMPL(a, b)
 #define MAKE_PAD(size) STR_MERGE(_pad, __COUNTER__)[size]
+#define DEFINE_MEMBER_0(x)                    x;
 #define DEFINE_MEMBER_N(type, name, offset) struct {unsigned char MAKE_PAD(offset); type name;}
 
 

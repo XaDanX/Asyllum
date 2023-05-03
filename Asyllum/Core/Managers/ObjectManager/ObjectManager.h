@@ -24,9 +24,9 @@ public:
 
     std::vector<Missile*> GetMissileList();
 
-
     Hero* GetHeroByIndex(BYTE index);
-    //TODO: Missile list
+
+
 };
 
 

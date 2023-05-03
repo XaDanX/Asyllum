@@ -329,30 +329,31 @@ enum [[maybe_unused]] CharacterState {
 class CharacterData {
 public:
     union {
-        DEFINE_MEMBER_N(HashName, hash, (unsigned int) Offsets::CharacterData::Hash);
+        DEFINE_MEMBER_N(HashName, hash, Offsets::CharacterData::Hash);
     };
 };
 
 class ObjectBase {
 public:
     union {
-        DEFINE_MEMBER_N(BYTE, index, (unsigned int) Offsets::GameObject::Index);
-        DEFINE_MEMBER_N(short, team, (unsigned int) Offsets::GameObject::Team);
-        DEFINE_MEMBER_N(int, networkId, (unsigned int) Offsets::GameObject::NetworkId);
-        DEFINE_MEMBER_N(Vector3, position, (unsigned int) Offsets::GameObject::Position);
-        DEFINE_MEMBER_N(bool, visibility, (unsigned int) Offsets::GameObject::Visibility);
-        DEFINE_MEMBER_N(int, spawnCount, (unsigned int) Offsets::GameObject::SpawnCount);
-        DEFINE_MEMBER_N(float, mana, (unsigned int) Offsets::GameObject::Mana);
-        DEFINE_MEMBER_N(float, maxMana, (unsigned int) Offsets::GameObject::MaxMana);
-        DEFINE_MEMBER_N(bool, dead, (unsigned int) Offsets::GameObject::Dead);
-        DEFINE_MEMBER_N(float, health, (unsigned int) Offsets::GameObject::Health);
-        DEFINE_MEMBER_N(float, maxHealth, (unsigned int) Offsets::GameObject::MaxHealth);
-        DEFINE_MEMBER_N(LolString, name, (unsigned int) Offsets::GameObject::Name);
-        DEFINE_MEMBER_N(float, attackRange, (unsigned int) Offsets::GameObject::AttackRange);
-        DEFINE_MEMBER_N(float, scale, (unsigned int) Offsets::GameObject::Scale);
-        DEFINE_MEMBER_N(bool, targetable, (unsigned int) Offsets::GameObject::Targetable);
+        DEFINE_MEMBER_0(__int64* vTable)
+        DEFINE_MEMBER_N(BYTE, index, Offsets::GameObject::Index);
+        DEFINE_MEMBER_N(short, team, Offsets::GameObject::Team);
+        DEFINE_MEMBER_N(int, networkId, Offsets::GameObject::NetworkId);
+        DEFINE_MEMBER_N(Vector3, position, Offsets::GameObject::Position);
+        DEFINE_MEMBER_N(bool, visibility, Offsets::GameObject::Visibility);
+        DEFINE_MEMBER_N(int, spawnCount, Offsets::GameObject::SpawnCount);
+        DEFINE_MEMBER_N(float, mana, Offsets::GameObject::Mana);
+        DEFINE_MEMBER_N(float, maxMana, Offsets::GameObject::MaxMana);
+        DEFINE_MEMBER_N(bool, dead, Offsets::GameObject::Dead);
+        DEFINE_MEMBER_N(float, health, Offsets::GameObject::Health);
+        DEFINE_MEMBER_N(float, maxHealth, Offsets::GameObject::MaxHealth);
+        DEFINE_MEMBER_N(LolString, name, Offsets::GameObject::Name);
+        DEFINE_MEMBER_N(float, attackRange, Offsets::GameObject::AttackRange);
+        DEFINE_MEMBER_N(float, scale, Offsets::GameObject::Scale);
+        DEFINE_MEMBER_N(bool, targetable, Offsets::GameObject::Targetable);
         DEFINE_MEMBER_N(float, attackSpeedMultiplier, Offsets::GameObject::AttackSpeedMultiplier);
-        DEFINE_MEMBER_N(LolString, playerName, (unsigned int) Offsets::GameObject::PlayerName);
+        DEFINE_MEMBER_N(LolString, playerName, Offsets::GameObject::PlayerName);
         DEFINE_MEMBER_N(int, actionState, Offsets::GameObject::ActionState);
         DEFINE_MEMBER_N(CharacterData*, characterData, Offsets::GameObject::CharacterData);
         DEFINE_MEMBER_N(float, movementSpeed, Offsets::GameObject::MovementSpeed);
@@ -366,6 +367,11 @@ public:
     bool IsMinion() {
         return reinterpret_cast<unsigned __int8 *>(this) &&
                CompareObjectFlags(static_cast<int>(ObjectTypeFlags::Minion)) && maxHealth > 20;
+    }
+
+    bool IsNeutralCamp() {
+        return !reinterpret_cast<unsigned __int8 *>(this) &&
+                    CompareObjectFlags(static_cast<int>(ObjectTypeFlags::Minion));
     }
 
     bool IsHero() {
@@ -383,14 +389,14 @@ public:
     }
 
     bool IsDummy() {
-        return name.str().contains(XorStr("PracticeTool").c_str());
+        return name.str().contains(XorStr("PracticeTool").c_str()); // TODO: Checking by hash
     }
 
     bool IsAlive() {
-        return (*(unsigned __int8 (__thiscall **)(DWORD *)) (*reinterpret_cast<DWORD *>(this) + 140))(
-                reinterpret_cast<DWORD *>(this))
-               && !(*(unsigned __int8 (__thiscall **)(DWORD *)) (reinterpret_cast<DWORD *>(this)[148] + 8))(
-                reinterpret_cast<DWORD *>(this) + 148);
+        return (*(unsigned __int8 (__thiscall **)(__int64 *)) (*reinterpret_cast<__int64 *>(this) + 280))(
+                reinterpret_cast<__int64 *>(this))
+               && !(*(unsigned __int8 (__thiscall **)(__int64 *)) (reinterpret_cast<__int64 *>(this)[90] + 16))(
+                reinterpret_cast<__int64 *>(this) + 90);
     }
 
     bool IsLocalPlayer() {

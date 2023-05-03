@@ -23,15 +23,19 @@ public:
     HudInstance *GetHudInstance();
 
     Vector2 WorldToScreen(const Vector3 &pos);
+    Vector2 WorldToMinimap(const Vector3& pos);
 
     float GetProcessorTime();
     float GetGameTick();
 
-    DWORD __cdecl CollisionFlag(float a1, float a2, float a3);
+    DWORD __cdecl CollisionFlag(float* a1);
 
     bool IsNotWall(Vector3 pos);
 
     void ProcessSpells();
+
+    __int16 __fastcall flag(int a1, int a2, unsigned __int16 a3);
+
 
 };
 

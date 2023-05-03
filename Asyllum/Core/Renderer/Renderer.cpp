@@ -172,3 +172,4 @@ void Renderer::DrawPolygon(Geometry::Polygon polygon, ImColor color, int thickne
 
     ImGui::GetBackgroundDrawList()->AddPolyline(points, i, color, true, thickness);
 }
+

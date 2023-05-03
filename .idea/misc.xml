@@ -3,12 +3,15 @@
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="CidrRootsConfiguration">
     <excludeRoots>
+      <file path="$PROJECT_DIR$/.vs" />
       <file path="$PROJECT_DIR$/Asyllum/imgui" />
       <file path="$PROJECT_DIR$/Asyllum/json" />
       <file path="$PROJECT_DIR$/Asyllum/kiero" />
       <file path="$PROJECT_DIR$/CMake" />
       <file path="$PROJECT_DIR$/IDA_SCRIPTS" />
+      <file path="$PROJECT_DIR$/Loader/imgui" />
       <file path="$PROJECT_DIR$/out" />
+      <file path="$PROJECT_DIR$/x64" />
       <file path="$PROJECT_DIR$/x86" />
     </excludeRoots>
   </component>

@@ -155,3 +155,5 @@ void SpellDetector::ProcessMissileList() {
     }
 
 }
+
+//inline extern std::unique_ptr<SpellDetector> spellDetector = std::make_unique<SpellDetector>();

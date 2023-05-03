@@ -51,9 +51,9 @@ inline namespace StringUtils {
         return s;
     }
 
-    inline std::string GetString(int addr) {
-        if (*(int *) (addr + 0x10) > 15) {
-            return std::string((char *) (*(DWORD *) addr));
+    inline std::string GetString(__int64 addr) {
+        if (*(__int64 *) (addr + 0x10) > 15) {
+            return std::string((char *) (*(__int64 *) addr));
         } else {
             return std::string((char *) addr);
         }

@@ -5,7 +5,7 @@
 #include "Globals.h"
 
 namespace Globals {
-    int baseAddress = 0;
+    uint64_t baseAddress = 0;
     float viewMatrix[16]{};
     float projectionMatrix[16]{};
     float viewProjectionMatrix[16]{};

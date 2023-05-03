@@ -23,7 +23,7 @@ bool HookingService::Initialize() {
             do {
                 this->window = HookingHelper::GetProcessWindow();
             } while (window == NULL);
-            oWndProc = (WNDPROC) SetWindowLongPtr(window, GWL_WNDPROC, (LONG_PTR) DirectX::WndProc);
+            oWndProc = (WNDPROC) SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR) DirectX::WndProc);
             attached = true;
         }
     } while (!attached);

@@ -27,7 +27,7 @@ namespace OrbWalkerUtils {
     }
 
     bool CanAttack() {
-        auto player = locator->GetObjectManager()->GetLocalPlayer();
+        auto player = locator->GetObjectManager()->GetLocalPlayer();//duzy ccchhhuuuj
         if (player->GetAiManager()->isDashing)
             return false;
         if (player->characterData->hash == HashName::Kaisa) {
@@ -54,12 +54,12 @@ namespace OrbWalkerUtils {
             if (!unit->targetable) continue;
             if (!unit->IsOnScreen()) continue;
 
-            if (unit->DistanceTo<Hero *>(locator->GetObjectManager()->GetLocalPlayer()) -
+            if (unit->DistanceTo<Hero*>(locator->GetObjectManager()->GetLocalPlayer()) -
                 unit->GetUnitInfo()->gameplayRadius > (locator->GetObjectManager()->GetLocalPlayer()->attackRange +
                                                        locator->GetObjectManager()->GetLocalPlayer()->GetUnitInfo()->gameplayRadius))
                 continue;
 
-            auto distance = locator->GetObjectManager()->GetLocalPlayer()->DistanceTo<Hero *>(unit);
+            auto distance = locator->GetObjectManager()->GetLocalPlayer()->DistanceTo<Hero*>(unit);
 
             if (distance < oldDistance) {
                 oldDistance = distance;
@@ -75,6 +75,27 @@ void OrbWalker::OnTick() {
     locator->GetRenderer()->DrawRiotCircle(localPlayer->position,
                                            localPlayer->GetUnitInfo()->gameplayRadius + localPlayer->attackRange,
                                            ImColor(0, 255, 50, 150), false);
+
+
+   ImGui::Begin("OrbWalker DEBUG");
+   ImGui::Separator();
+   ImGui::Text("Attack speed %f", locator->GetObjectManager()->GetLocalPlayer()->GetTotalAttackSpeed());
+   ImGui::Separator();//cipa
+   ImGui::Text("Attack delay: %i", OrbWalkerUtils::GetAttackDelay());
+   ImGui::Separator();
+   ImGui::Text("Windup time: %f", OrbWalkerUtils::GetWindupTime());
+   ImGui::Separator();
+   ImGui::Text("Can attack: %s", OrbWalkerUtils::CanAttack() ? "true" : "false");
+   ImGui::Separator();
+   ImGui::Text("Can move: %s", OrbWalkerUtils::CanMove() ? "true" : "false");
+   ImGui::Separator();
+   ImGui::Text("Lethal tempo: %s", locator->GetObjectManager()->GetLocalPlayer()->IsLethalTempoActive() ? "true" : "false");
+   ImGui::Separator();
+   ImGui::Text("Dashing: %s", locator->GetObjectManager()->GetLocalPlayer()->GetAiManager()->isDashing ? "true" : "false");
+   ImGui::Separator();
+   ImGui::Text("Moving: %s", locator->GetObjectManager()->GetLocalPlayer()->GetAiManager()->isMoving ? "true" : "false");
+   ImGui::Separator();
+   ImGui::End();
 
     if (input.IsDown(this->hotKey) && this->enabled && !Evade::isEvading ) {
         if (!locator->GetEngine()->GetHudInstance()->IsFocused() || locator->GetHookingService()->isMenuOpen)

@@ -19,7 +19,7 @@ Vector2 Hero::GetHealthBarPosition() {
     auto sizeMultiplier = this->scale;
 
     auto maxZoom = 2250.0;
-    auto currentZoom = locator->GetEngine()->GetHudInstance()->zoomInstance->visibleZoom;
+    auto currentZoom = locator->GetEngine()->GetHudInstance()->cameraInstance->zoom;
     auto delta = maxZoom / currentZoom;
 
     pos.y += height * sizeMultiplier;
@@ -73,12 +73,12 @@ bool Hero::IsLethalTempoActive() {
 }
 
 SpellCast *Hero::GetSpellCast() {
-    if (!Utils::IsValid((void *) *reinterpret_cast<int *>((DWORD) this + Offsets::GameObject::SpellCast))) {
+    if (!Utils::IsValid((void *) *reinterpret_cast<__int64 *>((__int64) this + Offsets::GameObject::SpellCast))) {
         return nullptr;
     }
-    return reinterpret_cast<SpellCast *>(*reinterpret_cast<int *>((DWORD) this + Offsets::GameObject::SpellCast));
+    return reinterpret_cast<SpellCast *>(*reinterpret_cast<__int64 *>((__int64) this + Offsets::GameObject::SpellCast));
 }
 
 void Hero::ForceVisibility() {
-    *reinterpret_cast<int *>((DWORD) this + Offsets::GameObject::Visibility) = 8;
+    *reinterpret_cast<int *>((__int64) this + Offsets::GameObject::Visibility) = 8;
 }

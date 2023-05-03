@@ -23,6 +23,7 @@ public:
 
     void DrawRiotCircle(const Vector3 &pos, float radius, ImColor color, bool filled);
 
+
 public: // Gui components
     bool CustomGuiHotkey(int *k, const ImVec2 &size_arg = ImVec2(50, 22));
 };

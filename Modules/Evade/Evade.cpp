@@ -18,32 +18,38 @@ void Evade::OnTick() {
     auto player = locator->GetObjectManager()->GetLocalPlayer();
     auto currentTime = locator->GetEngine()->GetGameTick();
 
-    if (currentTime < Evade::evadeEndTime + (Evade::evadePoint.distance(player->position) / player->movementSpeed) * 0.4 && Evade::evadePoint.x != 0) {
+
+
+    if (currentTime < Evade::evadeEndTime && Evade::evadePoint.x != 0) { // + (Evade::evadePoint.distance(player->position) / player->movementSpeed) * 0.4
         auto p1 = locator->GetEngine()->WorldToScreen(locator->GetObjectManager()->GetLocalPlayer()->position);
         auto p2 = locator->GetEngine()->WorldToScreen(Evade::evadePoint);
         ImGui::GetBackgroundDrawList()->AddLine({p1.x, p1.y}, {p2.x, p2.y}, ImColor(255, 215, 34, 255), 2);
         locator->GetRenderer()->DrawRiotCircle(Evade::evadePoint, locator->GetObjectManager()->GetLocalPlayer()->GetUnitInfo()->gameplayRadius, ImColor(255, 255, 0, 255), true);
-        Vector3& loc = Evade::evadePoint;
+        Vector3 loc = Evade::evadePoint;
+        if (extendEvadeMove) {
+            auto player = locator->GetObjectManager()->GetLocalPlayer();
+            auto length = player->position.distance(Evade::evadePoint);
+            auto point = Evade::evadePoint.sub(player->position).normalize();
+            loc = player->position.add(point.mult(length*10));
+        }
         input.IssueClickAt(CT_RIGHT_CLICK, [loc] {return locator->GetEngine()->WorldToScreen(loc);}, GameKeybind::TargetChampionsOnly);
     } else {
-        if (lastMovement.x != 0 && lastMovement.z != 0) { // add path check instead of that xD
-            Vector3& last = lastMovement;
-            auto playerPos = player->position;
-            auto direction = last.sub(playerPos).normalize();
-            auto point = playerPos.add(direction.scale(static_cast<float>(locator->GetObjectManager()->GetLocalPlayer()->GetUnitInfo()->gameplayRadius * 2)));
-            if (!IsDangerous(point)) {
-                if (continueLastMovement) {
-                    input.IssueClickAt(CT_RIGHT_CLICK, [last] { return locator->GetEngine()->WorldToScreen(last); },
-                                       GameKeybind::TargetChampionsOnly);
+        if (lastMovement.x != 0 && lastMovement.z != 0) {
+                if (!IsDangerous(lastMovement)) {
+                    if (continueLastMovement) {
+                        input.IssueClickAt(CT_RIGHT_CLICK,
+                                           [this] { return locator->GetEngine()->WorldToScreen(lastMovement); },
+                                           GameKeybind::TargetChampionsOnly);
                     }
-                lastMovement = Vector3(0, 0, 0);
-                Evade::isEvading = false;
+                    lastMovement = Vector3(0, 0, 0);
                 }
 
-            }
-
-
+        }
+         Evade::isEvading = false;
     }
+
+
+
 
     if (Evade::isEvading) {
         auto worldPos = locator->GetEngine()->WorldToScreen(player->position);
@@ -62,10 +68,31 @@ void Evade::OnTick() {
     }
 
 
+    if (!Evade::isEvading) {
+        auto pathSafe = IsPathSafe();
+        if (!pathSafe.Safe) {
+            locator->GetConsole()->Print("PATH FIXED!");
+            if (pathSafe.LastSafePoint.x != 0) {
+                input.IssueClickAt(CT_RIGHT_CLICK,
+                                   [pathSafe] { return locator->GetEngine()->WorldToScreen(pathSafe.LastSafePoint); },
+                                   GameKeybind::TargetChampionsOnly);
+            } else {
+                input.IssueClickAt(CT_RIGHT_CLICK,
+                                   [] {
+                                       return locator->GetEngine()->WorldToScreen(
+                                               locator->GetObjectManager()->GetLocalPlayer()->position);
+                                   },
+                                   GameKeybind::TargetChampionsOnly);
+            }
+        }
+
+    }
+
+
     for (const auto& spell : spellDetector->detectedSpells) {
-        locator->GetRenderer()->DrawPolygon(spell.path, ImColor(255, 0, 0, 255), 2);
+        locator->GetRenderer()->DrawPolygon(spell.path, ImColor(255, 0, 0, 255), 3);
         Geometry::Polygon drawable = Geometry::Rectangle(spell.currentPos, spell.endPos, spell.spellInfo->width * 2).ToPolygon();
-        locator->GetRenderer()->DrawPolygon(drawable, ImColor(255, 255, 255, 255), 2);
+        locator->GetRenderer()->DrawPolygon(drawable, ImColor(255, 255, 255, 255), 3);
 
     }
 
@@ -170,19 +197,33 @@ void Evade::TryEvadeSpell(DetectedSpell *spell) {
     auto timeEvade = player->position.distance(Evade::evadePoint) / player->movementSpeed;
     auto timeImpact = spell->TimeToCollision(player->position) + extraEvadeLength / player->movementSpeed;
 
+    if (lastMovement.x == 0 && lastMovement.z == 0) {
+        lastMovement = player->GetAiManager()->endPath.clone();
+    }
+
     if (timeEvade > timeImpact) {
        // locator->GetConsole()->Print("tE: %f | tI: %f | CANT DODGE!", timeEvade, timeImpact);
+        /*Evade::isEvading = true;
+        Evade::evadeEndTime = locator->GetEngine()->GetGameTick() + 30;
+        if (player->GetSpellSlotById(2)->IsReady()) {
+            input.IssuePressKeyAt(GameKeybind::CastSpellE,
+                                  [] { return locator->GetEngine()->WorldToScreen(Evade::evadePoint); });
+        }
+
+       return;*/
     }
     //locator->GetConsole()->Print("tE: %f | tI: %f", timeEvade, timeImpact);
 
     auto now = locator->GetEngine()->GetGameTick();
     Evade::evadeEndTime = now + (Evade::evadePoint.distance(player->position) / player->movementSpeed);
 
-    if (lastMovement.x == 0 && lastMovement.z == 0) {
-        lastMovement = player->GetAiManager()->endPath.clone();
-    }
     Evade::isEvading = true;
-    Vector3& loc = Evade::evadePoint;
+    Vector3 loc = Evade::evadePoint;
+    if (extendEvadeMove) {
+        auto length = player->position.distance(Evade::evadePoint);
+        auto point = Evade::evadePoint.sub(player->position).normalize();
+        loc = player->position.add(point.mult(length + extendEvadeMoveBy));
+    }
     input.IssueClickAt(CT_RIGHT_CLICK, [loc] {return locator->GetEngine()->WorldToScreen(loc);}, GameKeybind::TargetChampionsOnly);
 }
 
@@ -209,5 +250,63 @@ void Evade::OnGui() {
             ImGui::TreePop();
         }
     }
+}
+
+PathResult Evade::IsPathSafe() {
+
+    auto aiManager = locator->GetObjectManager()->GetLocalPlayer()->GetAiManager();
+    auto navArray = aiManager->GetNavigationArray();
+
+    if (navArray.size() > 1) {
+        auto last = navArray.at(aiManager->currentSegment-1);
+
+        for (int x = aiManager->currentSegment; x < navArray.size(); x++) {
+            auto safe = true;
+            auto unsafeAt = 0;
+
+            auto current = navArray.at(x);
+            auto p1 = locator->GetEngine()->WorldToScreen(current);
+            auto p2 = locator->GetEngine()->WorldToScreen(last);
+
+            auto length = current.distance(last);
+            auto direction = current.sub(last).normalize();
+
+            auto multiplier = static_cast<int>((length / 100) + 1);
+
+            auto scale = length / multiplier; //check 7 points per path?
+
+            for (int i = 0; i < multiplier; i++) {
+                auto toCheck = last.add(direction.mult(scale * i));
+                if (IsDangerous(toCheck)) {
+                    safe = false;
+                    unsafeAt = i;
+                    locator->GetRenderer()->DrawRiotCircle(toCheck, 20, ImColor(255, 0, 0, 255), true);
+
+                    PathResult result;
+                    if (i > 1)
+                        result.LastSafePoint = last.add(direction.mult(scale * (i - 2)));
+                    else if (i == 0) {
+                        result.LastSafePoint = last;
+                    }
+                    result.UnsafePoint = i;
+                    result.UnsafSegment = x;
+                    result.Safe = false;
+                    return result;
+                } else {
+
+                    locator->GetRenderer()->DrawRiotCircle(toCheck, 20, ImColor(0, 255, 0, 255), true);
+                }
+            }
+
+            //locator->GetRenderer()->Text(p1, "%f", length);
+            ImGui::GetBackgroundDrawList()->AddText({p1.x, p1.y}, ImColor(255, 255, 255, 255), std::to_string(length).c_str());
+
+            last = current;
+        }
+    }
+    PathResult result;
+    result.Safe = true;
+    return result;
+
 }
 

@@ -13,7 +13,7 @@ HMODULE thread;
 using namespace std::chrono_literals;
 
 __declspec(safebuffers) int __stdcall Main(LPVOID lpReserved) {
-    Globals::baseAddress = reinterpret_cast<int>(GetModuleHandle(NULL));
+    Globals::baseAddress = reinterpret_cast<uint64_t>(GetModuleHandle(NULL));
     bool status = locator->GetAsyllumInstance()->Initialize();
     locator->GetAsyllumInstance()->initialized = status;
 

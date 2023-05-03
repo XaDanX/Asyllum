@@ -34,7 +34,7 @@ public:
     };
 
     std::string GetName() {
-        int addr = *reinterpret_cast<int *>(reinterpret_cast<DWORD>(this) + Offsets::SpellCast::SpellData) +
+        __int64 addr = *reinterpret_cast<__int64 *>(reinterpret_cast<__int64>(this) + Offsets::SpellCast::SpellData) +
                    Offsets::SpellCast::SpellName;
         std::string name = StringUtils::ToLower(StringUtils::GetString(addr));
         return name;

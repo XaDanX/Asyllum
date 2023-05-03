@@ -15,7 +15,7 @@
 class MissileData {
 public:
     union {
-        DEFINE_MEMBER_N(LolString, name, 0x6C);
+        DEFINE_MEMBER_N(LolString, name, 0x8);
     };
 };
 
@@ -23,7 +23,7 @@ class MissileInfo {
 public:
     union {
         DEFINE_MEMBER_N(int, slot, Offsets::Missile::Slot);
-        DEFINE_MEMBER_N(MissileData*, missileData, 0x40);
+        DEFINE_MEMBER_N(MissileData*, missileData, 0x18);
     };
 };
 

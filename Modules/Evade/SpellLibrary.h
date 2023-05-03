@@ -146,7 +146,7 @@ public:
             blitzcrankQ.missileNames = {XorStr("rocketgrabmissile")};
             blitzcrankQ.spellType = SpellType::Linear;
             blitzcrankQ.spellSlot = Slot::_Q;
-            blitzcrankQ.dangerLevel = DangerLevel::High;
+            blitzcrankQ.dangerLevel = DangerLevel::VeryHigh;
 
             blitzcrankQ.recalculateLength = true;
 
@@ -187,7 +187,7 @@ public:
             zedQ.missileNames = {XorStr("zedqmissile")};
             zedQ.spellType = SpellType::Linear;
             zedQ.spellSlot = Slot::_Q;
-            zedQ.dangerLevel = DangerLevel::High;
+            zedQ.dangerLevel = DangerLevel::Low;
 
             zedQ.recalculateLength = true;
 

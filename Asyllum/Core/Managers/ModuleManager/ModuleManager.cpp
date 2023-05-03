@@ -7,7 +7,9 @@
 #include "../../../Protection/XorStr.h"
 #include "../../../../Modules/OrbWalker/OrbWalker.h"
 #include "../../../../Modules/Evade/Evade.h"
-
+#include "../../../../Modules/BetterEvade/BetterEvade.h"
+#include "../../../../Modules/Debug/Debug.h"
+#include "../../../../Modules/Awareness/Awareness.h"
 void ModuleManager::RegisterModule(Module *module) {
 
     if (module->type != ModuleType::UTILITY_SCRIPT) {
@@ -25,8 +27,12 @@ void ModuleManager::RegisterModules() {
     /*
         Append all modules here
     */
-    RegisterModule(new OrbWalker(XorStr("OrbWalker"), ModuleType::UTILITY_SCRIPT, HashName::UnknownHash));
-    RegisterModule(new Evade(XorStr("Evade"), ModuleType::UTILITY_SCRIPT, HashName::UnknownHash));
+    //RegisterModule(new OrbWalker(XorStr("OrbWalker"), ModuleType::UTILITY_SCRIPT, HashName::UnknownHash));
+    //RegisterModule(new Evade(XorStr("Evade"), ModuleType::UTILITY_SCRIPT, HashName::UnknownHash));
+    //RegisterModule(new BetterEvade(XorStr("BetterEvade"), ModuleType::UTILITY_SCRIPT, HashName::UnknownHash));
+    //RegisterModule(new Debug(XorStr("Debug"), ModuleType::UTILITY_SCRIPT, HashName::UnknownHash));
+    RegisterModule(new Awareness(XorStr("Awareness"), ModuleType::UTILITY_SCRIPT, HashName::UnknownHash));
+
 }
 
 void ModuleManager::Initialize() {

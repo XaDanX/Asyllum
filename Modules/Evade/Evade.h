@@ -12,6 +12,14 @@
 #include "../../Asyllum/Core/Locator/Locator.h"
 
 
+
+struct PathResult {
+    bool Safe = true;
+    int UnsafSegment = 0;
+    int UnsafePoint = 0;
+    Vector3 LastSafePoint;
+};
+
 class Evade : public Module {
 public:
     SpellDetector* spellDetector;
@@ -51,10 +59,15 @@ public:
     bool IsDangerous(Vector3 pos);
     void TryEvadeSpell(DetectedSpell *spell);
 
+    PathResult IsPathSafe();
+
 public: // config
     bool enabled = true;
-    float extraEvadeLength = 15;
+    float extraEvadeLength = 20;
     bool continueLastMovement = true;
+
+    bool extendEvadeMove = true;
+    float extendEvadeMoveBy = 100.0;
 };
 
 

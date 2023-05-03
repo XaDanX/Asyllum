@@ -13,7 +13,7 @@
 #include <sysinfoapi.h>
 
 float Engine::GameTime() const {
-    return *reinterpret_cast<float *>(RVA((unsigned int) Offsets::Game::GameTime));
+    return *reinterpret_cast<float *>(RVA(Offsets::Game::GameTime));
 }
 
 Vector2 Engine::WorldToScreen(const Vector3 &pos) {
@@ -45,12 +45,12 @@ Vector2 Engine::WorldToScreen(const Vector3 &pos) {
 }
 
 int Engine::WindowHeight() const {
-    auto renderer = *reinterpret_cast<int *>(RVA(Offsets::Game::Renderer));
+    auto renderer = *reinterpret_cast<uint64_t *>(RVA(Offsets::Game::Renderer));
     return *reinterpret_cast<int *>(renderer + Offsets::Renderer::Height);
 }
 
 int Engine::WindowWidth() const {
-    auto renderer = *reinterpret_cast<int *>(RVA(Offsets::Game::Renderer));
+    auto renderer = *reinterpret_cast<uint64_t *>(RVA(Offsets::Game::Renderer));
     return *reinterpret_cast<int *>(renderer + Offsets::Renderer::Width);
 }
 
@@ -59,7 +59,9 @@ void Engine::Update() {
     memcpy(&Globals::projectionMatrix, (void *) RVA(Offsets::Game::ViewProjMatrices + (16 * sizeof(float))),
            16 * sizeof(float));
     MultiplySquareMatrices(Globals::viewProjectionMatrix, Globals::viewMatrix, Globals::projectionMatrix);
-    ProcessSpells();
+
+    ProcessSpells();//
+
 }
 
 HudInstance *Engine::GetHudInstance() {
@@ -70,33 +72,13 @@ float Engine::GetProcessorTime() {
     return static_cast<float>(LI_FN(GetTickCount).get()());
 }
 
-DWORD __cdecl Engine::CollisionFlag(float a1, float a2, float a3) {
-    auto collisionFlag = *reinterpret_cast<DWORD *>(RVA(Offsets::Functions::IsNotWall));
-
-    auto world = *reinterpret_cast<DWORD *>(collisionFlag + 0x4);
-    auto fOffsetX = *reinterpret_cast<float *>(world + 0x64);
-    auto fOffsetZ = *reinterpret_cast<float *>(world + 0x6C);
-    auto fCellScale = *reinterpret_cast<float *>(world + 0x5AC);
-
-    int x = (int) (((a1 - fOffsetX) * fCellScale));
-    int y = (int) (((a3 - fOffsetZ) * fCellScale));
-
-    auto target = *reinterpret_cast<unsigned int *>(world + 0x80);
-    unsigned int target2 = target + 0x8 * (*reinterpret_cast<unsigned int *>(world + 0x5A0) * y + x);
-    auto target3 = *reinterpret_cast<unsigned int *>(target2);
-    unsigned short flag;
-
-    if (target3 != 0) {
-        flag = *reinterpret_cast<unsigned short *>(target3 + 0x6);
-    } else {
-        flag = *reinterpret_cast<unsigned short *>(target2 + 0x4);
-    }
-
-    return flag;
+DWORD __cdecl Engine::CollisionFlag(float* a1) {
+    return 0;
 }
 
 bool Engine::IsNotWall(Vector3 pos) {
-    return !(CollisionFlag(pos.x, pos.y, pos.z) & 2);
+   return true;
+
 }
 
 void Engine::ProcessSpells() {
@@ -156,5 +138,69 @@ void Engine::ProcessSpells() {
 }
 
 float Engine::GetGameTick() {
-    return *reinterpret_cast<float *>(RVA((unsigned int) Offsets::Game::GameTime)) * 1000;
+    return *reinterpret_cast<float *>(RVA(Offsets::Game::GameTime)) * 1000;
 }
+
+__int16 Engine::flag(int a1, int a2, unsigned __int16 a3) {
+    __int64 world; // r11
+    int v5; // er9
+    int v6; // er10
+    int v7; // eax
+    __int16 *v8; // rax
+    __int64 v9; // r8
+    __int16 *v10; // rdx
+    __int16 *v11; // rax
+    __int16 v12; // cx
+    unsigned __int16 v13; // cx
+
+    world = *(__int64 *)(RVA(0x20d5f28) + 8);
+    v5 = *(DWORD *)(world + 0x680);              // 295
+    v6 = v5 - 1;                                  // 295 - 1
+    if ( a1 <= v5 - 1 )                           // if X <= 294
+    {
+        v6 = a1;                                    // v6 = X
+        if ( a1 < 0 )                               // if X < 0
+            v6 = 0;                                   // v6 = 0
+    }
+    v7 = *(DWORD *)(world + 0x684) - 1;          // v7 = 296 - 1
+    if ( a2 <= v7 )                               // if Z <= 295
+    {
+        v7 = a2;                                    // v7 = Z
+        if ( a2 < 0 )                               // if Z < 0
+            v7 = 0;                                   // v7 = 0
+        //
+    }                                             // v5 = 295
+    // v6 = 294
+    // v7 = 295
+    v8 = (__int16 *)(*(__int64 *)(world + 0xE8) + 0x10i64 * (v6 + v5 * v7));// v8 = 48 + 16 * (294 + 295 * 295) (=1397152) BYTE
+    if ( !v8 )
+        return 0;
+    v9 = *(__int64 *)v8;
+    v10 = v8 + 4;
+    v11 = (__int16 *)(*(__int64 *)v8 + 6i64);
+    if ( v9 )
+        v12 = *v11;
+    else
+        v12 = *v10;
+    v13 = v12 & 0xC00;
+    if ( v13 )
+        return (a3 & v13) == v13;
+    if ( !v9 )
+        v11 = v10;
+    return (*(BYTE *)v11 & 2) == 0;
+}
+
+Vector2 Engine::WorldToMinimap(const Vector3& pos) {
+    auto minimapObject = *reinterpret_cast<__int64*>(RVA(Offsets::MiniMap::MiniMapObject));
+    auto minimapHud = *reinterpret_cast<__int64*>(minimapObject + Offsets::MiniMap::MiniMapHud);
+    Vector2 minimapSize = *reinterpret_cast<Vector2*>(minimapHud + Offsets::MiniMap::MiniMapHudSize);
+    Vector2 minimapPos = *reinterpret_cast<Vector2*>(minimapHud + Offsets::MiniMap::MiniMapHudPos);
+
+    Vector2 res = {pos.x / 15000.f, pos.z / 15000.f};
+
+    res.x = minimapPos.x + res.x * minimapSize.x;
+    res.y = minimapPos.y + minimapSize.y - (res.y * minimapSize.y);
+    return res;
+}
+
+

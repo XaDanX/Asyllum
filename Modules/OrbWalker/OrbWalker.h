@@ -30,7 +30,7 @@ public:
 
 public: // config
     bool enabled = true;
-    HKey hotKey = HKey::N;
+    HKey hotKey = HKey::X;
 };
 
 
